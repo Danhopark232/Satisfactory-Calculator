@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function getImagePath(itemName) {
         // Assuming images are in an 'images' folder at the root
         // and named like 'ItemName.png' or 'Item Name.png'
-        const formattedName = itemName.replace(/ /g, ''); // Remove spaces for image names
+        const formattedName = itemName.replace(/ /g, '').toLowerCase(); // Remove spaces for image names and convert to lowercase
         return `images/${formattedName}.png`;
     }
 
@@ -344,7 +344,8 @@ document.addEventListener('DOMContentLoaded', () => {
                             globalMaterialSupply[input.item] = balance; // Update pool with remaining material
 
                             const li = document.createElement('li');
-                            li.textContent = `${input.item}: ${input.rate} / min (Needed: ${totalNeeded} / min, Consumed: ${consumed} / min, Balance: ${balance} / min)`;
+                            li.classList.add('input-item');
+                            li.innerHTML = `<span class="item-name">${input.item}</span><span class="item-usage">(${input.rate}/min) ${totalNeeded}/min</span>`;
                             inputList.appendChild(li);
 
                             // Auto-fill logic
