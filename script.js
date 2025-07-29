@@ -206,15 +206,18 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
             <div class="columns-container">
                 <div class="column" data-column-id="1">
+                    <div class="column-handle"></div>
                     <div class="facilities-container"></div>
                     <button class="add-facility-btn">+</button>
                     <button class="remove-column-btn">X</button>
                 </div>
                 <div class="column" data-column-id="2">
+                    <div class="column-handle"></div>
                     <div class="facilities-container"></div>
                     <button class="add-facility-btn">+</button>
                     <button class="remove-column-btn">X</button>
                 </div>
+                <button class="add-column-btn">Add Column</button>
             </div>
         `;
 
@@ -223,26 +226,99 @@ document.addEventListener('DOMContentLoaded', () => {
         // Attach event listeners to initial columns
         factoryLineDiv.querySelectorAll('.column').forEach(column => {
             attachColumnEventListeners(column);
+            makeColumnDraggable(column); // Make columns draggable
         });
 
-        // Add event listener for adding new columns
+        // Attach event listener for adding new columns to the button within this factory line
+        const addColumnBtn = factoryLineDiv.querySelector('.add-column-btn');
         const columnsContainer = factoryLineDiv.querySelector('.columns-container');
-        const addColumnBtn = document.createElement('button');
-        addColumnBtn.classList.add('add-column-btn');
-        addColumnBtn.textContent = 'Add Column';
         addColumnBtn.addEventListener('click', () => {
+            console.log('Add Column button clicked!');
             const newColumn = document.createElement('div');
             newColumn.classList.add('column');
-            newColumn.dataset.columnId = columnsContainer.children.length + 1;
-            newColumn.innerHTML = '<div class="facilities-container"></div><button class="add-facility-btn">+</button><button class="remove-column-btn">X</button>';
+            newColumn.dataset.columnId = columnsContainer.querySelectorAll('.column').length + 1;
+            newColumn.innerHTML = '<div class="column-handle"></div><div class="facilities-container"></div><button class="add-facility-btn">+</button><button class="remove-column-btn">X</button>';
             attachColumnEventListeners(newColumn); // Attach listeners to the new column
-            columnsContainer.appendChild(newColumn);
-            columnsContainer.appendChild(addColumnBtn); // Re-append to move to end
+            columnsContainer.insertBefore(newColumn, addColumnBtn); // Insert before the addColumnBtn
+            setTimeout(() => {
+                makeColumnDraggable(newColumn); // Make new columns draggable after DOM is ready
+            }, 0);
+            console.log('New column inserted.', newColumn);
             updateAllFactoryLines();
         });
-        columnsContainer.appendChild(addColumnBtn); // Moved to columns-container
 
         return factoryLineDiv;
+    }
+
+    let draggedColumn = null;
+
+    function makeColumnDraggable(column) {
+        console.log('makeColumnDraggable called for column:', column);
+        const handle = column.querySelector('.column-handle');
+        console.log('Handle found:', handle);
+        if (!handle) {
+            console.error('Column handle not found for column:', column);
+            return; // Exit if handle is null
+        }
+        handle.setAttribute('draggable', 'true');
+
+        handle.addEventListener('dragstart', (e) => {
+            draggedColumn = column;
+            setTimeout(() => {
+                column.classList.add('dragging');
+            }, 0);
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', column.innerHTML); // Required for Firefox
+        });
+
+        handle.addEventListener('dragend', () => {
+            draggedColumn.classList.remove('dragging');
+            draggedColumn = null;
+        });
+
+        const columnsContainer = column.closest('.columns-container');
+        columnsContainer.addEventListener('dragover', (e) => {
+            e.preventDefault(); // Allow drop
+            const afterElement = getDragAfterElement(columnsContainer, e.clientX);
+            const currentColumn = e.target.closest('.column');
+
+            if (currentColumn && currentColumn !== draggedColumn) {
+                columnsContainer.querySelectorAll('.column').forEach(col => col.classList.remove('drag-over'));
+                currentColumn.classList.add('drag-over');
+            }
+        });
+
+        columnsContainer.addEventListener('dragleave', (e) => {
+            e.target.classList.remove('drag-over');
+        });
+
+        columnsContainer.addEventListener('drop', (e) => {
+            e.preventDefault();
+            columnsContainer.querySelectorAll('.column').forEach(col => col.classList.remove('drag-over'));
+            if (draggedColumn) {
+                const afterElement = getDragAfterElement(columnsContainer, e.clientX);
+                if (afterElement == null) {
+                    columnsContainer.insertBefore(draggedColumn, columnsContainer.querySelector('.add-column-btn'));
+                } else {
+                    columnsContainer.insertBefore(draggedColumn, afterElement);
+                }
+                updateAllFactoryLines(); // Re-calculate after reordering
+            }
+        });
+    }
+
+    function getDragAfterElement(container, x) {
+        const draggableColumns = [...container.querySelectorAll('.column:not(.dragging)')];
+
+        return draggableColumns.reduce((closest, child) => {
+            const box = child.getBoundingClientRect();
+            const offset = x - box.left - box.width / 2;
+            if (offset < 0 && offset > closest.offset) {
+                return { offset: offset, element: child };
+            } else {
+                return closest;
+            }
+        }, { offset: -Infinity }).element;
     }
 
     // Main update function for all factory lines

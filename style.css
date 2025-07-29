@@ -84,6 +84,28 @@ body {
     flex-direction: column; /* Stack contents vertically */
     justify-content: space-between; /* Push add/remove buttons to top/bottom */
     border-radius: 20px;
+    position: relative; /* For positioning the handle */
+}
+
+.column-handle {
+    width: 100%;
+    height: 20px;
+    background-color: #ccc;
+    cursor: grab;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.column-handle:active {
+    cursor: grabbing;
+}
+
+.column.dragging {
+    opacity: 0.5;
+}
+
+.column.drag-over {
+    border: 2px dashed #007B9E;
 }
 
 .column:last-child {
