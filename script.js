@@ -207,14 +207,14 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="columns-container">
                 <div class="column" data-column-id="1">
                     <div class="column-handle"></div>
-                    <div class="facilities-container"></div>
                     <button class="add-facility-btn">+</button>
+                    <div class="facilities-container"></div>
                     <button class="remove-column-btn">X</button>
                 </div>
                 <div class="column" data-column-id="2">
                     <div class="column-handle"></div>
-                    <div class="facilities-container"></div>
                     <button class="add-facility-btn">+</button>
+                    <div class="facilities-container"></div>
                     <button class="remove-column-btn">X</button>
                 </div>
                 <button class="add-column-btn">Add Column</button>
@@ -237,7 +237,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const newColumn = document.createElement('div');
             newColumn.classList.add('column');
             newColumn.dataset.columnId = columnsContainer.querySelectorAll('.column').length + 1;
-            newColumn.innerHTML = '<div class="column-handle"></div><div class="facilities-container"></div><button class="add-facility-btn">+</button><button class="remove-column-btn">X</button>';
+            newColumn.innerHTML = '<div class="column-handle"></div><button class="add-facility-btn">+</button><div class="facilities-container"></div><button class="remove-column-btn">X</button>';
             attachColumnEventListeners(newColumn); // Attach listeners to the new column
             columnsContainer.insertBefore(newColumn, addColumnBtn); // Insert before the addColumnBtn
             setTimeout(() => {
