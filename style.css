@@ -83,6 +83,7 @@ body {
     display: flex; /* Make column a flex container */
     flex-direction: column; /* Stack contents vertically */
     justify-content: space-between; /* Push add/remove buttons to top/bottom */
+    border-radius: 20px;
 }
 
 .column:last-child {
@@ -97,12 +98,12 @@ body {
     display: block;
     width: 100%;
     padding: 10px;
-    margin-top: 10px; /* Space from last facility */
     background-color: #4CAF50;
     color: white;
     border: none;
     cursor: pointer;
     font-size: 1.2em;
+    border-radius: 10px;
 }
 
 .add-facility-btn:hover {
@@ -130,7 +131,7 @@ body {
     border: none;
     padding: 0 10px 10px;
     margin-bottom: 10px;
-    border-radius: 5px;
+    border-radius: 10px;
     position: relative; /* Needed for absolute positioning of the close button */
 }
 
@@ -161,12 +162,11 @@ body {
     display: flex;
     flex-direction: column;
     align-items: flex-start; /* Align items to the start of the column */
-    margin-bottom: 10px;
 }
 
 .facility-header select {
     width: 100%; /* Make dropdowns take full width */
-    margin-bottom: 5px; /* Add some space between them */
+    margin-bottom: 12px; /* Add some space between them */
     outline: none; /* Remove outline */
     height: 36px;
     border-radius: 18px; /* Max rounding for 36px height */
@@ -176,7 +176,7 @@ body {
 
 .purity-control select {
     width: 100%; /* Make dropdowns take full width */
-    margin-bottom: 5px; /* Add some space between them */
+    margin-bottom: 12px; /* Add some space between them */
     outline: none; /* Remove outline */
     height: 36px;
     border-radius: 18px; /* Max rounding for 36px height */
@@ -211,6 +211,7 @@ body {
     border: none;
     cursor: pointer;
     font-size: 1.2em;
+    border-radius: 10px;
 }
 
 .remove-column-btn:hover {
