@@ -282,6 +282,8 @@ ul.input-list li {
 }
 
 ul.output-list li {
+    display: flex;
+    justify-content: space-between;
 }
 
 .power-display {

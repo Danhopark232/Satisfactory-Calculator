@@ -380,16 +380,18 @@ document.addEventListener('DOMContentLoaded', () => {
                             const outputBalance = totalProduced - outputConsumption;
 
                             const li = document.createElement('li');
-                            li.innerHTML = `<span>${output.item}</span><span>(${output.rate * purityMultiplier}/min) ${totalProduced}/min</span>`;
+                            li.classList.add('output-item');
+                            li.innerHTML = `<span class="item-name">${output.item}</span><span class="item-usage">(${output.rate * purityMultiplier}/min) ${totalProduced}/min</span>`;
                             outputList.appendChild(li);
 
-                            // Add consumption and balance lines for this output
                             const consumptionLi = document.createElement('li');
-                            consumptionLi.textContent = `  Consumption: ${outputConsumption} / min`;
+                            consumptionLi.classList.add('output-item');
+                            consumptionLi.innerHTML = `<span class="item-name">Consumption</span><span class="item-usage">${outputConsumption}/min</span>`;
                             outputList.appendChild(consumptionLi);
 
                             const balanceLi = document.createElement('li');
-                            balanceLi.textContent = `  Balance: ${outputBalance} / min`;
+                            balanceLi.classList.add('output-item');
+                            balanceLi.innerHTML = `<span class="item-name">Balance</span><span class="item-usage">${outputBalance}/min</span>`;
                             outputList.appendChild(balanceLi);
 
                             // For overall factory line summary, outputs are positive
