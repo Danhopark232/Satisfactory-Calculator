@@ -1,0 +1,287 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f0f0f0;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.factory-lines-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Space between multiple factory lines */
+    width: 100%; /* Take full width to center main-windows */
+    align-items: center;
+}
+
+.main-window {
+    width: 75%;
+    max-width: 1200px; /* Optional: set a max-width for very large screens */
+    min-width: 800px; /* Optional: set a min-width */
+    height: 700px; /* Initial height */
+    resize: vertical; /* Allow vertical resizing */
+    overflow: hidden; /* Hide overflow initially, columns will scroll */
+    background-color: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    /* margin-bottom: 20px; Removed as gap handles spacing */
+}
+
+.header-container {
+    padding: 10px;
+    background-color: #e0e0e0;
+    border-bottom: 1px solid #ccc;
+}
+
+.header {
+    height: 100px;
+    background-color: #d0d0d0;
+    margin: 0 10px; /* 10px narrower */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.factory-name-input {
+    font-size: 2em;
+    font-weight: bold;
+    border: none;
+    background: transparent;
+    text-align: center;
+    width: 80%;
+    outline: none;
+}
+
+.material-summary {
+    padding: 0 10px;
+}
+
+.columns-container {
+    flex-grow: 1;
+    display: flex;
+    overflow-x: auto; /* Enable horizontal scrolling */
+    padding: 10px;
+    align-items: flex-start; /* Align items to the top */
+}
+
+.column {
+    flex-shrink: 0; /* Prevent columns from shrinking */
+    width: 350px;
+    margin-right: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #eee;
+    padding: 10px;
+    box-sizing: border-box;
+    overflow-y: auto; /* Enable vertical scrolling within columns */
+    display: flex; /* Make column a flex container */
+    flex-direction: column; /* Stack contents vertically */
+    justify-content: space-between; /* Push add/remove buttons to top/bottom */
+}
+
+.column:last-child {
+    margin-right: 0;
+}
+
+.facilities-container {
+    flex-grow: 1; /* Allows facilities to take up available space */
+}
+
+.add-facility-btn {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px; /* Space from last facility */
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2em;
+}
+
+.add-facility-btn:hover {
+    background-color: #45a049;
+}
+
+.add-factory-line-btn {
+    width: 75%;
+    max-width: 1200px;
+    padding: 15px;
+    background-color: #008CBA;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 1.5em;
+    margin-top: 20px; /* Space from the main window */
+}
+
+.add-factory-line-btn:hover {
+    background-color: #007B9E;
+}
+
+.facility {
+    background-color: #fff;
+    border: none;
+    padding: 0 10px 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    position: relative; /* Needed for absolute positioning of the close button */
+}
+
+.image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px; /* Space between image boxes */
+    padding-top: 27px; /* 27px space from top */
+    padding-bottom: 27px; /* 27px space from bottom */
+}
+
+.facility-image-box,
+.product-image-box {
+    width: 35%; /* 35% of facility width */
+    padding-bottom: 35%; /* Makes height equal to width for a square box */
+    background-color: #eee; /* Placeholder background */
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    position: relative; /* For content inside if needed */
+    border-radius: 15px; /* Rounded corners */
+    background-size: contain; /* Ensure image fits within the box */
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.facility-header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Align items to the start of the column */
+    margin-bottom: 10px;
+}
+
+.facility-header select {
+    width: 100%; /* Make dropdowns take full width */
+    margin-bottom: 5px; /* Add some space between them */
+    outline: none; /* Remove outline */
+    height: 36px;
+    border-radius: 18px; /* Max rounding for 36px height */
+    border: 1px solid #ccc; /* Add a subtle border back for definition */
+    padding: 0 10px; /* Add some padding */
+}
+
+.purity-control select {
+    width: 100%; /* Make dropdowns take full width */
+    margin-bottom: 5px; /* Add some space between them */
+    outline: none; /* Remove outline */
+    height: 36px;
+    border-radius: 18px; /* Max rounding for 36px height */
+    border: 1px solid #ccc; /* Add a subtle border back for definition */
+    padding: 0 10px; /* Add some padding */
+}
+
+.remove-facility-btn {
+    background-color: #DDDDDD;
+    color: #242424;
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: 0.8em;
+    padding: 3px 6px;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
+
+.remove-facility-btn:hover {
+    background-color: #da190b;
+}
+
+.remove-column-btn {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px; /* Space from add facility button */
+    background-color: #f44336; /* Red */
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2em;
+}
+
+.remove-column-btn:hover {
+    background-color: #da190b;
+}
+
+.add-column-btn {
+    flex-shrink: 0; /* Prevent from shrinking */
+    width: 350px; /* Match column width */
+    height: 50px; /* Adjust as needed */
+    margin-right: 10px; /* Space from columns */
+    background-color: #2196F3; /* Blue */
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.add-column-btn:hover {
+    background-color: #1976D2;
+}
+
+.quantity-control {
+    display: flex;
+    width: 100%; /* Make it span full width */
+    margin-bottom: 10px;
+}
+
+.quantity-input {
+    width: 45%; /* 45% of quantity control width */
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 0; /* Remove rounding */
+    padding: 0 10px; /* Add some padding */
+    outline: none;
+    height: 36px; /* Match dropdown height */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+.quantity-btn {
+    flex-grow: 1; /* Take remaining space */
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    padding: 0 10px; /* Adjust padding for buttons */
+    cursor: pointer;
+    font-size: 1em;
+    height: 36px; /* Match dropdown height */
+    box-sizing: border-box;
+}
+
+.quantity-btn.minus {
+    border-top-left-radius: 18px; /* Keep rounding on the outside edges */
+    border-bottom-left-radius: 18px; /* Keep rounding on the outside edges */
+    margin-right: -1px; /* Overlap borders */
+}
+
+.quantity-btn.plus {
+    border-top-right-radius: 18px; /* Keep rounding on the outside edges */
+    border-bottom-right-radius: 18px; /* Keep rounding on the outside edges */
+    margin-left: -1px; /* Overlap borders */
+}
+
+ul.input-list li {
+}
+
+ul.output-list li {
+}
+
+.power-display {
+    text-align: center;
+}

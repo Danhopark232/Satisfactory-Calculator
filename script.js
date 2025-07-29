@@ -1,0 +1,431 @@
+// script.js
+
+document.addEventListener('DOMContentLoaded', () => {
+    const factoryLinesContainer = document.querySelector('.factory-lines-container');
+    const addFactoryLineBtn = document.querySelector('.add-factory-line-btn');
+
+    let factoryLineCounter = 0;
+
+    // Helper function to get image path
+    function getImagePath(itemName) {
+        // Assuming images are in an 'images' folder at the root
+        // and named like 'ItemName.png' or 'Item Name.png'
+        const formattedName = itemName.replace(/ /g, ''); // Remove spaces for image names
+        return `images/${formattedName}.png`;
+    }
+
+    // Helper function to populate the output select dropdown
+    function populateOutputSelect(facilitySelect, outputSelect) {
+        const selectedFacilityName = facilitySelect.value;
+        const selectedFacility = facilitiesData[selectedFacilityName];
+
+        // Clear previous options
+        outputSelect.innerHTML = '';
+
+        const defaultOutputOption = document.createElement('option');
+        defaultOutputOption.value = "";
+        defaultOutputOption.textContent = "Choose product";
+        defaultOutputOption.disabled = true;
+        defaultOutputOption.selected = true;
+        outputSelect.appendChild(defaultOutputOption);
+
+        if (selectedFacility && selectedFacility.recipes) {
+            for (const recipeName in selectedFacility.recipes) {
+                const option = document.createElement('option');
+                option.value = recipeName;
+                option.textContent = recipeName;
+                outputSelect.appendChild(option);
+            }
+            // Set default output if available
+            if (outputSelect.options.length > 1) { // Check if there are actual recipes in addition to the default option
+                outputSelect.value = outputSelect.options[1].value; // Select the first actual recipe
+            }
+        }
+    }
+
+    // Helper function to find a recipe that produces a given item
+    function findProducerRecipe(item) {
+        for (const facilityName in facilitiesData) {
+            const facility = facilitiesData[facilityName];
+            for (const recipeName in facility.recipes) {
+                const recipe = facility.recipes[recipeName];
+                if (recipe.outputs.some(output => output.item === item)) {
+                    return { facilityName, recipeName };
+                }
+            }
+        }
+        return null;
+    }
+
+    // Function to create a new facility element
+    function createFacilityElement(initialFacility = null, initialRecipe = null) {
+        const facilityDiv = document.createElement('div');
+        facilityDiv.classList.add('facility');
+        facilityDiv.innerHTML = `
+            <div class="image-container">
+                <div class="facility-image-box"></div>
+                <div class="product-image-box"></div>
+            </div>
+            <div class="facility-header">
+                <select class="facility-select"></select>
+                <select class="output-select"></select>
+                <button class="remove-facility-btn">X</button>
+            </div>
+            <div class="purity-control" style="display: none;">
+                <select class="purity-select">
+                    <option value="Impure">Impure</option>
+                    <option value="Normal">Normal</option>
+                    <option value="Pure">Pure</option>
+                </select>
+            </div>
+            <div class="quantity-control">
+                <button class="quantity-btn minus">-</button>
+                <input type="number" class="quantity-input" value="1" min="1">
+                <button class="quantity-btn plus">+</button>
+            </div>
+            <div class="materials-display">
+                <h4>Inputs:</h4>
+                <ul class="input-list"></ul>
+                <h4>Outputs:</h4>
+                <ul class="output-list"></ul>
+            </div>
+            <div class="power-display">
+                <span>Power: <span class="power-value">0</span> MW</span>
+            </div>
+        `;
+
+        const facilitySelect = facilityDiv.querySelector('.facility-select');
+        const outputSelect = facilityDiv.querySelector('.output-select');
+        const quantityInput = facilityDiv.querySelector('.quantity-input');
+        const minusBtn = facilityDiv.querySelector('.quantity-btn.minus');
+        const plusBtn = facilityDiv.querySelector('.quantity-btn.plus');
+        const removeBtn = facilityDiv.querySelector('.remove-facility-btn');
+        const purityControl = facilityDiv.querySelector('.purity-control');
+        const puritySelect = facilityDiv.querySelector('.purity-select');
+        const facilityImageBox = facilityDiv.querySelector('.facility-image-box');
+        const productImageBox = facilityDiv.querySelector('.product-image-box');
+
+        // Populate facility dropdown
+        const defaultOption = document.createElement('option');
+        defaultOption.value = "";
+        defaultOption.textContent = "Choose building";
+        defaultOption.disabled = true;
+        defaultOption.selected = true;
+        facilitySelect.appendChild(defaultOption);
+
+        for (const facilityName in facilitiesData) {
+            const option = document.createElement('option');
+            option.value = facilityName;
+            option.textContent = facilityName;
+            facilitySelect.appendChild(option);
+        }
+
+        // Set initial facility selection and populate output dropdown
+        if (initialFacility) {
+            facilitySelect.value = initialFacility;
+        }
+        populateOutputSelect(facilitySelect, outputSelect);
+        if (initialRecipe) {
+            outputSelect.value = initialRecipe;
+        }
+
+        // Show/hide purity control based on facility type
+        if (facilitySelect.value.startsWith('Miner')) {
+            purityControl.style.display = 'block';
+        } else {
+            purityControl.style.display = 'none';
+        }
+
+        // Event Listeners
+        facilitySelect.addEventListener('change', () => {
+            populateOutputSelect(facilitySelect, outputSelect);
+            if (facilitySelect.value.startsWith('Miner')) {
+                purityControl.style.display = 'block';
+            } else {
+                purityControl.style.display = 'none';
+            }
+            updateAllFactoryLines();
+        });
+        outputSelect.addEventListener('change', updateAllFactoryLines);
+        quantityInput.addEventListener('change', updateAllFactoryLines);
+        minusBtn.addEventListener('click', () => {
+            if (parseInt(quantityInput.value) > 1) {
+                quantityInput.value = parseInt(quantityInput.value) - 1;
+                updateAllFactoryLines();
+            }
+        });
+        plusBtn.addEventListener('click', () => {
+            quantityInput.value = parseInt(quantityInput.value) + 1;
+            updateAllFactoryLines();
+        });
+        puritySelect.addEventListener('change', updateAllFactoryLines); // New event listener for purity
+
+        removeBtn.addEventListener('click', () => {
+            facilityDiv.remove();
+            updateAllFactoryLines();
+        });
+
+        return facilityDiv;
+    }
+
+    // Function to add a facility to a specific column
+    function addFacilityToColumn(columnElement, initialFacility = null, initialRecipe = null) {
+        const facilityElement = createFacilityElement(initialFacility, initialRecipe);
+        columnElement.querySelector('.facilities-container').appendChild(facilityElement);
+        updateAllFactoryLines(); // Trigger update after adding a new facility - will be called by auto-fill
+    }
+
+    // Function to attach event listeners to column buttons
+    function attachColumnEventListeners(columnElement) {
+        columnElement.querySelector('.add-facility-btn').addEventListener('click', (e) => {
+            const column = e.target.closest('.column');
+            addFacilityToColumn(column);
+        });
+        columnElement.querySelector('.remove-column-btn').addEventListener('click', (e) => {
+            const column = e.target.closest('.column');
+            column.remove();
+            updateAllFactoryLines();
+        });
+    }
+
+    // Function to create a new factory line
+    function createFactoryLine() {
+        factoryLineCounter++;
+        const factoryLineDiv = document.createElement('div');
+        factoryLineDiv.classList.add('main-window');
+        factoryLineDiv.dataset.lineId = factoryLineCounter;
+        factoryLineDiv.innerHTML = `
+            <div class="header-container">
+                <div class="header">
+                    <input type="text" class="factory-name-input" value="Factory Line ${factoryLineCounter}">
+                </div>
+                <div class="material-summary">
+                    <h3>Leftover Materials:</h3>
+                    <ul class="leftover-list"></ul>
+                </div>
+            </div>
+            <div class="columns-container">
+                <div class="column" data-column-id="1">
+                    <div class="facilities-container"></div>
+                    <button class="add-facility-btn">+</button>
+                    <button class="remove-column-btn">X</button>
+                </div>
+                <div class="column" data-column-id="2">
+                    <div class="facilities-container"></div>
+                    <button class="add-facility-btn">+</button>
+                    <button class="remove-column-btn">X</button>
+                </div>
+            </div>
+        `;
+
+        factoryLinesContainer.appendChild(factoryLineDiv);
+
+        // Attach event listeners to initial columns
+        factoryLineDiv.querySelectorAll('.column').forEach(column => {
+            attachColumnEventListeners(column);
+        });
+
+        // Add event listener for adding new columns
+        const columnsContainer = factoryLineDiv.querySelector('.columns-container');
+        const addColumnBtn = document.createElement('button');
+        addColumnBtn.classList.add('add-column-btn');
+        addColumnBtn.textContent = 'Add Column';
+        addColumnBtn.addEventListener('click', () => {
+            const newColumn = document.createElement('div');
+            newColumn.classList.add('column');
+            newColumn.dataset.columnId = columnsContainer.children.length + 1;
+            newColumn.innerHTML = '<div class="facilities-container"></div><button class="add-facility-btn">+</button><button class="remove-column-btn">X</button>';
+            attachColumnEventListeners(newColumn); // Attach listeners to the new column
+            columnsContainer.appendChild(newColumn);
+            columnsContainer.appendChild(addColumnBtn); // Re-append to move to end
+            updateAllFactoryLines();
+        });
+        columnsContainer.appendChild(addColumnBtn); // Moved to columns-container
+
+        return factoryLineDiv;
+    }
+
+    // Main update function for all factory lines
+    function updateAllFactoryLines() {
+        let needsRecalculation = false; // Flag to re-run if facilities are added
+
+        document.querySelectorAll('.main-window').forEach(factoryLineDiv => {
+            const columns = factoryLineDiv.querySelectorAll('.column');
+            const totalDemands = {}; // Stores total demand for each material across the entire factory line
+
+            // First Pass: Collect all demands
+            columns.forEach(column => {
+                const facilities = column.querySelectorAll('.facility');
+                facilities.forEach(facilityDiv => {
+                    const facilitySelect = facilityDiv.querySelector('.facility-select');
+                    const outputSelect = facilityDiv.querySelector('.output-select');
+                    const quantityInput = facilityDiv.querySelector('.quantity-input');
+
+                    const selectedFacilityName = facilitySelect.value;
+                    const selectedOutputName = outputSelect.value;
+                    const quantity = parseInt(quantityInput.value);
+                    const puritySelect = facilityDiv.querySelector('.purity-select');
+                    const selectedPurity = puritySelect ? puritySelect.value : 'Normal';
+                    const purityMultiplier = purityMultipliers[selectedPurity] || 1.0;
+
+                    const facilityData = facilitiesData[selectedFacilityName];
+                    const recipe = facilityData ? facilityData.recipes[selectedOutputName] : null;
+
+                    if (recipe) {
+                        recipe.inputs.forEach(input => {
+                            totalDemands[input.item] = (totalDemands[input.item] || 0) + (input.rate * quantity);
+                        });
+                        // For outputs, consider the purity multiplier in the demand calculation if it's a miner
+                        if (selectedFacilityName.startsWith('Miner')) {
+                            recipe.outputs.forEach(output => {
+                                // This part is tricky: if a miner produces something, it's not a demand.
+                                // Demands are only for inputs of other buildings.
+                                // So, no change needed here for outputs.
+                            });
+                        }
+                    }
+                });
+            });
+
+            const globalMaterialSupply = {}; // Tracks materials available from previous columns
+            const factoryLineLeftovers = {}; // For the factory line summary
+
+            // Second Pass: Calculate supply, consumption, and balance
+            columns.forEach((column, columnIndex) => {
+                const facilities = column.querySelectorAll('.facility');
+
+                facilities.forEach(facilityDiv => {
+                    const facilitySelect = facilityDiv.querySelector('.facility-select');
+                    const outputSelect = facilityDiv.querySelector('.output-select');
+                    const quantityInput = facilityDiv.querySelector('.quantity-input');
+                    const puritySelect = facilityDiv.querySelector('.purity-select');
+                    const facilityImageBox = facilityDiv.querySelector('.facility-image-box');
+                    const productImageBox = facilityDiv.querySelector('.product-image-box');
+
+                    const selectedFacilityName = facilitySelect.value;
+                    const selectedOutputName = outputSelect.value;
+                    const quantity = parseInt(quantityInput.value);
+                    const selectedPurity = puritySelect ? puritySelect.value : 'Normal'; // Default to Normal
+                    const purityMultiplier = purityMultipliers[selectedPurity] || 1.0;
+
+                    const facilityData = facilitiesData[selectedFacilityName];
+                    const recipe = facilityData ? facilityData.recipes[selectedOutputName] : null;
+
+                    const inputList = facilityDiv.querySelector('.input-list');
+                    const outputList = facilityDiv.querySelector('.output-list');
+                    const powerValueSpan = facilityDiv.querySelector('.power-value');
+
+                    inputList.innerHTML = ''; // Clear previous inputs
+                    outputList.innerHTML = ''; // Clear previous outputs
+                    // powerValueSpan.textContent = '0'; // This will be updated dynamically below
+
+                    // Set facility image
+                    facilityImageBox.style.backgroundImage = `url(${getImagePath(selectedFacilityName)})`;
+
+                    if (recipe) {
+                        // Update output dropdown for this facility (in case facility type changed)
+                        populateOutputSelect(facilitySelect, outputSelect);
+                        outputSelect.value = selectedOutputName; // Re-select current output
+
+                        // Set product image
+                        if (recipe.outputs.length > 0) {
+                            productImageBox.style.backgroundImage = `url(${getImagePath(recipe.outputs[0].item)})`;
+                        } else {
+                            productImageBox.style.backgroundImage = 'none';
+                        }
+
+                        // --- Process Inputs ---
+                        recipe.inputs.forEach(input => {
+                            const totalNeeded = input.rate * quantity;
+                            const available = globalMaterialSupply[input.item] || 0;
+                            const consumed = Math.min(totalNeeded, available);
+                            const balance = available - totalNeeded;
+
+                            globalMaterialSupply[input.item] = balance; // Update pool with remaining material
+
+                            const li = document.createElement('li');
+                            li.textContent = `${input.item}: ${input.rate} / min (Needed: ${totalNeeded} / min, Consumed: ${consumed} / min, Balance: ${balance} / min)`;
+                            inputList.appendChild(li);
+
+                            // Auto-fill logic
+                            if (balance < 0 && columnIndex > 0) { // If there's a deficit and not the first column
+                                const producer = findProducerRecipe(input.item);
+                                if (producer) {
+                                    const prevColumn = columns[columnIndex - 1];
+                                    // Check if this producer already exists in the previous column
+                                    const producerExists = Array.from(prevColumn.querySelectorAll('.facility')).some(facDiv => {
+                                        return facDiv.querySelector('.facility-select').value === producer.facilityName &&
+                                               facDiv.querySelector('.output-select').value === producer.recipeName;
+                                    });
+                                    if (!producerExists) {
+                                        addFacilityToColumn(prevColumn, producer.facilityName, producer.recipeName);
+                                        needsRecalculation = true; // Mark for re-run
+                                    }
+                                }
+                            }
+
+                            // For overall factory line summary, inputs are negative
+                            factoryLineLeftovers[input.item] = (factoryLineLeftovers[input.item] || 0) - totalNeeded;
+                        });
+
+                        // --- Process Outputs ---
+                        recipe.outputs.forEach(output => {
+                            const totalProduced = output.rate * quantity * purityMultiplier; // Apply purity multiplier here
+                            globalMaterialSupply[output.item] = (globalMaterialSupply[output.item] || 0) + totalProduced; // Add to pool
+
+                            // Calculate consumption for this specific output from totalDemands
+                            // This is the total demand for this item across the entire line
+                            const outputConsumption = totalDemands[output.item] || 0;
+                            const outputBalance = totalProduced - outputConsumption;
+
+                            const li = document.createElement('li');
+                            li.innerHTML = `<span>${output.item}</span><span>(${output.rate * purityMultiplier}/min) ${totalProduced}/min</span>`;
+                            outputList.appendChild(li);
+
+                            // Add consumption and balance lines for this output
+                            const consumptionLi = document.createElement('li');
+                            consumptionLi.textContent = `  Consumption: ${outputConsumption} / min`;
+                            outputList.appendChild(consumptionLi);
+
+                            const balanceLi = document.createElement('li');
+                            balanceLi.textContent = `  Balance: ${outputBalance} / min`;
+                            outputList.appendChild(balanceLi);
+
+                            // For overall factory line summary, outputs are positive
+                            factoryLineLeftovers[output.item] = (factoryLineLeftovers[output.item] || 0) + totalProduced;
+                        });
+
+                        // --- Power ---
+                        powerValueSpan.textContent = `${facilityData.powerUsage} MW / ${facilityData.powerUsage * quantity} MW`;
+                    }
+                });
+            });
+
+            // Update leftover materials summary for this factory line
+            const leftoverList = factoryLineDiv.querySelector('.leftover-list');
+            leftoverList.innerHTML = '';
+            for (const item in factoryLineLeftovers) {
+                if (factoryLineLeftovers[item] !== 0) {
+                    const li = document.createElement('li');
+                    li.textContent = `${item}: ${factoryLineLeftovers[item]} / min`;
+                    leftoverList.appendChild(li);
+                }
+            }
+        });
+
+        if (needsRecalculation) {
+            // Use setTimeout to allow DOM updates before re-running
+            setTimeout(updateAllFactoryLines, 0);
+        }
+    }
+
+    // Add event listener for adding new factory lines
+    addFactoryLineBtn.addEventListener('click', () => {
+        createFactoryLine();
+        updateAllFactoryLines();
+    });
+
+    // Initial factory line creation
+    createFactoryLine();
+    updateAllFactoryLines();
+});
