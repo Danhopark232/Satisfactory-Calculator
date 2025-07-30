@@ -152,7 +152,7 @@ body {
     background-color: #fff;
     border: none;
     padding: 0 10px 10px;
-    margin-bottom: 10px;
+    margin-top: 10px;
     border-radius: 10px;
     position: relative; /* Needed for absolute positioning of the close button */
 }
