@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function getImagePath(itemName) {
         // Assuming images are in an 'images' folder at the root
         // and named like 'ItemName.png' or 'Item Name.png'
-        const formattedName = itemName.replace(/ /g, '').toLowerCase(); // Remove spaces for image names and convert to lowercase
+        const formattedName = itemName.replace(/[ _]/g, '').toLowerCase(); // Remove spaces and underscores for image names and convert to lowercase
         return `images/${formattedName}.png`;
     }
 
