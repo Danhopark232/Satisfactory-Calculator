@@ -62,6 +62,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const facilityDiv = document.createElement('div');
         facilityDiv.classList.add('facility');
         facilityDiv.innerHTML = `
+            <div class="facility-top-bar">
+                <div class="collapse-btn"><img src="icons/CollapseArrowup.png" alt="Collapse"></div>
+                <button class="remove-facility-btn"><img src="icons/x.png" alt="Remove"></button>
+            </div>
             <div class="image-container">
                 <div class="facility-image-box"></div>
                 <div class="product-image-box"></div>
@@ -69,7 +73,6 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="facility-header">
                 <select class="facility-select"></select>
                 <select class="output-select"></select>
-                <button class="remove-facility-btn">X</button>
             </div>
             <div class="purity-control" style="display: none;">
                 <select class="purity-select">
@@ -182,9 +185,11 @@ document.addEventListener('DOMContentLoaded', () => {
             addFacilityToColumn(column);
         });
         columnElement.querySelector('.remove-column-btn').addEventListener('click', (e) => {
-            const column = e.target.closest('.column');
-            column.remove();
-            updateAllFactoryLines();
+            if (confirm('Are you sure you want to remove this column?')) {
+                const column = e.target.closest('.column');
+                column.remove();
+                updateAllFactoryLines();
+            }
         });
     }
 

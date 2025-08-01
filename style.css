@@ -89,11 +89,29 @@ body {
 
 .column-handle {
     width: 100%;
-    height: 20px;
+    height: 16px;
     background-color: #ccc;
     cursor: grab;
     margin-bottom: 10px;
     border-radius: 5px;
+}
+
+.facility-top-bar {
+    position: relative;
+    height: 22px; /* Match collapse-btn height */
+    margin-bottom: 12px;
+}
+
+.collapse-btn {
+    width: 227px;
+    height: 22px;
+    background-color: #ccc;
+    cursor: pointer;
+    border-radius: 999px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .column-handle:active {
@@ -151,7 +169,7 @@ body {
 .facility {
     background-color: #fff;
     border: none;
-    padding: 0 10px 10px;
+    padding: 12px 10px 10px;
     margin-top: 10px;
     border-radius: 10px;
     position: relative; /* Needed for absolute positioning of the close button */
@@ -162,7 +180,6 @@ body {
     justify-content: center;
     align-items: center;
     gap: 10px; /* Space between image boxes */
-    padding-top: 27px; /* 27px space from top */
     padding-bottom: 27px; /* 27px space from bottom */
 }
 
@@ -215,8 +232,8 @@ body {
     font-size: 0.8em;
     padding: 3px 6px;
     position: absolute;
-    top: 5px;
-    right: 5px;
+    top: 0;
+    left: calc(50% + 113.5px + 18px); /* 50% + half of collapse-btn + 18px */
 }
 
 .remove-facility-btn:hover {
