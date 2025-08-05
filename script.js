@@ -234,7 +234,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <input type="text" class="factory-name-input" value="Factory Line ${factoryLineCounter}">
                 </div>
                 <div class="material-summary">
-                    <h3>Leftover Materials:</h3>
+                    <h3>Summary:</h3>
                     <ul class="leftover-list"></ul>
                 </div>
             </div>
