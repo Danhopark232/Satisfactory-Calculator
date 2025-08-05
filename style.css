@@ -40,6 +40,28 @@ body {
     border-bottom: 1px solid #ccc;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
+    position: relative;
+}
+
+.remove-factory-line-btn {
+    background-color: transparent;
+    border: 1px solid black;
+    color: #242424;
+    border-radius: 999px;
+    cursor: pointer;
+    width: 21px;
+    height: 21px;
+    padding: 0;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.remove-factory-line-btn:hover {
+    background-color: #da190b;
 }
 
 .header {
@@ -48,6 +70,12 @@ body {
     align-items: center;
     justify-content: flex-start;
     margin-bottom: 10px;
+}
+
+.edit-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
 }
 
 .factory-name-input {
@@ -308,11 +336,15 @@ h3 {
     border: none;
     border-radius: 999px;
     cursor: pointer;
-    font-size: 0.8em;
-    padding: 3px 6px;
+    width: 16px;
+    height: 16px;
+    padding: 0;
     position: absolute;
     top: 0;
     left: calc(50% + 113.5px + 18px); /* 50% + half of collapse-btn + 18px */
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .remove-facility-btn:hover {
@@ -407,4 +439,25 @@ ul.output-list li {
 
 .power-display {
     text-align: center;
+}
+
+.change-color-btn img {
+    width: 15px;
+    height: 15px;
+}
+
+.change-color-btn {
+    background-color: transparent;
+    border: 1px solid black;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 21px;
+    height: 21px;
+    padding: 0;
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

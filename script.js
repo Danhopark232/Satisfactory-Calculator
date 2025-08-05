@@ -230,13 +230,16 @@ document.addEventListener('DOMContentLoaded', () => {
         factoryLineDiv.dataset.lineId = factoryLineCounter;
         factoryLineDiv.innerHTML = `
             <div class="header-container">
+                <button class="remove-factory-line-btn"><img src="icons/x.png" alt="Remove Factory Line"></button>
                 <div class="header">
+                    <img src="icons/edit_black.png" alt="Edit" class="edit-icon">
                     <input type="text" class="factory-name-input" value="Factory Line ${factoryLineCounter}">
                 </div>
                 <div class="material-summary">
                     <h3>Summary:</h3>
                     <ul class="leftover-list"></ul>
                 </div>
+                <button class="change-color-btn"><img src="icons/change_color_black.png" alt="Change Color"></button>
             </div>
             <div class="columns-container">
                 <div class="column" data-column-id="1">
@@ -256,6 +259,13 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
 
         factoryLinesContainer.appendChild(factoryLineDiv);
+
+        const removeFactoryLineBtn = factoryLineDiv.querySelector('.remove-factory-line-btn');
+        removeFactoryLineBtn.addEventListener('click', () => {
+            if (confirm('Are you sure you want to remove this factory line?')) {
+                factoryLineDiv.remove();
+            }
+        });
 
         // Attach event listeners to initial columns
         factoryLineDiv.querySelectorAll('.column').forEach(column => {
