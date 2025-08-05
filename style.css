@@ -63,6 +63,28 @@ body {
     padding: 0 10px;
 }
 
+.leftover-list {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex-wrap: wrap;
+}
+
+.leftover-list li {
+    margin-right: 10px;
+}
+
+.leftover-list img {
+    width: 25px;
+    height: 25px;
+    vertical-align: middle;
+}
+
+.leftover-list span {
+    margin-left: 5px;
+}
+
 .columns-container {
     flex-grow: 1;
     display: flex;
@@ -173,6 +195,56 @@ body {
     margin-top: 10px;
     border-radius: 10px;
     position: relative; /* Needed for absolute positioning of the close button */
+    transition: height 0.3s ease;
+}
+
+.facility.collapsed {
+    height: 100px;
+}
+
+.facility.collapsed .facility-header,
+.facility.collapsed .purity-control,
+.facility.collapsed .quantity-control,
+.facility.collapsed .materials-display,
+.facility.collapsed .power-display {
+    display: none;
+}
+
+.facility.collapsed .image-container {
+    display: none;
+}
+
+.facility.collapsed .collapsed-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.collapsed-info .info-text {
+    font-size: 18px;
+    padding-left: 20px;
+}
+
+.collapsed-info .image-boxes {
+    display: flex;
+    gap: 10px;
+}
+
+.collapsed-info .facility-image-box-collapsed,
+.collapsed-info .product-image-box-collapsed {
+    width: 54px;
+    height: 54px;
+    background-color: #eee; /* Placeholder background */
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    border-radius: 15px; /* Rounded corners */
+    background-size: contain; /* Ensure image fits within the box */
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.collapsed-info {
+    display: none;
 }
 
 .image-container {

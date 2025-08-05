@@ -66,6 +66,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="collapse-btn"><img src="icons/CollapseArrowup.png" alt="Collapse"></div>
                 <button class="remove-facility-btn"><img src="icons/x.png" alt="Remove"></button>
             </div>
+            <div class="collapsed-info">
+                <div class="info-text">
+                    <div class="facility-name-collapsed"></div>
+                    <div class="balance-collapsed"></div>
+                </div>
+                <div class="image-boxes">
+                    <div class="facility-image-box-collapsed"></div>
+                    <div class="product-image-box-collapsed"></div>
+                </div>
+            </div>
             <div class="image-container">
                 <div class="facility-image-box"></div>
                 <div class="product-image-box"></div>
@@ -139,7 +149,26 @@ document.addEventListener('DOMContentLoaded', () => {
             purityControl.style.display = 'none';
         }
 
+        const collapseBtn = facilityDiv.querySelector('.collapse-btn');
+
         // Event Listeners
+        collapseBtn.addEventListener('click', () => {
+            facilityDiv.classList.toggle('collapsed');
+            const collapseImg = collapseBtn.querySelector('img');
+            const isMiner = facilitySelect.value.startsWith('Miner');
+
+            if (facilityDiv.classList.contains('collapsed')) {
+                collapseImg.src = 'icons/CollapseArrowdown.png';
+                purityControl.style.display = 'none';
+            } else {
+                collapseImg.src = 'icons/CollapseArrowup.png';
+                if (isMiner) {
+                    purityControl.style.display = 'block';
+                } else {
+                    purityControl.style.display = 'none';
+                }
+            }
+        });
         facilitySelect.addEventListener('change', () => {
             populateOutputSelect(facilitySelect, outputSelect);
             if (facilitySelect.value.startsWith('Miner')) {
@@ -400,6 +429,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     outputList.innerHTML = ''; // Clear previous outputs
                     // powerValueSpan.textContent = '0'; // This will be updated dynamically below
 
+                    const facilityNameCollapsed = facilityDiv.querySelector('.facility-name-collapsed');
+                    const balanceCollapsed = facilityDiv.querySelector('.balance-collapsed');
+                    const facilityImageBoxCollapsed = facilityDiv.querySelector('.facility-image-box-collapsed');
+                    const productImageBoxCollapsed = facilityDiv.querySelector('.product-image-box-collapsed');
+
                     // Set facility image
                     facilityImageBox.style.backgroundImage = `url(${getImagePath(selectedFacilityName)})`;
 
@@ -430,17 +464,32 @@ document.addEventListener('DOMContentLoaded', () => {
                             inputList.appendChild(li);
 
                             // Auto-fill logic
-                            if (balance < 0 && columnIndex > 0) { // If there's a deficit and not the first column
+                            if (balance < 0) { // If there's a deficit
                                 const producer = findProducerRecipe(input.item);
                                 if (producer) {
-                                    const prevColumn = columns[columnIndex - 1];
-                                    // Check if this producer already exists in the previous column
-                                    const producerExists = Array.from(prevColumn.querySelectorAll('.facility')).some(facDiv => {
-                                        return facDiv.querySelector('.facility-select').value === producer.facilityName &&
-                                               facDiv.querySelector('.output-select').value === producer.recipeName;
-                                    });
-                                    if (!producerExists) {
-                                        addFacilityToColumn(prevColumn, producer.facilityName, producer.recipeName);
+                                    if (columnIndex > 0) { // and not the first column
+                                        const prevColumn = columns[columnIndex - 1];
+                                        // Check if this producer already exists in the previous column
+                                        const producerExists = Array.from(prevColumn.querySelectorAll('.facility')).some(facDiv => {
+                                            return facDiv.querySelector('.facility-select').value === producer.facilityName &&
+                                                   facDiv.querySelector('.output-select').value === producer.recipeName;
+                                        });
+                                        if (!producerExists) {
+                                            addFacilityToColumn(prevColumn, producer.facilityName, producer.recipeName);
+                                            needsRecalculation = true; // Mark for re-run
+                                        }
+                                    } else { // It's the first column, so create a new one
+                                        const columnsContainer = column.closest('.columns-container');
+                                        const newColumn = document.createElement('div');
+                                        newColumn.classList.add('column');
+                                        newColumn.dataset.columnId = columnsContainer.querySelectorAll('.column').length + 1; // This might need adjustment
+                                        newColumn.innerHTML = '<div class="column-handle"></div><button class="add-facility-btn">+</button><div class="facilities-container"></div><button class="remove-column-btn">X</button>';
+                                        attachColumnEventListeners(newColumn);
+                                        columnsContainer.insertBefore(newColumn, column);
+                                        setTimeout(() => {
+                                            makeColumnDraggable(newColumn);
+                                        }, 0);
+                                        addFacilityToColumn(newColumn, producer.facilityName, producer.recipeName);
                                         needsRecalculation = true; // Mark for re-run
                                     }
                                 }
@@ -459,6 +508,15 @@ document.addEventListener('DOMContentLoaded', () => {
                             // This is the total demand for this item across the entire line
                             const outputConsumption = totalDemands[output.item] || 0;
                             const outputBalance = totalProduced - outputConsumption;
+
+                            facilityNameCollapsed.textContent = selectedFacilityName;
+                            balanceCollapsed.textContent = `${outputBalance}/min`;
+                            facilityImageBoxCollapsed.style.backgroundImage = `url(${getImagePath(selectedFacilityName)})`;
+                            if (recipe.outputs.length > 0) {
+                                productImageBoxCollapsed.style.backgroundImage = `url(${getImagePath(recipe.outputs[0].item)})`;
+                            } else {
+                                productImageBoxCollapsed.style.backgroundImage = 'none';
+                            }
 
                             const li = document.createElement('li');
                             li.classList.add('output-item');
@@ -485,13 +543,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             });
 
-            // Update leftover materials summary for this factory line
             const leftoverList = factoryLineDiv.querySelector('.leftover-list');
             leftoverList.innerHTML = '';
             for (const item in factoryLineLeftovers) {
-                if (factoryLineLeftovers[item] !== 0) {
+                if (factoryLineLeftovers[item] > 0) {
                     const li = document.createElement('li');
-                    li.textContent = `${item}: ${factoryLineLeftovers[item]} / min`;
+                    const img = document.createElement('img');
+                    img.src = getImagePath(item);
+                    const balanceSpan = document.createElement('span');
+                    balanceSpan.textContent = factoryLineLeftovers[item];
+                    li.appendChild(img);
+                    li.appendChild(balanceSpan);
                     leftoverList.appendChild(li);
                 }
             }
