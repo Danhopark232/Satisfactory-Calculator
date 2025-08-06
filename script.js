@@ -37,9 +37,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 outputSelect.appendChild(option);
             }
             // Set default output if available
-            if (outputSelect.options.length > 1) { // Check if there are actual recipes in addition to the default option
+            /*if (outputSelect.options.length > 1) { // Check if there are actual recipes in addition to the default option
                 outputSelect.value = outputSelect.options[1].value; // Select the first actual recipe
-            }
+            }*/
         }
     }
 
@@ -491,7 +491,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                         const newColumn = document.createElement('div');
                                         newColumn.classList.add('column');
                                         newColumn.dataset.columnId = columnsContainer.querySelectorAll('.column').length + 1; // This might need adjustment
-                                        newColumn.innerHTML = '<div class="column-handle"></div><button class="add-facility-btn">+</button><div class="facilities-container"></div><button class="remove-column-btn">X</button>';
+                                        newColumn.innerHTML = '<div class="column-handle"></div><button class="add-facility-btn">+</button><div class="facilities-container"></div><button class="remove-column-btn">- column</button>';
                                         attachColumnEventListeners(newColumn);
                                         columnsContainer.insertBefore(newColumn, column);
                                         setTimeout(() => {
