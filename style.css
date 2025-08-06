@@ -211,16 +211,19 @@ h3 {
     width: 75%;
     max-width: 1200px;
     padding: 15px;
-    background-color: #008CBA;
-    color: white;
-    border: none;
+    background-color: transparent;
+    color: #4CAF50;
+    border: 2px solid #4CAF50;
     cursor: pointer;
     font-size: 1.5em;
     margin-top: 20px; /* Space from the main window */
+    border-radius: 10px;
+    transition: background-color 0.3s, color 0.3s;
 }
 
 .add-factory-line-btn:hover {
-    background-color: #007B9E;
+    background-color: #4CAF50;
+    color: white;
 }
 
 .facility {
@@ -356,16 +359,18 @@ h3 {
     width: 100%;
     padding: 10px;
     margin-top: 10px; /* Space from add facility button */
-    background-color: #f44336; /* Red */
-    color: white;
-    border: none;
+    background-color: transparent;
+    color: #f44336;
+    border: 2px solid #f44336;
     cursor: pointer;
     font-size: 1.2em;
     border-radius: 10px;
+    transition: background-color 0.3s, color 0.3s;
 }
 
 .remove-column-btn:hover {
-    background-color: #da190b;
+    background-color: #f44336;
+    color: white;
 }
 
 .add-column-btn {
@@ -373,18 +378,21 @@ h3 {
     width: 350px; /* Match column width */
     height: 50px; /* Adjust as needed */
     margin-right: 10px; /* Space from columns */
-    background-color: #2196F3; /* Blue */
-    color: white;
-    border: none;
+    background-color: transparent;
+    color: #4CAF50;
+    border: 2px solid #4CAF50;
     cursor: pointer;
     font-size: 1.2em;
     display: flex;
     align-items: center;
     justify-content: center;
+    border-radius: 10px;
+    transition: background-color 0.3s, color 0.3s;
 }
 
 .add-column-btn:hover {
-    background-color: #1976D2;
+    background-color: #4CAF50;
+    color: white;
 }
 
 .quantity-control {

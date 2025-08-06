@@ -254,7 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="facilities-container"></div>
                     <button class="remove-column-btn">X</button>
                 </div>
-                <button class="add-column-btn">Add Column</button>
+                <button class="add-column-btn">+ column</button>
             </div>
         `;
 
