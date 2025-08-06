@@ -240,6 +240,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     <ul class="leftover-list"></ul>
                 </div>
                 <button class="change-color-btn"><img src="icons/change_color_black.png" alt="Change Color"></button>
+                <div class="color-palette">
+                    <div class="color-swatch" data-color="#F43535"></div>
+                    <div class="color-swatch" data-color="#4CAF50"></div>
+                    <div class="color-swatch" data-color="#2196F3"></div>
+                    <div class="color-swatch" data-color="#FFC107"></div>
+                    <div class="color-swatch" data-color="#9C27B0"></div>
+                    <div class="color-swatch" data-color="#FF9800"></div>
+                    <div class="color-swatch" data-color="#009688"></div>
+                    <div class="color-swatch" data-color="#3F51B5"></div>
+                    <div class="color-swatch" data-color="#E91E63"></div>
+                    <div class="color-swatch" data-color="#795548"></div>
+                </div>
             </div>
             <div class="columns-container">
                 <div class="column" data-column-id="1">
@@ -259,6 +271,21 @@ document.addEventListener('DOMContentLoaded', () => {
         factoryLinesContainer.appendChild(factoryLineDiv);
 
         const removeFactoryLineBtn = factoryLineDiv.querySelector('.remove-factory-line-btn');
+        const changeColorBtn = factoryLineDiv.querySelector('.change-color-btn');
+        const colorPalette = factoryLineDiv.querySelector('.color-palette');
+
+        changeColorBtn.addEventListener('click', () => {
+            colorPalette.style.display = colorPalette.style.display === 'flex' ? 'none' : 'flex';
+        });
+
+        colorPalette.addEventListener('click', (e) => {
+            if (e.target.classList.contains('color-swatch')) {
+                const headerContainer = factoryLineDiv.querySelector('.header-container');
+                headerContainer.style.backgroundColor = e.target.dataset.color;
+                colorPalette.style.display = 'none';
+            }
+        });
+
         removeFactoryLineBtn.addEventListener('click', () => {
             if (confirm('Are you sure you want to remove this factory line?')) {
                 factoryLineDiv.remove();
