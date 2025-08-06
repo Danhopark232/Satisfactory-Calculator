@@ -235,6 +235,7 @@ h3 {
     border-radius: 10px;
     position: relative; /* Needed for absolute positioning of the close button */
     transition: height 0.3s ease;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .facility.collapsed {

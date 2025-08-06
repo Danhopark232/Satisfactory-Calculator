@@ -246,14 +246,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="column-handle"></div>
                     <button class="add-facility-btn">+</button>
                     <div class="facilities-container"></div>
-                    <button class="remove-column-btn">X</button>
-                </div>
+                    <button class="remove-column-btn">- column</button>                </div>
                 <div class="column" data-column-id="2">
                     <div class="column-handle"></div>
                     <button class="add-facility-btn">+</button>
                     <div class="facilities-container"></div>
-                    <button class="remove-column-btn">X</button>
-                </div>
+                    <button class="remove-column-btn">- column</button>                </div>
                 <button class="add-column-btn">+ column</button>
             </div>
         `;
