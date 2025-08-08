@@ -302,17 +302,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const addColumnBtn = factoryLineDiv.querySelector('.add-column-btn');
         const columnsContainer = factoryLineDiv.querySelector('.columns-container');
         addColumnBtn.addEventListener('click', () => {
-            console.log('Add Column button clicked!');
             const newColumn = document.createElement('div');
             newColumn.classList.add('column');
             newColumn.dataset.columnId = columnsContainer.querySelectorAll('.column').length + 1;
-            newColumn.innerHTML = '<div class="column-handle"></div><button class="add-facility-btn">+</button><div class="facilities-container"></div><button class="remove-column-btn">X</button>';
+            newColumn.innerHTML = '<div class="column-handle"></div><button class="add-facility-btn">+</button><div class="facilities-container"></div><button class="remove-column-btn">- column</button>';
             attachColumnEventListeners(newColumn); // Attach listeners to the new column
             columnsContainer.insertBefore(newColumn, addColumnBtn); // Insert before the addColumnBtn
-            setTimeout(() => {
-                makeColumnDraggable(newColumn); // Make new columns draggable after DOM is ready
-            }, 0);
-            console.log('New column inserted.', newColumn);
+            makeColumnDraggable(newColumn); // Make new columns draggable
             updateAllFactoryLines();
         });
 
@@ -392,212 +388,203 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Main update function for all factory lines
     function updateAllFactoryLines() {
-        let needsRecalculation = false; // Flag to re-run if facilities are added
-
-        document.querySelectorAll('.main-window').forEach(factoryLineDiv => {
-            const columns = factoryLineDiv.querySelectorAll('.column');
-            const totalDemands = {}; // Stores total demand for each material across the entire factory line
-
-            // First Pass: Collect all demands
-            columns.forEach(column => {
-                const facilities = column.querySelectorAll('.facility');
-                facilities.forEach(facilityDiv => {
-                    const facilitySelect = facilityDiv.querySelector('.facility-select');
-                    const outputSelect = facilityDiv.querySelector('.output-select');
-                    const quantityInput = facilityDiv.querySelector('.quantity-input');
-
-                    const selectedFacilityName = facilitySelect.value;
-                    const selectedOutputName = outputSelect.value;
-                    const quantity = parseInt(quantityInput.value);
-                    const puritySelect = facilityDiv.querySelector('.purity-select');
-                    const selectedPurity = puritySelect ? puritySelect.value : 'Normal';
-                    const purityMultiplier = purityMultipliers[selectedPurity] || 1.0;
-
-                    const facilityData = facilitiesData[selectedFacilityName];
-                    const recipe = facilityData ? facilityData.recipes[selectedOutputName] : null;
-
-                    if (recipe) {
-                        recipe.inputs.forEach(input => {
-                            totalDemands[input.item] = (totalDemands[input.item] || 0) + (input.rate * quantity);
-                        });
-                        // For outputs, consider the purity multiplier in the demand calculation if it's a miner
-                        if (selectedFacilityName.startsWith('Miner')) {
-                            recipe.outputs.forEach(output => {
-                                // This part is tricky: if a miner produces something, it's not a demand.
-                                // Demands are only for inputs of other buildings.
-                                // So, no change needed here for outputs.
-                            });
-                        }
-                    }
-                });
+        let needsRecalculation = true;
+        while (needsRecalculation) {
+            needsRecalculation = false;
+            document.querySelectorAll('.main-window').forEach(factoryLineDiv => {
+                if (recalculateFactoryLine(factoryLineDiv)) {
+                    needsRecalculation = true;
+                }
             });
+        }
+    }
 
-            const globalMaterialSupply = {}; // Tracks materials available from previous columns
-            const factoryLineLeftovers = {}; // For the factory line summary
+    function recalculateFactoryLine(factoryLineDiv) {
+        const columns = factoryLineDiv.querySelectorAll('.column');
+        const totalDemands = {}; // Stores total demand for each material across the entire factory line
+        const producedMaterials = new Set(); // Keep track of materials being produced
 
-            // Second Pass: Calculate supply, consumption, and balance
-            columns.forEach((column, columnIndex) => {
-                const facilities = column.querySelectorAll('.facility');
+        // First Pass: Collect all demands and produced materials
+        columns.forEach(column => {
+            const facilities = column.querySelectorAll('.facility');
+            facilities.forEach(facilityDiv => {
+                const facilitySelect = facilityDiv.querySelector('.facility-select');
+                const outputSelect = facilityDiv.querySelector('.output-select');
+                const quantityInput = facilityDiv.querySelector('.quantity-input');
 
-                facilities.forEach(facilityDiv => {
-                    const facilitySelect = facilityDiv.querySelector('.facility-select');
-                    const outputSelect = facilityDiv.querySelector('.output-select');
-                    const quantityInput = facilityDiv.querySelector('.quantity-input');
-                    const puritySelect = facilityDiv.querySelector('.purity-select');
-                    const facilityImageBox = facilityDiv.querySelector('.facility-image-box');
-                    const productImageBox = facilityDiv.querySelector('.product-image-box');
+                const selectedFacilityName = facilitySelect.value;
+                const selectedOutputName = outputSelect.value;
+                const quantity = parseInt(quantityInput.value);
 
-                    const selectedFacilityName = facilitySelect.value;
-                    const selectedOutputName = outputSelect.value;
-                    const quantity = parseInt(quantityInput.value);
-                    const selectedPurity = puritySelect ? puritySelect.value : 'Normal'; // Default to Normal
-                    const purityMultiplier = purityMultipliers[selectedPurity] || 1.0;
+                const facilityData = facilitiesData[selectedFacilityName];
+                const recipe = facilityData ? facilityData.recipes[selectedOutputName] : null;
 
-                    const facilityData = facilitiesData[selectedFacilityName];
-                    const recipe = facilityData ? facilityData.recipes[selectedOutputName] : null;
+                if (recipe) {
+                    recipe.inputs.forEach(input => {
+                        totalDemands[input.item] = (totalDemands[input.item] || 0) + (input.rate * quantity);
+                    });
+                    recipe.outputs.forEach(output => {
+                        producedMaterials.add(output.item);
+                    });
+                }
+            });
+        });
 
-                    const inputList = facilityDiv.querySelector('.input-list');
-                    const outputList = facilityDiv.querySelector('.output-list');
-                    const powerValueSpan = facilityDiv.querySelector('.power-value');
+        const globalMaterialSupply = {}; // Tracks materials available from previous columns
+        const factoryLineLeftovers = {}; // For the factory line summary
 
-                    inputList.innerHTML = ''; // Clear previous inputs
-                    outputList.innerHTML = ''; // Clear previous outputs
-                    // powerValueSpan.textContent = '0'; // This will be updated dynamically below
+        // Second Pass: Calculate supply, consumption, and balance
+        for (let columnIndex = 0; columnIndex < columns.length; columnIndex++) {
+            const column = columns[columnIndex];
+            const facilities = column.querySelectorAll('.facility');
 
-                    const facilityNameCollapsed = facilityDiv.querySelector('.facility-name-collapsed');
-                    const balanceCollapsed = facilityDiv.querySelector('.balance-collapsed');
-                    const facilityImageBoxCollapsed = facilityDiv.querySelector('.facility-image-box-collapsed');
-                    const productImageBoxCollapsed = facilityDiv.querySelector('.product-image-box-collapsed');
+            for (const facilityDiv of facilities) {
+                const facilitySelect = facilityDiv.querySelector('.facility-select');
+                const outputSelect = facilityDiv.querySelector('.output-select');
+                const quantityInput = facilityDiv.querySelector('.quantity-input');
+                const puritySelect = facilityDiv.querySelector('.purity-select');
+                const facilityImageBox = facilityDiv.querySelector('.facility-image-box');
+                const productImageBox = facilityDiv.querySelector('.product-image-box');
 
-                    // Set facility image
-                    facilityImageBox.style.backgroundImage = `url(${getImagePath(selectedFacilityName)})`;
+                const selectedFacilityName = facilitySelect.value;
+                const selectedOutputName = outputSelect.value;
+                const quantity = parseInt(quantityInput.value);
+                const selectedPurity = puritySelect ? puritySelect.value : 'Normal'; // Default to Normal
+                const purityMultiplier = purityMultipliers[selectedPurity] || 1.0;
 
-                    if (recipe) {
-                        // Update output dropdown for this facility (in case facility type changed)
-                        populateOutputSelect(facilitySelect, outputSelect);
-                        outputSelect.value = selectedOutputName; // Re-select current output
+                const facilityData = facilitiesData[selectedFacilityName];
+                const recipe = facilityData ? facilityData.recipes[selectedOutputName] : null;
 
-                        // Set product image
-                        if (recipe.outputs.length > 0) {
-                            productImageBox.style.backgroundImage = `url(${getImagePath(recipe.outputs[0].item)})`;
-                        } else {
-                            productImageBox.style.backgroundImage = 'none';
-                        }
+                const inputList = facilityDiv.querySelector('.input-list');
+                const outputList = facilityDiv.querySelector('.output-list');
+                const powerValueSpan = facilityDiv.querySelector('.power-value');
 
-                        // --- Process Inputs ---
-                        recipe.inputs.forEach(input => {
-                            const totalNeeded = input.rate * quantity;
-                            const available = globalMaterialSupply[input.item] || 0;
-                            const consumed = Math.min(totalNeeded, available);
-                            const balance = available - totalNeeded;
+                inputList.innerHTML = ''; // Clear previous inputs
+                outputList.innerHTML = ''; // Clear previous outputs
 
-                            globalMaterialSupply[input.item] = balance; // Update pool with remaining material
+                const facilityNameCollapsed = facilityDiv.querySelector('.facility-name-collapsed');
+                const balanceCollapsed = facilityDiv.querySelector('.balance-collapsed');
+                const facilityImageBoxCollapsed = facilityDiv.querySelector('.facility-image-box-collapsed');
+                const productImageBoxCollapsed = facilityDiv.querySelector('.product-image-box-collapsed');
 
-                            const li = document.createElement('li');
-                            li.classList.add('input-item');
-                            li.innerHTML = `<span class="item-name">${input.item}</span><span class="item-usage">(${input.rate}/min) ${totalNeeded}/min</span>`;
-                            inputList.appendChild(li);
+                facilityImageBox.style.backgroundImage = `url(${getImagePath(selectedFacilityName)})`;
 
-                            // Auto-fill logic
-                            if (balance < 0) { // If there's a deficit
-                                const producer = findProducerRecipe(input.item);
-                                if (producer) {
-                                    if (columnIndex > 0) { // and not the first column
+                if (recipe) {
+                    populateOutputSelect(facilitySelect, outputSelect);
+                    outputSelect.value = selectedOutputName;
+
+                    if (recipe.outputs.length > 0) {
+                        productImageBox.style.backgroundImage = `url(${getImagePath(recipe.outputs[0].item)})`;
+                    } else {
+                        productImageBox.style.backgroundImage = 'none';
+                    }
+
+                    for (const input of recipe.inputs) {
+                        const totalNeeded = input.rate * quantity;
+                        const available = globalMaterialSupply[input.item] || 0;
+                        const consumed = Math.min(totalNeeded, available);
+                        const balance = available - totalNeeded;
+
+                        globalMaterialSupply[input.item] = balance;
+
+                        const li = document.createElement('li');
+                        li.classList.add('input-item');
+                        li.innerHTML = `<span class="item-name">${input.item}</span><span class="item-usage">(${input.rate}/min) ${totalNeeded}/min</span>`;
+                        inputList.appendChild(li);
+
+                        if (balance < 0 && !producedMaterials.has(input.item)) {
+                            const producer = findProducerRecipe(input.item);
+                            if (producer) {
+                                let producerExists = false;
+                                for (let i = 0; i < columnIndex; i++) {
+                                    const prevColumn = columns[i];
+                                    if (Array.from(prevColumn.querySelectorAll('.facility')).some(facDiv =>
+                                        facDiv.querySelector('.facility-select').value === producer.facilityName &&
+                                        facDiv.querySelector('.output-select').value === producer.recipeName
+                                    )) {
+                                        producerExists = true;
+                                        break;
+                                    }
+                                }
+
+                                if (!producerExists) {
+                                    if (columnIndex > 0) {
                                         const prevColumn = columns[columnIndex - 1];
-                                        // Check if this producer already exists in the previous column
-                                        const producerExists = Array.from(prevColumn.querySelectorAll('.facility')).some(facDiv => {
-                                            return facDiv.querySelector('.facility-select').value === producer.facilityName &&
-                                                   facDiv.querySelector('.output-select').value === producer.recipeName;
-                                        });
-                                        if (!producerExists) {
-                                            addFacilityToColumn(prevColumn, producer.facilityName, producer.recipeName);
-                                            needsRecalculation = true; // Mark for re-run
-                                        }
-                                    } else { // It's the first column, so create a new one
+                                        addFacilityToColumn(prevColumn, producer.facilityName, producer.recipeName);
+                                        return true;
+                                    } else {
                                         const columnsContainer = column.closest('.columns-container');
                                         const newColumn = document.createElement('div');
                                         newColumn.classList.add('column');
-                                        newColumn.dataset.columnId = columnsContainer.querySelectorAll('.column').length + 1; // This might need adjustment
+                                        newColumn.dataset.columnId = columnsContainer.querySelectorAll('.column').length + 1;
                                         newColumn.innerHTML = '<div class="column-handle"></div><button class="add-facility-btn">+</button><div class="facilities-container"></div><button class="remove-column-btn">- column</button>';
                                         attachColumnEventListeners(newColumn);
                                         columnsContainer.insertBefore(newColumn, column);
-                                        setTimeout(() => {
-                                            makeColumnDraggable(newColumn);
-                                        }, 0);
+                                        makeColumnDraggable(newColumn);
                                         addFacilityToColumn(newColumn, producer.facilityName, producer.recipeName);
-                                        needsRecalculation = true; // Mark for re-run
+                                        return true;
                                     }
                                 }
                             }
+                        }
 
-                            // For overall factory line summary, inputs are negative
-                            factoryLineLeftovers[input.item] = (factoryLineLeftovers[input.item] || 0) - totalNeeded;
-                        });
-
-                        // --- Process Outputs ---
-                        recipe.outputs.forEach(output => {
-                            const totalProduced = output.rate * quantity * purityMultiplier; // Apply purity multiplier here
-                            globalMaterialSupply[output.item] = (globalMaterialSupply[output.item] || 0) + totalProduced; // Add to pool
-
-                            // Calculate consumption for this specific output from totalDemands
-                            // This is the total demand for this item across the entire line
-                            const outputConsumption = totalDemands[output.item] || 0;
-                            const outputBalance = totalProduced - outputConsumption;
-
-                            facilityNameCollapsed.textContent = selectedFacilityName;
-                            balanceCollapsed.textContent = `${outputBalance}/min`;
-                            facilityImageBoxCollapsed.style.backgroundImage = `url(${getImagePath(selectedFacilityName)})`;
-                            if (recipe.outputs.length > 0) {
-                                productImageBoxCollapsed.style.backgroundImage = `url(${getImagePath(recipe.outputs[0].item)})`;
-                            } else {
-                                productImageBoxCollapsed.style.backgroundImage = 'none';
-                            }
-
-                            const li = document.createElement('li');
-                            li.classList.add('output-item');
-                            li.innerHTML = `<span class="item-name">${output.item}</span><span class="item-usage">(${output.rate * purityMultiplier}/min) ${totalProduced}/min</span>`;
-                            outputList.appendChild(li);
-
-                            const consumptionLi = document.createElement('li');
-                            consumptionLi.classList.add('output-item');
-                            consumptionLi.innerHTML = `<span class="item-name">Consumption</span><span class="item-usage">${outputConsumption}/min</span>`;
-                            outputList.appendChild(consumptionLi);
-
-                            const balanceLi = document.createElement('li');
-                            balanceLi.classList.add('output-item');
-                            balanceLi.innerHTML = `<span class="item-name">Balance</span><span class="item-usage">${outputBalance}/min</span>`;
-                            outputList.appendChild(balanceLi);
-
-                            // For overall factory line summary, outputs are positive
-                            factoryLineLeftovers[output.item] = (factoryLineLeftovers[output.item] || 0) + totalProduced;
-                        });
-
-                        // --- Power ---
-                        powerValueSpan.textContent = `${facilityData.powerUsage} MW / ${facilityData.powerUsage * quantity} MW`;
+                        factoryLineLeftovers[input.item] = (factoryLineLeftovers[input.item] || 0) - totalNeeded;
                     }
-                });
-            });
 
-            const leftoverList = factoryLineDiv.querySelector('.leftover-list');
-            leftoverList.innerHTML = '';
-            for (const item in factoryLineLeftovers) {
-                if (factoryLineLeftovers[item] > 0) {
-                    const li = document.createElement('li');
-                    const img = document.createElement('img');
-                    img.src = getImagePath(item);
-                    const balanceSpan = document.createElement('span');
-                    balanceSpan.textContent = factoryLineLeftovers[item];
-                    li.appendChild(img);
-                    li.appendChild(balanceSpan);
-                    leftoverList.appendChild(li);
+                    recipe.outputs.forEach(output => {
+                        const totalProduced = output.rate * quantity * purityMultiplier;
+                        globalMaterialSupply[output.item] = (globalMaterialSupply[output.item] || 0) + totalProduced;
+
+                        const outputConsumption = totalDemands[output.item] || 0;
+                        const outputBalance = totalProduced - outputConsumption;
+
+                        facilityNameCollapsed.textContent = selectedFacilityName;
+                        balanceCollapsed.textContent = `${outputBalance}/min`;
+                        facilityImageBoxCollapsed.style.backgroundImage = `url(${getImagePath(selectedFacilityName)})`;
+                        if (recipe.outputs.length > 0) {
+                            productImageBoxCollapsed.style.backgroundImage = `url(${getImagePath(recipe.outputs[0].item)})`;
+                        } else {
+                            productImageBoxCollapsed.style.backgroundImage = 'none';
+                        }
+
+                        const li = document.createElement('li');
+                        li.classList.add('output-item');
+                        li.innerHTML = `<span class="item-name">${output.item}</span><span class="item-usage">(${output.rate * purityMultiplier}/min) ${totalProduced}/min</span>`;
+                        outputList.appendChild(li);
+
+                        const consumptionLi = document.createElement('li');
+                        consumptionLi.classList.add('output-item');
+                        consumptionLi.innerHTML = `<span class="item-name">Consumption</span><span class="item-usage">${outputConsumption}/min</span>`;
+                        outputList.appendChild(consumptionLi);
+
+                        const balanceLi = document.createElement('li');
+                        balanceLi.classList.add('output-item');
+                        balanceLi.innerHTML = `<span class="item-name">Balance</span><span class="item-usage">${outputBalance}/min</span>`;
+                        outputList.appendChild(balanceLi);
+
+                        factoryLineLeftovers[output.item] = (factoryLineLeftovers[output.item] || 0) + totalProduced;
+                    });
+
+                    powerValueSpan.textContent = `${facilityData.powerUsage} MW / ${facilityData.powerUsage * quantity} MW`;
                 }
             }
-        });
-
-        if (needsRecalculation) {
-            // Use setTimeout to allow DOM updates before re-running
-            setTimeout(updateAllFactoryLines, 0);
         }
+
+        const leftoverList = factoryLineDiv.querySelector('.leftover-list');
+        leftoverList.innerHTML = '';
+        for (const item in factoryLineLeftovers) {
+            if (factoryLineLeftovers[item] > 0) {
+                const li = document.createElement('li');
+                const img = document.createElement('img');
+                img.src = getImagePath(item);
+                const balanceSpan = document.createElement('span');
+                balanceSpan.textContent = factoryLineLeftovers[item];
+                li.appendChild(img);
+                li.appendChild(balanceSpan);
+                leftoverList.appendChild(li);
+            }
+        }
+        return false;
     }
 
     // Add event listener for adding new factory lines
