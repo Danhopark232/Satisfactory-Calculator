@@ -2286,6 +2286,67 @@ const facilitiesData = {
             }
         }
     },
+    "Smelter": {
+        "powerUsage": 0,
+        "recipes": {
+            "Caterium Ingot": {
+                "inputs": [
+                    {
+                        "item": "Caterium Ore",
+                        "rate": 45.0
+                    }
+                ],
+                "outputs": [
+                    {
+                        "item": "Caterium Ingot",
+                        "rate": 15.0
+                    }
+                ]
+            },
+            "Copper Ingot": {
+                "inputs": [
+                    {
+                        "item": "Copper Ore",
+                        "rate": 30.0
+                    }
+                ],
+                "outputs": [
+                    {
+                        "item": "Copper Ingot",
+                        "rate": 30.0
+                    }
+                ]
+            },
+            "Iron Ingot": {
+                "inputs": [
+                    {
+                        "item": "Iron Ore",
+                        "rate": 30.0
+                    }
+                ],
+                "outputs": [
+                    {
+                        "item": "Iron Ingot",
+                        "rate": 30.0
+                    }
+                ]
+            },
+            "Alternate (Alternate)": {
+                "inputs": [
+                    {
+                        "item": "Aluminum Scrap",
+                        "rate": 60.0
+                    }
+                ],
+                "outputs": [
+                    {
+                        "item": "Aluminum Ingot",
+                        "rate": 30.0
+                    }
+                ]
+            }
+        }
+    },
     "Foundry": {
         "powerUsage": 0,
         "recipes": {
@@ -2400,67 +2461,6 @@ const facilitiesData = {
                     {
                         "item": "Copper Ingot",
                         "rate": 70.0
-                    }
-                ]
-            }
-        }
-    },
-    "Smelter": {
-        "powerUsage": 0,
-        "recipes": {
-            "Caterium Ingot": {
-                "inputs": [
-                    {
-                        "item": "Caterium Ore",
-                        "rate": 45.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Caterium Ingot",
-                        "rate": 15.0
-                    }
-                ]
-            },
-            "Copper Ingot": {
-                "inputs": [
-                    {
-                        "item": "Copper Ore",
-                        "rate": 30.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Copper Ingot",
-                        "rate": 30.0
-                    }
-                ]
-            },
-            "Iron Ingot": {
-                "inputs": [
-                    {
-                        "item": "Iron Ore",
-                        "rate": 30.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Iron Ingot",
-                        "rate": 30.0
-                    }
-                ]
-            },
-            "Alternate (Alternate)": {
-                "inputs": [
-                    {
-                        "item": "Aluminum Scrap",
-                        "rate": 60.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Aluminum Ingot",
-                        "rate": 30.0
                     }
                 ]
             }
