@@ -242,15 +242,26 @@ h3 {
 }
 
 .facility.collapsed {
-    height: 100px;
+    height: 130px; /* Adjusted height for new layout */
 }
 
 .facility.collapsed .facility-header,
 .facility.collapsed .purity-control,
-.facility.collapsed .quantity-control,
 .facility.collapsed .materials-display,
 .facility.collapsed .power-display {
     display: none;
+}
+
+.facility.collapsed .quantity-control {
+    display: none;
+}
+
+.facility.collapsed .collapsed-quantity-control {
+    display: flex;
+}
+
+.collapsed-quantity-control {
+    display: none; /* Hidden by default */
 }
 
 .facility.collapsed .image-container {
@@ -288,6 +299,47 @@ h3 {
 
 .collapsed-info {
     display: none;
+}
+
+.collapsed-quantity-control {
+    display: none; /* Hidden by default */
+    width: 100%;
+    margin-top: 10px; /* Space from image boxes */
+}
+
+.collapsed-quantity-control .quantity-input {
+    width: 45%;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 0;
+    padding: 0 5px; /* Reduced padding */
+    outline: none;
+    height: 24px; /* Reduced height */
+    box-sizing: border-box;
+    font-size: 0.8em; /* Reduced font size */
+}
+
+.collapsed-quantity-control .quantity-btn {
+    flex-grow: 1;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    padding: 0 5px; /* Reduced padding */
+    cursor: pointer;
+    font-size: 0.8em; /* Reduced font size */
+    height: 24px; /* Reduced height */
+    box-sizing: border-box;
+}
+
+.collapsed-quantity-control .quantity-btn.minus {
+    border-top-left-radius: 12px; /* Half of height */
+    border-bottom-left-radius: 12px;
+    margin-right: -1px;
+}
+
+.collapsed-quantity-control .quantity-btn.plus {
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
+    margin-left: -1px;
 }
 
 .image-container {

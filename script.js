@@ -78,6 +78,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="product-image-box-collapsed"></div>
                 </div>
             </div>
+            <div class="collapsed-quantity-control">
+                <button class="quantity-btn minus">-</button>
+                <input type="number" class="quantity-input" value="${initialQuantity}" min="1">
+                <button class="quantity-btn plus">+</button>
+            </div>
             <div class="image-container">
                 <div class="facility-image-box"></div>
                 <div class="product-image-box"></div>
@@ -119,6 +124,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const puritySelect = facilityDiv.querySelector('.purity-select');
         const facilityImageBox = facilityDiv.querySelector('.facility-image-box');
         const productImageBox = facilityDiv.querySelector('.product-image-box');
+
+        // Collapsed quantity control elements
+        const collapsedQuantityInput = facilityDiv.querySelector('.collapsed-quantity-control .quantity-input');
+        const collapsedMinusBtn = facilityDiv.querySelector('.collapsed-quantity-control .quantity-btn.minus');
+        const collapsedPlusBtn = facilityDiv.querySelector('.collapsed-quantity-control .quantity-btn.plus');
 
         // Drag and Drop Event Listeners for facilities
         facilityDiv.addEventListener('dragstart', (e) => {
@@ -200,17 +210,43 @@ document.addEventListener('DOMContentLoaded', () => {
             updateAllFactoryLines();
         });
         outputSelect.addEventListener('change', updateAllFactoryLines);
-        quantityInput.addEventListener('change', updateAllFactoryLines);
+
+        // Main quantity control event listeners
+        quantityInput.addEventListener('change', () => {
+            collapsedQuantityInput.value = quantityInput.value; // Sync collapsed input
+            updateAllFactoryLines();
+        });
         minusBtn.addEventListener('click', () => {
             if (parseInt(quantityInput.value) > 1) {
                 quantityInput.value = parseInt(quantityInput.value) - 1;
+                collapsedQuantityInput.value = quantityInput.value; // Sync collapsed input
                 updateAllFactoryLines();
             }
         });
         plusBtn.addEventListener('click', () => {
             quantityInput.value = parseInt(quantityInput.value) + 1;
+            collapsedQuantityInput.value = quantityInput.value; // Sync collapsed input
             updateAllFactoryLines();
         });
+
+        // Collapsed quantity control event listeners
+        collapsedQuantityInput.addEventListener('change', () => {
+            quantityInput.value = collapsedQuantityInput.value; // Sync main input
+            updateAllFactoryLines();
+        });
+        collapsedMinusBtn.addEventListener('click', () => {
+            if (parseInt(collapsedQuantityInput.value) > 1) {
+                collapsedQuantityInput.value = parseInt(collapsedQuantityInput.value) - 1;
+                quantityInput.value = collapsedQuantityInput.value; // Sync main input
+                updateAllFactoryLines();
+            }
+        });
+        collapsedPlusBtn.addEventListener('click', () => {
+            collapsedQuantityInput.value = parseInt(collapsedQuantityInput.value) + 1;
+            quantityInput.value = collapsedQuantityInput.value; // Sync main input
+            updateAllFactoryLines();
+        });
+
         puritySelect.addEventListener('change', updateAllFactoryLines); // New event listener for purity
 
         removeBtn.addEventListener('click', () => {
