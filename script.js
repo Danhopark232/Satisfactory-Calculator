@@ -260,6 +260,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <h3>Summary:</h3>
                     <ul class="leftover-list"></ul>
                 </div>
+                <button class="toggle-all-facilities-btn"><img src="icons/CollapseArrowup.png" alt="Toggle All"></button>
                 <button class="change-color-btn"><img src="icons/change_color_black.png" alt="Change Color"></button>
                 <div class="color-palette">
                     <div class="color-swatch" data-color="#F43535"></div>
@@ -293,6 +294,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const removeFactoryLineBtn = factoryLineDiv.querySelector('.remove-factory-line-btn');
         const changeColorBtn = factoryLineDiv.querySelector('.change-color-btn');
+        const toggleAllFacilitiesBtn = factoryLineDiv.querySelector('.toggle-all-facilities-btn');
         const colorPalette = factoryLineDiv.querySelector('.color-palette');
 
         changeColorBtn.addEventListener('click', () => {
@@ -310,6 +312,48 @@ document.addEventListener('DOMContentLoaded', () => {
         removeFactoryLineBtn.addEventListener('click', () => {
             if (confirm('Are you sure you want to remove this factory line?')) {
                 factoryLineDiv.remove();
+            }
+        });
+
+        toggleAllFacilitiesBtn.addEventListener('click', () => {
+            const allFacilities = factoryLineDiv.querySelectorAll('.facility');
+            let allCollapsed = true;
+
+            // Check if all facilities are already collapsed
+            allFacilities.forEach(facility => {
+                if (!facility.classList.contains('collapsed')) {
+                    allCollapsed = false;
+                }
+            });
+
+            allFacilities.forEach(facility => {
+                const collapseBtn = facility.querySelector('.collapse-btn');
+                const collapseImg = collapseBtn.querySelector('img');
+                const facilitySelect = facility.querySelector('.facility-select');
+                const purityControl = facility.querySelector('.purity-control');
+                const isMiner = facilitySelect.value.startsWith('Miner');
+
+                if (allCollapsed) {
+                    // Expand all
+                    facility.classList.remove('collapsed');
+                    collapseImg.src = 'icons/CollapseArrowup.png';
+                    if (isMiner) {
+                        purityControl.style.display = 'block';
+                    }
+                } else {
+                    // Collapse all
+                    facility.classList.add('collapsed');
+                    collapseImg.src = 'icons/CollapseArrowdown.png';
+                    purityControl.style.display = 'none';
+                }
+            });
+
+            // Update the toggle button icon
+            const toggleImg = toggleAllFacilitiesBtn.querySelector('img');
+            if (allCollapsed) {
+                toggleImg.src = 'icons/CollapseArrowup.png'; // All expanded, show up arrow
+            } else {
+                toggleImg.src = 'icons/CollapseArrowdown.png'; // All collapsed, show down arrow
             }
         });
 
