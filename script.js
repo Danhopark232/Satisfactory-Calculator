@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Function to create a new facility element
-    function createFacilityElement(initialFacility = null, initialRecipe = null) {
+    function createFacilityElement(initialFacility = null, initialRecipe = null, initialQuantity = 1) {
         const facilityDiv = document.createElement('div');
         facilityDiv.classList.add('facility');
         facilityDiv.setAttribute('draggable', 'true'); // Make facility draggable
@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
             <div class="quantity-control">
                 <button class="quantity-btn minus">-</button>
-                <input type="number" class="quantity-input" value="1" min="1">
+                <input type="number" class="quantity-input" value="${initialQuantity}" min="1">
                 <button class="quantity-btn plus">+</button>
             </div>
             <div class="materials-display">
@@ -222,8 +222,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Function to add a facility to a specific column
-    function addFacilityToColumn(columnElement, initialFacility = null, initialRecipe = null) {
-        const facilityElement = createFacilityElement(initialFacility, initialRecipe);
+    function addFacilityToColumn(columnElement, initialFacility = null, initialRecipe = null, requiredQuantity = 1) {
+        const facilityElement = createFacilityElement(initialFacility, initialRecipe, requiredQuantity);
         columnElement.querySelector('.facilities-container').appendChild(facilityElement);
         updateAllFactoryLines(); // Trigger update after adding a new facility - will be called by auto-fill
     }
@@ -623,9 +623,31 @@ document.addEventListener('DOMContentLoaded', () => {
                                 if (!producerExists) {
                                     // Only auto-add if not currently dragging a facility
                                     if (!isDraggingFacility) {
+                                        // Calculate required quantity
+                                        let calculatedQuantity = 1; // Default to 1
+                                        const producerFacilityData = facilitiesData[producer.facilityName];
+                                        const producerRecipe = producerFacilityData.recipes[producer.recipeName];
+                                        const producerOutput = producerRecipe.outputs.find(output => output.item === input.item);
+
+                                        if (producerOutput) {
+                                                    const producerOutputRate = producerOutput.rate;
+                                                    if (producerOutputRate > 0) {
+                                                        // Use the overall deficit of the input.item
+                                                        const overallDeficit = totalDemands[input.item] - (globalMaterialSupply[input.item] || 0);
+                                                        if (overallDeficit > 0) { // Only calculate if there's an actual deficit
+                                                            calculatedQuantity = Math.ceil(overallDeficit / producerOutputRate);
+                                                        }
+                                                    }
+                                                }
+
+                                        // Exclude Miners from auto-quantity adjustment
+                                        if (producer.facilityName.startsWith('Miner')) {
+                                            calculatedQuantity = 1;
+                                        }
+
                                         if (columnIndex > 0) {
                                             const prevColumn = columns[columnIndex - 1];
-                                            addFacilityToColumn(prevColumn, producer.facilityName, producer.recipeName);
+                                            addFacilityToColumn(prevColumn, producer.facilityName, producer.recipeName, calculatedQuantity);
                                             return true;
                                         } else {
                                             const columnsContainer = column.closest('.columns-container');
@@ -636,7 +658,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                             attachColumnEventListeners(newColumn);
                                             columnsContainer.insertBefore(newColumn, column);
                                             makeColumnDraggable(newColumn);
-                                            addFacilityToColumn(newColumn, producer.facilityName, producer.recipeName);
+                                            addFacilityToColumn(newColumn, producer.facilityName, producer.recipeName, calculatedQuantity);
                                             return true;
                                         }
                                     }
