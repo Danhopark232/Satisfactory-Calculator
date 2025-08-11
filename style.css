@@ -22,7 +22,7 @@ body {
     width: 75%;
     max-width: 1200px; /* Optional: set a max-width for very large screens */
     min-width: 800px; /* Optional: set a min-width */
-    height: 700px; /* Initial height */
+    height: 900px; /* Initial height */
     resize: vertical; /* Allow vertical resizing */
     overflow: hidden; /* Hide overflow initially, columns will scroll */
     background-color: #fff;
@@ -192,7 +192,7 @@ h3 {
 
 .facilities-container {
     flex-grow: 1; /* Allows facilities to take up available space */
-    min-height: 100px; /* Ensure droppable area even when empty */
+    min-height: 0px; /* Ensure droppable area even when empty */
 }
 
 .add-facility-btn {
