@@ -654,6 +654,19 @@ document.addEventListener('DOMContentLoaded', () => {
                         const outputConsumption = totalDemands[output.item] || 0;
                         const outputBalance = totalProduced - outputConsumption;
 
+                        // Change background color based on outputBalance
+                        if (outputBalance < 0) {
+                            facilityImageBox.style.backgroundColor = '#F43535';
+                            productImageBox.style.backgroundColor = '#F43535';
+                            facilityImageBoxCollapsed.style.backgroundColor = '#F43535';
+                            productImageBoxCollapsed.style.backgroundColor = '#F43535';
+                        } else {
+                            facilityImageBox.style.backgroundColor = '#eee';
+                            productImageBox.style.backgroundColor = '#eee';
+                            facilityImageBoxCollapsed.style.backgroundColor = '#eee';
+                            productImageBoxCollapsed.style.backgroundColor = '#eee';
+                        }
+
                         facilityNameCollapsed.textContent = selectedFacilityName;
                         balanceCollapsed.textContent = `${outputBalance}/min`;
                         facilityImageBoxCollapsed.style.backgroundImage = `url(${getImagePath(selectedFacilityName)})`;
