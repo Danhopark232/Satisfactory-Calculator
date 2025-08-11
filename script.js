@@ -61,6 +61,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function createFacilityElement(initialFacility = null, initialRecipe = null) {
         const facilityDiv = document.createElement('div');
         facilityDiv.classList.add('facility');
+        facilityDiv.setAttribute('draggable', 'true'); // Make facility draggable
+        facilityDiv.dataset.facilityId = `facility-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`; // Unique ID
         facilityDiv.innerHTML = `
             <div class="facility-top-bar">
                 <div class="collapse-btn"><img src="icons/CollapseArrowup.png" alt="Collapse"></div>
@@ -117,6 +119,25 @@ document.addEventListener('DOMContentLoaded', () => {
         const puritySelect = facilityDiv.querySelector('.purity-select');
         const facilityImageBox = facilityDiv.querySelector('.facility-image-box');
         const productImageBox = facilityDiv.querySelector('.product-image-box');
+
+        // Drag and Drop Event Listeners for facilities
+        facilityDiv.addEventListener('dragstart', (e) => {
+            e.stopPropagation(); // Prevent column drag from starting
+            draggedFacility = facilityDiv;
+            isDraggingFacility = true; // Set flag to true
+            setTimeout(() => {
+                facilityDiv.classList.add('dragging');
+            }, 0);
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', facilityDiv.dataset.facilityId); // Use ID for data transfer
+        });
+
+        facilityDiv.addEventListener('dragend', () => {
+            facilityDiv.classList.remove('dragging');
+            draggedFacility = null;
+            isDraggingFacility = false; // Reset flag
+            updateAllFactoryLines(); // Trigger update after drag ends
+        });
 
         // Populate facility dropdown
         const defaultOption = document.createElement('option');
@@ -296,6 +317,7 @@ document.addEventListener('DOMContentLoaded', () => {
         factoryLineDiv.querySelectorAll('.column').forEach(column => {
             attachColumnEventListeners(column);
             makeColumnDraggable(column); // Make columns draggable
+            makeFacilitiesContainerDroppable(column.querySelector('.facilities-container')); // Make facilities container droppable
         });
 
         // Attach event listener for adding new columns to the button within this factory line
@@ -309,6 +331,7 @@ document.addEventListener('DOMContentLoaded', () => {
             attachColumnEventListeners(newColumn); // Attach listeners to the new column
             columnsContainer.insertBefore(newColumn, addColumnBtn); // Insert before the addColumnBtn
             makeColumnDraggable(newColumn); // Make new columns draggable
+            makeFacilitiesContainerDroppable(newColumn.querySelector('.facilities-container')); // Make new facilities container droppable
             updateAllFactoryLines();
         });
 
@@ -316,6 +339,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     let draggedColumn = null;
+    let draggedFacility = null; // Global variable to store the currently dragged facility
+    let isDraggingFacility = false; // Flag to control updates during drag
+
+    function getDragAfterFacility(container, y) {
+        const draggableFacilities = [...container.querySelectorAll('.facility:not(.dragging)')];
+
+        return draggableFacilities.reduce((closest, child) => {
+            const box = child.getBoundingClientRect();
+            const offset = y - box.top - box.height / 2;
+            if (offset < 0 && offset > closest.offset) {
+                return { offset: offset, element: child };
+            } else {
+                return closest;
+            }
+        }, { offset: -Infinity }).element;
+    }
 
     function makeColumnDraggable(column) {
         console.log('makeColumnDraggable called for column:', column);
@@ -372,6 +411,34 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    function makeFacilitiesContainerDroppable(container) {
+        container.addEventListener('dragover', (e) => {
+            e.preventDefault(); // Allow drop
+            const draggingFacility = document.querySelector('.facility.dragging');
+            if (draggingFacility && draggingFacility.closest('.facilities-container') !== container) {
+                container.classList.add('drag-over');
+            }
+        });
+
+        container.addEventListener('dragleave', (e) => {
+            container.classList.remove('drag-over');
+        });
+
+        container.addEventListener('drop', (e) => {
+            e.preventDefault();
+            container.classList.remove('drag-over');
+            if (draggedFacility) {
+                const afterElement = getDragAfterFacility(container, e.clientY);
+                if (afterElement == null) {
+                    container.appendChild(draggedFacility);
+                } else {
+                    container.insertBefore(draggedFacility, afterElement);
+                }
+                updateAllFactoryLines(); // Re-calculate after reordering
+            }
+        });
+    }
+
     function getDragAfterElement(container, x) {
         const draggableColumns = [...container.querySelectorAll('.column:not(.dragging)')];
 
@@ -388,6 +455,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Main update function for all factory lines
     function updateAllFactoryLines() {
+        if (isDraggingFacility) return; // Prevent updates during facility drag
+
         let needsRecalculation = true;
         while (needsRecalculation) {
             needsRecalculation = false;
@@ -508,21 +577,24 @@ document.addEventListener('DOMContentLoaded', () => {
                                 }
 
                                 if (!producerExists) {
-                                    if (columnIndex > 0) {
-                                        const prevColumn = columns[columnIndex - 1];
-                                        addFacilityToColumn(prevColumn, producer.facilityName, producer.recipeName);
-                                        return true;
-                                    } else {
-                                        const columnsContainer = column.closest('.columns-container');
-                                        const newColumn = document.createElement('div');
-                                        newColumn.classList.add('column');
-                                        newColumn.dataset.columnId = columnsContainer.querySelectorAll('.column').length + 1;
-                                        newColumn.innerHTML = '<div class="column-handle"></div><button class="add-facility-btn">+</button><div class="facilities-container"></div><button class="remove-column-btn">- column</button>';
-                                        attachColumnEventListeners(newColumn);
-                                        columnsContainer.insertBefore(newColumn, column);
-                                        makeColumnDraggable(newColumn);
-                                        addFacilityToColumn(newColumn, producer.facilityName, producer.recipeName);
-                                        return true;
+                                    // Only auto-add if not currently dragging a facility
+                                    if (!isDraggingFacility) {
+                                        if (columnIndex > 0) {
+                                            const prevColumn = columns[columnIndex - 1];
+                                            addFacilityToColumn(prevColumn, producer.facilityName, producer.recipeName);
+                                            return true;
+                                        } else {
+                                            const columnsContainer = column.closest('.columns-container');
+                                            const newColumn = document.createElement('div');
+                                            newColumn.classList.add('column');
+                                            newColumn.dataset.columnId = columnsContainer.querySelectorAll('.column').length + 1;
+                                            newColumn.innerHTML = '<div class="column-handle"></div><button class="add-facility-btn">+</button><div class="facilities-container"></div><button class="remove-column-btn">- column</button>';
+                                            attachColumnEventListeners(newColumn);
+                                            columnsContainer.insertBefore(newColumn, column);
+                                            makeColumnDraggable(newColumn);
+                                            addFacilityToColumn(newColumn, producer.facilityName, producer.recipeName);
+                                            return true;
+                                        }
                                     }
                                 }
                             }

@@ -192,6 +192,7 @@ h3 {
 
 .facilities-container {
     flex-grow: 1; /* Allows facilities to take up available space */
+    min-height: 100px; /* Ensure droppable area even when empty */
 }
 
 .add-facility-btn {
@@ -508,3 +509,13 @@ ul.output-list li {
 .color-swatch[data-color="#3F51B5"] { background-color: #3F51B5; }
 .color-swatch[data-color="#E91E63"] { background-color: #E91E63; }
 .color-swatch[data-color="#795548"] { background-color: #795548; }
+
+/* Drag and Drop Styles for Facilities */
+.facility.dragging {
+    opacity: 0.4;
+}
+
+.facilities-container.drag-over {
+    border: 2px dashed #007B9E;
+    background-color: #e0f7fa; /* Light blue background */
+}
