@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
         facilityDiv.dataset.facilityId = `facility-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`; // Unique ID
         facilityDiv.innerHTML = `
             <div class="facility-top-bar">
-                <div class="collapse-btn"><img src="icons/CollapseArrowup.png" alt="Collapse"></div>
+                <div class="collapse-btn"><img src="icons/collapsearrowup.png" alt="Collapse"></div>
                 <button class="remove-facility-btn"><img src="icons/x.png" alt="Remove"></button>
             </div>
             <div class="collapsed-info">
@@ -189,10 +189,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const isMiner = facilitySelect.value.startsWith('Miner');
 
             if (facilityDiv.classList.contains('collapsed')) {
-                collapseImg.src = 'icons/CollapseArrowdown.png';
+                collapseImg.src = 'icons/collapsearrowdown.png';
                 purityControl.style.display = 'none';
             } else {
-                collapseImg.src = 'icons/CollapseArrowup.png';
+                collapseImg.src = 'icons/collapsearrowup.png';
                 if (isMiner) {
                     purityControl.style.display = 'block';
                 } else {
@@ -296,7 +296,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <h3>Summary:</h3>
                     <ul class="leftover-list"></ul>
                 </div>
-                <button class="toggle-all-facilities-btn"><img src="icons/CollapseArrowup.png" alt="Toggle All"></button>
+                <button class="toggle-all-facilities-btn"><img src="icons/collapsearrowup.png" alt="Toggle All"></button>
                 <button class="change-color-btn"><img src="icons/change_color_black.png" alt="Change Color"></button>
                 <div class="color-palette">
                     <div class="color-swatch" data-color="#F43535"></div>
@@ -372,14 +372,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (allCollapsed) {
                     // Expand all
                     facility.classList.remove('collapsed');
-                    collapseImg.src = 'icons/CollapseArrowup.png';
+                    collapseImg.src = 'icons/collapsearrowup.png';
                     if (isMiner) {
                         purityControl.style.display = 'block';
                     }
                 } else {
                     // Collapse all
                     facility.classList.add('collapsed');
-                    collapseImg.src = 'icons/CollapseArrowdown.png';
+                    collapseImg.src = 'icons/collapsearrowdown.png';
                     purityControl.style.display = 'none';
                 }
             });
@@ -387,9 +387,9 @@ document.addEventListener('DOMContentLoaded', () => {
             // Update the toggle button icon
             const toggleImg = toggleAllFacilitiesBtn.querySelector('img');
             if (allCollapsed) {
-                toggleImg.src = 'icons/CollapseArrowup.png'; // All expanded, show up arrow
+                toggleImg.src = 'icons/collapsearrowup.png'; // All expanded, show up arrow
             } else {
-                toggleImg.src = 'icons/CollapseArrowdown.png'; // All collapsed, show down arrow
+                toggleImg.src = 'icons/collapsearrowdown.png'; // All collapsed, show down arrow
             }
         });
 
