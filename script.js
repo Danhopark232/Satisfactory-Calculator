@@ -116,9 +116,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const facilitySelect = facilityDiv.querySelector('.facility-select');
         const outputSelect = facilityDiv.querySelector('.output-select');
-        const quantityInput = facilityDiv.querySelector('.quantity-input');
-        const minusBtn = facilityDiv.querySelector('.quantity-btn.minus');
-        const plusBtn = facilityDiv.querySelector('.quantity-btn.plus');
+        const quantityInput = facilityDiv.querySelector('.quantity-control .quantity-input');
+        const minusBtn = facilityDiv.querySelector('.quantity-control .quantity-btn.minus');
+        const plusBtn = facilityDiv.querySelector('.quantity-control .quantity-btn.plus');
         const removeBtn = facilityDiv.querySelector('.remove-facility-btn');
         const purityControl = facilityDiv.querySelector('.purity-control');
         const puritySelect = facilityDiv.querySelector('.purity-select');
