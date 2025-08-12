@@ -533,6 +533,66 @@ document.addEventListener('DOMContentLoaded', () => {
         }, { offset: -Infinity }).element;
     }
 
+    function saveState() {
+        const factoryLines = [];
+        document.querySelectorAll('.main-window').forEach(factoryLineDiv => {
+            const factoryLine = {
+                name: factoryLineDiv.querySelector('.factory-name-input').value,
+                color: factoryLineDiv.querySelector('.header-container').style.backgroundColor,
+                columns: []
+            };
+            factoryLineDiv.querySelectorAll('.column').forEach(columnDiv => {
+                const column = {
+                    facilities: []
+                };
+                columnDiv.querySelectorAll('.facility').forEach(facilityDiv => {
+                    const facility = {
+                        name: facilityDiv.querySelector('.facility-select').value,
+                        recipe: facilityDiv.querySelector('.output-select').value,
+                        quantity: facilityDiv.querySelector('.quantity-control .quantity-input').value,
+                        purity: facilityDiv.querySelector('.purity-select').value
+                    };
+                    column.facilities.push(facility);
+                });
+                factoryLine.columns.push(column);
+            });
+            factoryLines.push(factoryLine);
+        });
+        localStorage.setItem('satisfactoryCalculatorState', JSON.stringify(factoryLines));
+    }
+
+    function loadState() {
+        const savedState = localStorage.getItem('satisfactoryCalculatorState');
+        if (savedState) {
+            const factoryLinesData = JSON.parse(savedState);
+            factoryLinesContainer.innerHTML = '';
+            factoryLinesData.forEach(factoryLineData => {
+                const factoryLineDiv = createFactoryLine();
+                factoryLineDiv.querySelector('.factory-name-input').value = factoryLineData.name;
+                factoryLineDiv.querySelector('.header-container').style.backgroundColor = factoryLineData.color;
+                const columnsContainer = factoryLineDiv.querySelector('.columns-container');
+                columnsContainer.innerHTML = '<button class="add-column-btn">+ column</button>';
+                factoryLineData.columns.forEach(columnData => {
+                    const newColumn = document.createElement('div');
+                    newColumn.classList.add('column');
+                    newColumn.dataset.columnId = columnsContainer.querySelectorAll('.column').length + 1;
+                    newColumn.innerHTML = '<div class="column-handle"></div><button class="add-facility-btn">+</button><div class="facilities-container"></div><button class="remove-column-btn">- column</button>';
+                    attachColumnEventListeners(newColumn);
+                    columnsContainer.insertBefore(newColumn, columnsContainer.querySelector('.add-column-btn'));
+                    makeColumnDraggable(newColumn);
+                    makeFacilitiesContainerDroppable(newColumn.querySelector('.facilities-container'));
+                    columnData.facilities.forEach(facilityData => {
+                        addFacilityToColumn(newColumn, facilityData.name, facilityData.recipe, facilityData.quantity);
+                        const newFacility = newColumn.querySelector('.facility:last-child');
+                        if (newFacility) {
+                            newFacility.querySelector('.purity-select').value = facilityData.purity;
+                        }
+                    });
+                });
+            });
+        }
+    }
+
     // Main update function for all factory lines
     function updateAllFactoryLines() {
         if (isDraggingFacility) return; // Prevent updates during facility drag
@@ -546,6 +606,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         }
+        saveState(); // Save state after every update
     }
 
     function recalculateFactoryLine(factoryLineDiv) {
@@ -781,6 +842,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Initial factory line creation
-    createFactoryLine();
+    loadState();
+    if (factoryLinesContainer.children.length === 0) {
+        createFactoryLine();
+    }
     updateAllFactoryLines();
 });
