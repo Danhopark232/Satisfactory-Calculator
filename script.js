@@ -660,6 +660,32 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
+        const totalProduction = {};
+        columns.forEach(column => {
+            const facilities = column.querySelectorAll('.facility');
+            facilities.forEach(facilityDiv => {
+                const facilitySelect = facilityDiv.querySelector('.facility-select');
+                const outputSelect = facilityDiv.querySelector('.output-select');
+                const quantityInput = facilityDiv.querySelector('.quantity-control .quantity-input');
+                const puritySelect = facilityDiv.querySelector('.purity-select');
+                const selectedPurity = puritySelect ? puritySelect.value : 'Normal';
+                const purityMultiplier = purityMultipliers[selectedPurity] || 1.0;
+
+                const selectedFacilityName = facilitySelect.value;
+                const selectedOutputName = outputSelect.value;
+                const quantity = parseInt(quantityInput.value);
+
+                const facilityData = facilitiesData[selectedFacilityName];
+                const recipe = facilityData ? facilityData.recipes[selectedOutputName] : null;
+
+                if (recipe) {
+                    recipe.outputs.forEach(output => {
+                        totalProduction[output.item] = (totalProduction[output.item] || 0) + (output.rate * quantity * purityMultiplier);
+                    });
+                }
+            });
+        });
+
         const globalMaterialSupply = {}; // Tracks materials available from previous columns
         const factoryLineLeftovers = {}; // For the factory line summary
 
@@ -791,10 +817,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         globalMaterialSupply[output.item] = (globalMaterialSupply[output.item] || 0) + totalProduced;
 
                         const outputConsumption = totalDemands[output.item] || 0;
-                        const outputBalance = totalProduced - outputConsumption;
+                        const syncedBalance = (totalProduction[output.item] || 0) - outputConsumption;
 
                         // Change background color based on outputBalance
-                        if (outputBalance < 0) {
+                        if (syncedBalance < 0) {
                             facilityImageBox.style.backgroundColor = '#F43535';
                             productImageBox.style.backgroundColor = '#F43535';
                             facilityImageBoxCollapsed.style.backgroundColor = '#F43535';
@@ -807,7 +833,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
 
                         facilityNameCollapsed.textContent = selectedFacilityName;
-                        balanceCollapsed.textContent = `${outputBalance}/min`;
+                        balanceCollapsed.textContent = `${syncedBalance}/min`;
                         facilityImageBoxCollapsed.style.backgroundImage = `url(${getImagePath(selectedFacilityName)})`;
                         if (recipe.outputs.length > 0) {
                             productImageBoxCollapsed.style.backgroundImage = `url(${getImagePath(recipe.outputs[0].item)})`;
@@ -827,7 +853,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                         const balanceLi = document.createElement('li');
                         balanceLi.classList.add('output-item');
-                        balanceLi.innerHTML = `<span class="item-name">Balance</span><span class="item-usage">${outputBalance}/min</span>`;
+                        balanceLi.innerHTML = `<span class="item-name">Balance</span><span class="item-usage">${syncedBalance}/min</span>`;
                         outputList.appendChild(balanceLi);
 
                         factoryLineLeftovers[output.item] = (factoryLineLeftovers[output.item] || 0) + totalProduced;
