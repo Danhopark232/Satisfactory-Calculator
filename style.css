@@ -22,9 +22,6 @@ body {
     width: 75%;
     max-width: 1200px; /* Optional: set a max-width for very large screens */
     min-width: 800px; /* Optional: set a min-width */
-    height: 900px; /* Initial height */
-    resize: vertical; /* Allow vertical resizing */
-    overflow: hidden; /* Hide overflow initially, columns will scroll */
     background-color: #fff;
     border: 1px solid #ccc;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);

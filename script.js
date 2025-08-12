@@ -391,6 +391,11 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 toggleImg.src = 'icons/collapsearrowdown.png'; // All collapsed, show down arrow
             }
+
+            // Adjust main window height
+            setTimeout(() => {
+                adjustAllColumnContainerHeights();
+            }, 200); // Delay to allow for CSS transitions
         });
 
         // Attach event listeners to initial columns
@@ -593,6 +598,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function adjustAllColumnContainerHeights() {
+        document.querySelectorAll('.main-window').forEach(factoryLineDiv => {
+            const columnsContainer = factoryLineDiv.querySelector('.columns-container');
+            const columns = columnsContainer.querySelectorAll('.column');
+            let maxHeight = 0;
+            columns.forEach(column => {
+                if (column.offsetHeight > maxHeight) {
+                    maxHeight = column.offsetHeight;
+                }
+            });
+            columnsContainer.style.height = `${maxHeight + 10}px`;
+        });
+    }
+
     // Main update function for all factory lines
     function updateAllFactoryLines() {
         if (isDraggingFacility) return; // Prevent updates during facility drag
@@ -607,6 +626,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
         saveState(); // Save state after every update
+        adjustAllColumnContainerHeights();
     }
 
     function recalculateFactoryLine(factoryLineDiv) {
