@@ -579,7 +579,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 factoryLineDiv.querySelector('.factory-name-input').value = factoryLineData.name;
                 factoryLineDiv.querySelector('.header-container').style.backgroundColor = factoryLineData.color;
                 const columnsContainer = factoryLineDiv.querySelector('.columns-container');
-                columnsContainer.innerHTML = '<button class="add-column-btn">+ column</button>';
+                
+                // Remove existing columns, but keep the button
+                columnsContainer.querySelectorAll('.column').forEach(column => column.remove());
+
                 factoryLineData.columns.forEach(columnData => {
                     const newColumn = document.createElement('div');
                     newColumn.classList.add('column');
