@@ -342,6 +342,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const toggleAllFacilitiesBtn = factoryLineDiv.querySelector('.toggle-all-facilities-btn');
         const colorPalette = factoryLineDiv.querySelector('.color-palette');
 
+        // Assign random color
+        const colorSwatches = colorPalette.querySelectorAll('.color-swatch');
+        const colors = Array.from(colorSwatches).map(swatch => swatch.dataset.color);
+        const randomColor = colors[Math.floor(Math.random() * colors.length)];
+        const headerContainer = factoryLineDiv.querySelector('.header-container');
+        headerContainer.style.backgroundColor = randomColor;
+
         changeColorBtn.addEventListener('click', () => {
             colorPalette.style.display = colorPalette.style.display === 'flex' ? 'none' : 'flex';
         });
