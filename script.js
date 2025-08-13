@@ -271,8 +271,14 @@ document.addEventListener('DOMContentLoaded', () => {
             addFacilityToColumn(column);
         });
         columnElement.querySelector('.remove-column-btn').addEventListener('click', (e) => {
-            if (confirm('Are you sure you want to remove this column?')) {
-                const column = e.target.closest('.column');
+            const column = e.target.closest('.column');
+            const facilitiesContainer = column.querySelector('.facilities-container');
+            if (facilitiesContainer.children.length > 0) {
+                if (confirm('Are you sure you want to remove this column?')) {
+                    column.remove();
+                    updateAllFactoryLines();
+                }
+            } else {
                 column.remove();
                 updateAllFactoryLines();
             }
@@ -349,8 +355,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         removeFactoryLineBtn.addEventListener('click', () => {
-            if (confirm('Are you sure you want to remove this factory line?')) {
+            const facilities = factoryLineDiv.querySelectorAll('.facility');
+            if (facilities.length > 0) {
+                if (confirm('Are you sure you want to remove this factory line?')) {
+                    factoryLineDiv.remove();
+                    updateAllFactoryLines();
+                }
+            } else {
                 factoryLineDiv.remove();
+                updateAllFactoryLines();
             }
         });
 

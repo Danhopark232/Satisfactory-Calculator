@@ -19,9 +19,7 @@ body {
 }
 
 .main-window {
-    width: 75%;
-    max-width: 1200px; /* Optional: set a max-width for very large screens */
-    min-width: 800px; /* Optional: set a min-width */
+    width: calc(100vw - 30px);
     background-color: #fff;
     border: 1px solid #ccc;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
