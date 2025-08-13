@@ -328,6 +328,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         factoryLinesContainer.appendChild(factoryLineDiv);
 
+        const factoryNameInput = factoryLineDiv.querySelector('.factory-name-input');
+        factoryNameInput.addEventListener('change', saveState);
+
         const removeFactoryLineBtn = factoryLineDiv.querySelector('.remove-factory-line-btn');
         const changeColorBtn = factoryLineDiv.querySelector('.change-color-btn');
         const toggleAllFacilitiesBtn = factoryLineDiv.querySelector('.toggle-all-facilities-btn');
