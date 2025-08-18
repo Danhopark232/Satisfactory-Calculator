@@ -136,12 +136,21 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isReceived) {
             facilityDiv.querySelector('.facility-header').style.display = 'none';
             facilityDiv.querySelector('.quantity-control').style.display = 'none';
-            facilityDiv.querySelector('.materials-display').style.display = 'none';
             facilityDiv.querySelector('.power-display').style.display = 'none';
             facilityDiv.querySelector('.collapse-btn').style.display = 'none';
             facilityDiv.querySelector('.facility-image-box').style.display = 'none';
             facilityDiv.querySelector('.purity-control').style.display = 'none';
             facilityDiv.querySelector('.collapsed-quantity-control').style.display = 'none';
+
+            const materialsDisplay = facilityDiv.querySelector('.materials-display');
+            materialsDisplay.innerHTML = `
+                <h4>Outputs:</h4>
+                <ul class="output-list">
+                    <li><span class="item-name">Received</span><span class="item-usage"></span></li>
+                    <li><span class="item-name">Balance</span><span class="item-usage"></span></li>
+                    <li><span class="item-name">Consumption</span><span class="item-usage"></span></li>
+                </ul>
+            `;
         }
 
         // Drag and Drop Event Listeners for facilities
@@ -416,9 +425,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     <input type="text" class="factory-name-input" value="Factory Line ${factoryLineCounter}">
                 </div>
                 <div class="material-summary">
-                    <h3>Summary | Send to :</h3>
-                    <div class="send-to-container">
-                        <select class="send-to-dropdown"></select>
+                    <div class="summary-header">
+                        <h3>Summary | Send to :</h3>
+                        <div class="send-to-container">
+                            <select class="send-to-dropdown"></select>
+                        </div>
                     </div>
                     <ul class="leftover-list"></ul>
                 </div>
@@ -908,7 +919,19 @@ document.addEventListener('DOMContentLoaded', () => {
             const facilities = column.querySelectorAll('.facility');
 
             for (const facilityDiv of facilities) {
-                if (facilityDiv.dataset.received === 'true') continue;
+                if (facilityDiv.dataset.received === 'true') {
+                    const outputList = facilityDiv.querySelector('.output-list');
+                    const product = facilityDiv.dataset.receivedProduct;
+                    const amount = parseFloat(facilityDiv.dataset.receivedAmount);
+                    const consumption = totalDemands[product] || 0;
+                    const balance = amount - consumption;
+                    outputList.innerHTML = `
+                        <li><span class="item-name">Received</span><span class="item-usage">${amount}/min</span></li>
+                        <li><span class="item-name">Balance</span><span class="item-usage">${balance}/min</span></li>
+                        <li><span class="item-name">Consumption</span><span class="item-usage">${consumption}/min</span></li>
+                    `;
+                    continue;
+                }
 
                 const facilitySelect = facilityDiv.querySelector('.facility-select');
                 const outputSelect = facilityDiv.querySelector('.output-select');
@@ -1091,11 +1114,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 li.appendChild(img);
                 li.appendChild(balanceSpan);
                 if (receivedMaterials[item]) {
+                    li.classList.add('received-item');
                     const receivedFacility = factoryLineDiv.querySelector(`.facility[data-received-product='${item}']`);
                     if (receivedFacility) {
                         const senderLine = document.querySelector(`.main-window[data-line-id='${receivedFacility.dataset.receivedFrom}']`);
                         if (senderLine) {
-                            li.style.backgroundColor = senderLine.querySelector('.header-container').style.backgroundColor;
+                            li.querySelector('img').style.backgroundColor = senderLine.querySelector('.header-container').style.backgroundColor;
                         }
                     }
                 }
