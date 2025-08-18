@@ -92,6 +92,19 @@ h3 {
     margin: 6px;
 }
 
+.send-to-container {
+    margin-left: 10px;
+}
+
+.send-to-dropdown {
+    width: 200px;
+    height: 30px;
+    border-radius: 15px;
+    border: 1px solid #ccc;
+    padding: 0 10px;
+    outline: none;
+}
+
 .leftover-list {
     display: flex;
     list-style: none;

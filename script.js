@@ -58,11 +58,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Function to create a new facility element
-    function createFacilityElement(initialFacility = null, initialRecipe = null, initialQuantity = 1) {
+    function createFacilityElement(initialFacility = null, initialRecipe = null, initialQuantity = 1, isReceived = false) {
         const facilityDiv = document.createElement('div');
         facilityDiv.classList.add('facility');
         facilityDiv.setAttribute('draggable', 'true'); // Make facility draggable
         facilityDiv.dataset.facilityId = `facility-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`; // Unique ID
+        if (isReceived) {
+            facilityDiv.dataset.received = true;
+        }
         facilityDiv.innerHTML = `
             <div class="facility-top-bar">
                 <div class="collapse-btn"><img src="icons/collapsearrowup.png" alt="Collapse"></div>
@@ -129,6 +132,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const collapsedQuantityInput = facilityDiv.querySelector('.collapsed-quantity-control .quantity-input');
         const collapsedMinusBtn = facilityDiv.querySelector('.collapsed-quantity-control .quantity-btn.minus');
         const collapsedPlusBtn = facilityDiv.querySelector('.collapsed-quantity-control .quantity-btn.plus');
+
+        if (isReceived) {
+            facilityDiv.querySelector('.facility-header').style.display = 'none';
+            facilityDiv.querySelector('.quantity-control').style.display = 'none';
+            facilityDiv.querySelector('.materials-display').style.display = 'none';
+            facilityDiv.querySelector('.power-display').style.display = 'none';
+            facilityDiv.querySelector('.collapse-btn').style.display = 'none';
+            facilityDiv.querySelector('.facility-image-box').style.display = 'none';
+            facilityDiv.querySelector('.purity-control').style.display = 'none';
+            facilityDiv.querySelector('.collapsed-quantity-control').style.display = 'none';
+        }
 
         // Drag and Drop Event Listeners for facilities
         facilityDiv.addEventListener('dragstart', (e) => {
@@ -257,6 +271,109 @@ document.addEventListener('DOMContentLoaded', () => {
         return facilityDiv;
     }
 
+    function sendProductToFactoryLine(senderLineId, recipientLineId) {
+        const senderLine = document.querySelector(`.main-window[data-line-id='${senderLineId}']`);
+        const recipientLine = document.querySelector(`.main-window[data-line-id='${recipientLineId}']`);
+
+        if (!senderLine || !recipientLine) return;
+
+        const senderLeftovers = getLeftovers(senderLine);
+        const finalProduct = Object.keys(senderLeftovers).reduce((a, b) => senderLeftovers[a] > senderLeftovers[b] ? a : b);
+
+        if (!finalProduct) return;
+
+        const senderColor = senderLine.querySelector('.header-container').style.backgroundColor;
+        const productAmount = senderLeftovers[finalProduct];
+
+        const receivedFacility = createFacilityElement(null, null, 1, true);
+        receivedFacility.dataset.receivedFrom = senderLineId;
+        receivedFacility.dataset.receivedProduct = finalProduct;
+        receivedFacility.dataset.receivedAmount = productAmount;
+        receivedFacility.style.outline = `3px solid ${senderColor}`;
+
+        const facilityNameCollapsed = receivedFacility.querySelector('.facility-name-collapsed');
+        facilityNameCollapsed.textContent = `Received: ${finalProduct}`;
+        const balanceCollapsed = receivedFacility.querySelector('.balance-collapsed');
+        balanceCollapsed.textContent = `${productAmount}/min`;
+        const productImageBox = receivedFacility.querySelector('.product-image-box');
+        productImageBox.style.backgroundImage = `url(${getImagePath(finalProduct)})`;
+        const productImageBoxCollapsed = receivedFacility.querySelector('.product-image-box-collapsed');
+        productImageBoxCollapsed.style.backgroundImage = `url(${getImagePath(finalProduct)})`;
+
+        const firstColumn = recipientLine.querySelector('.column');
+        if (firstColumn) {
+            firstColumn.querySelector('.facilities-container').appendChild(receivedFacility);
+            updateAllFactoryLines();
+        }
+    }
+
+    function getLeftovers(factoryLineDiv) {
+        const factoryLineLeftovers = {};
+        const columns = factoryLineDiv.querySelectorAll('.column');
+        const totalDemands = {};
+        const producedMaterials = new Set();
+
+        columns.forEach(column => {
+            const facilities = column.querySelectorAll('.facility');
+            facilities.forEach(facilityDiv => {
+                if (facilityDiv.dataset.received !== 'true') {
+                    const facilitySelect = facilityDiv.querySelector('.facility-select');
+                    const outputSelect = facilityDiv.querySelector('.output-select');
+                    const quantityInput = facilityDiv.querySelector('.quantity-input');
+
+                    const selectedFacilityName = facilitySelect.value;
+                    const selectedOutputName = outputSelect.value;
+                    const quantity = parseInt(quantityInput.value);
+
+                    const facilityData = facilitiesData[selectedFacilityName];
+                    const recipe = facilityData ? facilityData.recipes[selectedOutputName] : null;
+
+                    if (recipe) {
+                        recipe.inputs.forEach(input => {
+                            totalDemands[input.item] = (totalDemands[input.item] || 0) + (input.rate * quantity);
+                        });
+                        recipe.outputs.forEach(output => {
+                            producedMaterials.add(output.item);
+                        });
+                    }
+                }
+            });
+        });
+
+        const totalProduction = {};
+        columns.forEach(column => {
+            const facilities = column.querySelectorAll('.facility');
+            facilities.forEach(facilityDiv => {
+                if (facilityDiv.dataset.received !== 'true') {
+                    const facilitySelect = facilityDiv.querySelector('.facility-select');
+                    const outputSelect = facilityDiv.querySelector('.output-select');
+                    const quantityInput = facilityDiv.querySelector('.quantity-control .quantity-input');
+                    const puritySelect = facilityDiv.querySelector('.purity-select');
+                    const selectedPurity = puritySelect ? puritySelect.value : 'Normal';
+                    const purityMultiplier = purityMultipliers[selectedPurity] || 1.0;
+
+                    const selectedFacilityName = facilitySelect.value;
+                    const selectedOutputName = outputSelect.value;
+                    const quantity = parseInt(quantityInput.value);
+
+                    const facilityData = facilitiesData[selectedFacilityName];
+                    const recipe = facilityData ? facilityData.recipes[selectedOutputName] : null;
+
+                    if (recipe) {
+                        recipe.outputs.forEach(output => {
+                            totalProduction[output.item] = (totalProduction[output.item] || 0) + (output.rate * quantity * purityMultiplier);
+                        });
+                    }
+                }
+            });
+        });
+
+        for (const item in totalProduction) {
+            factoryLineLeftovers[item] = totalProduction[item] - (totalDemands[item] || 0);
+        }
+        return factoryLineLeftovers;
+    }
+
     // Function to add a facility to a specific column
     function addFacilityToColumn(columnElement, initialFacility = null, initialRecipe = null, requiredQuantity = 1) {
         const facilityElement = createFacilityElement(initialFacility, initialRecipe, requiredQuantity);
@@ -299,7 +416,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     <input type="text" class="factory-name-input" value="Factory Line ${factoryLineCounter}">
                 </div>
                 <div class="material-summary">
-                    <h3>Summary:</h3>
+                    <h3>Summary | Send to :</h3>
+                    <div class="send-to-container">
+                        <select class="send-to-dropdown"></select>
+                    </div>
                     <ul class="leftover-list"></ul>
                 </div>
                 <button class="toggle-all-facilities-btn"><img src="icons/collapsearrowup.png" alt="Toggle All"></button>
@@ -341,6 +461,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const changeColorBtn = factoryLineDiv.querySelector('.change-color-btn');
         const toggleAllFacilitiesBtn = factoryLineDiv.querySelector('.toggle-all-facilities-btn');
         const colorPalette = factoryLineDiv.querySelector('.color-palette');
+
+        const sendToDropdown = factoryLineDiv.querySelector('.send-to-dropdown');
+        sendToDropdown.addEventListener('change', (e) => {
+            const senderLineId = factoryLineDiv.dataset.lineId;
+            const recipientLineId = e.target.value;
+            if (recipientLineId) {
+                sendProductToFactoryLine(senderLineId, recipientLineId);
+                e.target.value = ''; // Reset dropdown
+            }
+        });
 
         // Assign random color
         const colorSwatches = colorPalette.querySelectorAll('.color-swatch');
@@ -578,7 +708,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         name: facilityDiv.querySelector('.facility-select').value,
                         recipe: facilityDiv.querySelector('.output-select').value,
                         quantity: facilityDiv.querySelector('.quantity-control .quantity-input').value,
-                        purity: facilityDiv.querySelector('.purity-select').value
+                        purity: facilityDiv.querySelector('.purity-select').value,
+                        isReceived: facilityDiv.dataset.received === 'true',
+                        receivedFrom: facilityDiv.dataset.receivedFrom,
+                        receivedProduct: facilityDiv.dataset.receivedProduct,
+                        receivedAmount: facilityDiv.dataset.receivedAmount
                     };
                     column.facilities.push(facility);
                 });
@@ -613,10 +747,32 @@ document.addEventListener('DOMContentLoaded', () => {
                     makeColumnDraggable(newColumn);
                     makeFacilitiesContainerDroppable(newColumn.querySelector('.facilities-container'));
                     columnData.facilities.forEach(facilityData => {
-                        addFacilityToColumn(newColumn, facilityData.name, facilityData.recipe, facilityData.quantity);
-                        const newFacility = newColumn.querySelector('.facility:last-child');
-                        if (newFacility) {
-                            newFacility.querySelector('.purity-select').value = facilityData.purity;
+                        if (facilityData.isReceived) {
+                            const receivedFacility = createFacilityElement(null, null, 1, true);
+                            receivedFacility.dataset.receivedFrom = facilityData.receivedFrom;
+                            receivedFacility.dataset.receivedProduct = facilityData.receivedProduct;
+                            receivedFacility.dataset.receivedAmount = facilityData.receivedAmount;
+                            const senderLine = document.querySelector(`.main-window[data-line-id='${facilityData.receivedFrom}']`);
+                            if(senderLine){
+                                const senderColor = senderLine.querySelector('.header-container').style.backgroundColor;
+                                receivedFacility.style.outline = `3px solid ${senderColor}`;
+                            }
+
+                            const facilityNameCollapsed = receivedFacility.querySelector('.facility-name-collapsed');
+                            facilityNameCollapsed.textContent = `Received: ${facilityData.receivedProduct}`;
+                            const balanceCollapsed = receivedFacility.querySelector('.balance-collapsed');
+                            balanceCollapsed.textContent = `${facilityData.receivedAmount}/min`;
+                            const productImageBox = receivedFacility.querySelector('.product-image-box');
+                            productImageBox.style.backgroundImage = `url(${getImagePath(facilityData.receivedProduct)})`;
+                            const productImageBoxCollapsed = receivedFacility.querySelector('.product-image-box-collapsed');
+                            productImageBoxCollapsed.style.backgroundImage = `url(${getImagePath(facilityData.receivedProduct)})`;
+                            newColumn.querySelector('.facilities-container').appendChild(receivedFacility);
+                        } else {
+                            addFacilityToColumn(newColumn, facilityData.name, facilityData.recipe, facilityData.quantity);
+                            const newFacility = newColumn.querySelector('.facility:last-child');
+                            if (newFacility) {
+                                newFacility.querySelector('.purity-select').value = facilityData.purity;
+                            }
                         }
                     });
                 });
@@ -642,6 +798,28 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateAllFactoryLines() {
         if (isDraggingFacility) return; // Prevent updates during facility drag
 
+        // Update dropdowns first
+        const allFactoryLines = Array.from(document.querySelectorAll('.main-window'));
+        allFactoryLines.forEach(line => {
+            const dropdown = line.querySelector('.send-to-dropdown');
+            const currentLineId = line.dataset.lineId;
+            const selectedValue = dropdown.value;
+
+            dropdown.innerHTML = '<option value="">Select a factory line</option>'; // Clear and add default
+
+            allFactoryLines.forEach(otherLine => {
+                if (otherLine.dataset.lineId !== currentLineId) {
+                    const otherLineName = otherLine.querySelector('.factory-name-input').value;
+                    const otherLineId = otherLine.dataset.lineId;
+                    const option = document.createElement('option');
+                    option.value = otherLineId;
+                    option.textContent = otherLineName;
+                    dropdown.appendChild(option);
+                }
+            });
+            dropdown.value = selectedValue;
+        });
+
         let needsRecalculation = true;
         while (needsRecalculation) {
             needsRecalculation = false;
@@ -659,29 +837,36 @@ document.addEventListener('DOMContentLoaded', () => {
         const columns = factoryLineDiv.querySelectorAll('.column');
         const totalDemands = {}; // Stores total demand for each material across the entire factory line
         const producedMaterials = new Set(); // Keep track of materials being produced
+        const receivedMaterials = {}; // Stores received materials
 
         // First Pass: Collect all demands and produced materials
         columns.forEach(column => {
             const facilities = column.querySelectorAll('.facility');
             facilities.forEach(facilityDiv => {
-                const facilitySelect = facilityDiv.querySelector('.facility-select');
-                const outputSelect = facilityDiv.querySelector('.output-select');
-                const quantityInput = facilityDiv.querySelector('.quantity-input');
+                if (facilityDiv.dataset.received === 'true') {
+                    const product = facilityDiv.dataset.receivedProduct;
+                    const amount = parseFloat(facilityDiv.dataset.receivedAmount);
+                    receivedMaterials[product] = (receivedMaterials[product] || 0) + amount;
+                } else {
+                    const facilitySelect = facilityDiv.querySelector('.facility-select');
+                    const outputSelect = facilityDiv.querySelector('.output-select');
+                    const quantityInput = facilityDiv.querySelector('.quantity-input');
 
-                const selectedFacilityName = facilitySelect.value;
-                const selectedOutputName = outputSelect.value;
-                const quantity = parseInt(quantityInput.value);
+                    const selectedFacilityName = facilitySelect.value;
+                    const selectedOutputName = outputSelect.value;
+                    const quantity = parseInt(quantityInput.value);
 
-                const facilityData = facilitiesData[selectedFacilityName];
-                const recipe = facilityData ? facilityData.recipes[selectedOutputName] : null;
+                    const facilityData = facilitiesData[selectedFacilityName];
+                    const recipe = facilityData ? facilityData.recipes[selectedOutputName] : null;
 
-                if (recipe) {
-                    recipe.inputs.forEach(input => {
-                        totalDemands[input.item] = (totalDemands[input.item] || 0) + (input.rate * quantity);
-                    });
-                    recipe.outputs.forEach(output => {
-                        producedMaterials.add(output.item);
-                    });
+                    if (recipe) {
+                        recipe.inputs.forEach(input => {
+                            totalDemands[input.item] = (totalDemands[input.item] || 0) + (input.rate * quantity);
+                        });
+                        recipe.outputs.forEach(output => {
+                            producedMaterials.add(output.item);
+                        });
+                    }
                 }
             });
         });
@@ -690,30 +875,32 @@ document.addEventListener('DOMContentLoaded', () => {
         columns.forEach(column => {
             const facilities = column.querySelectorAll('.facility');
             facilities.forEach(facilityDiv => {
-                const facilitySelect = facilityDiv.querySelector('.facility-select');
-                const outputSelect = facilityDiv.querySelector('.output-select');
-                const quantityInput = facilityDiv.querySelector('.quantity-control .quantity-input');
-                const puritySelect = facilityDiv.querySelector('.purity-select');
-                const selectedPurity = puritySelect ? puritySelect.value : 'Normal';
-                const purityMultiplier = purityMultipliers[selectedPurity] || 1.0;
+                if (facilityDiv.dataset.received !== 'true') {
+                    const facilitySelect = facilityDiv.querySelector('.facility-select');
+                    const outputSelect = facilityDiv.querySelector('.output-select');
+                    const quantityInput = facilityDiv.querySelector('.quantity-control .quantity-input');
+                    const puritySelect = facilityDiv.querySelector('.purity-select');
+                    const selectedPurity = puritySelect ? puritySelect.value : 'Normal';
+                    const purityMultiplier = purityMultipliers[selectedPurity] || 1.0;
 
-                const selectedFacilityName = facilitySelect.value;
-                const selectedOutputName = outputSelect.value;
-                const quantity = parseInt(quantityInput.value);
+                    const selectedFacilityName = facilitySelect.value;
+                    const selectedOutputName = outputSelect.value;
+                    const quantity = parseInt(quantityInput.value);
 
-                const facilityData = facilitiesData[selectedFacilityName];
-                const recipe = facilityData ? facilityData.recipes[selectedOutputName] : null;
+                    const facilityData = facilitiesData[selectedFacilityName];
+                    const recipe = facilityData ? facilityData.recipes[selectedOutputName] : null;
 
-                if (recipe) {
-                    recipe.outputs.forEach(output => {
-                        totalProduction[output.item] = (totalProduction[output.item] || 0) + (output.rate * quantity * purityMultiplier);
-                    });
+                    if (recipe) {
+                        recipe.outputs.forEach(output => {
+                            totalProduction[output.item] = (totalProduction[output.item] || 0) + (output.rate * quantity * purityMultiplier);
+                        });
+                    }
                 }
             });
         });
 
-        const globalMaterialSupply = {}; // Tracks materials available from previous columns
-        const factoryLineLeftovers = {}; // For the factory line summary
+        const globalMaterialSupply = { ...receivedMaterials }; // Tracks materials available from previous columns
+        const factoryLineLeftovers = { ...receivedMaterials }; // For the factory line summary
 
         // Second Pass: Calculate supply, consumption, and balance
         for (let columnIndex = 0; columnIndex < columns.length; columnIndex++) {
@@ -721,6 +908,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const facilities = column.querySelectorAll('.facility');
 
             for (const facilityDiv of facilities) {
+                if (facilityDiv.dataset.received === 'true') continue;
+
                 const facilitySelect = facilityDiv.querySelector('.facility-select');
                 const outputSelect = facilityDiv.querySelector('.output-select');
                 const quantityInput = facilityDiv.querySelector('.quantity-input');
@@ -901,6 +1090,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 balanceSpan.textContent = factoryLineLeftovers[item];
                 li.appendChild(img);
                 li.appendChild(balanceSpan);
+                if (receivedMaterials[item]) {
+                    const receivedFacility = factoryLineDiv.querySelector(`.facility[data-received-product='${item}']`);
+                    if (receivedFacility) {
+                        const senderLine = document.querySelector(`.main-window[data-line-id='${receivedFacility.dataset.receivedFrom}']`);
+                        if (senderLine) {
+                            li.style.backgroundColor = senderLine.querySelector('.header-container').style.backgroundColor;
+                        }
+                    }
+                }
                 leftoverList.appendChild(li);
             }
         }
