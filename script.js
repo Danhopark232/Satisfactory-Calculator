@@ -712,7 +712,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         isReceived: facilityDiv.dataset.received === 'true',
                         receivedFrom: facilityDiv.dataset.receivedFrom,
                         receivedProduct: facilityDiv.dataset.receivedProduct,
-                        receivedAmount: facilityDiv.dataset.receivedAmount
+                        receivedAmount: facilityDiv.dataset.receivedAmount,
+                        sentTo: facilityDiv.dataset.sentTo
                     };
                     column.facilities.push(facility);
                 });
@@ -772,6 +773,9 @@ document.addEventListener('DOMContentLoaded', () => {
                             const newFacility = newColumn.querySelector('.facility:last-child');
                             if (newFacility) {
                                 newFacility.querySelector('.purity-select').value = facilityData.purity;
+                                if (facilityData.sentTo) {
+                                    newFacility.dataset.sentTo = facilityData.sentTo;
+                                }
                             }
                         }
                     });
@@ -831,15 +835,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function sendProductFromFacilityToFactoryLine(senderLineId, recipientLineId, product, amount) {
+    function sendProductFromFacilityToFactoryLine(senderFacilityId, recipientLineId, product, amount) {
+        const senderFacility = document.querySelector(`[data-facility-id='${senderFacilityId}']`);
+        senderFacility.dataset.sentTo = recipientLineId;
         const recipientLine = document.querySelector(`.main-window[data-line-id='${recipientLineId}']`);
         if (!recipientLine) return;
 
-        const senderLine = document.querySelector(`.main-window[data-line-id='${senderLineId}']`);
+        const senderLine = senderFacility.closest('.main-window');
         const senderColor = senderLine.querySelector('.header-container').style.backgroundColor;
 
         const receivedFacility = createFacilityElement(null, null, 1, true);
-        receivedFacility.dataset.receivedFrom = senderLineId;
+        receivedFacility.dataset.receivedFrom = senderLine.dataset.lineId;
         receivedFacility.dataset.receivedProduct = product;
         receivedFacility.dataset.receivedAmount = amount;
         receivedFacility.style.outline = `3px solid ${senderColor}`;
@@ -1127,6 +1133,20 @@ document.addEventListener('DOMContentLoaded', () => {
                         sendToDropdown.classList.add('send-to-dropdown-facility');
                         sendToContainer.appendChild(sendToDropdown);
 
+                        if (facilityDiv.dataset.sentTo) {
+                            const recipientLineId = facilityDiv.dataset.sentTo;
+                            const recipientLine = document.querySelector(`.main-window[data-line-id='${recipientLineId}']`);
+                            if (recipientLine) {
+                                const recipientLineName = recipientLine.querySelector('.factory-name-input').value;
+                                sendButton.textContent = `Sending to: ${recipientLineName}`;
+                                sendButton.disabled = true;
+                                sendToDropdown.disabled = true;
+                                populateFacilitySendToDropdown(sendToDropdown, facilityDiv);
+                                sendToDropdown.value = recipientLineId;
+                                sendToContainer.style.display = 'block';
+                            }
+                        }
+
                         sendButton.addEventListener('click', () => {
                             sendToContainer.style.display = sendToContainer.style.display === 'none' ? 'block' : 'none';
                             populateFacilitySendToDropdown(sendToDropdown, facilityDiv);
@@ -1135,10 +1155,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         sendToDropdown.addEventListener('change', (e) => {
                             const recipientLineId = e.target.value;
                             if (recipientLineId) {
-                                const senderLineId = facilityDiv.closest('.main-window').dataset.lineId;
-                                sendProductFromFacilityToFactoryLine(senderLineId, recipientLineId, output.item, totalProduced);
-                                e.target.value = '';
-                                sendToContainer.style.display = 'none';
+                                sendProductFromFacilityToFactoryLine(facilityDiv.dataset.facilityId, recipientLineId, output.item, totalProduced);
                             }
                         });
                         outputList.appendChild(sendLi);
