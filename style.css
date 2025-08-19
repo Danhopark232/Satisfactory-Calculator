@@ -615,3 +615,28 @@ ul.output-list li {
     border: 2px dashed #007B9E;
     background-color: #e0f7fa; /* Light blue background */
 }
+
+.send-btn {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 2px 5px;
+    font-size: 0.8em;
+    margin-left: 10px;
+}
+
+.send-btn:hover {
+    background-color: #45a049;
+}
+
+.send-to-dropdown-facility {
+    width: 100%;
+    margin-top: 5px;
+    height: 30px;
+    border-radius: 15px;
+    border: 1px solid #ccc;
+    padding: 0 10px;
+    outline: none;
+}

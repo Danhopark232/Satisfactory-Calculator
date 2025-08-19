@@ -111,6 +111,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 <ul class="input-list"></ul>
                 <h4>Outputs:</h4>
                 <ul class="output-list"></ul>
+                <div class="send-to-container" style="display: none;">
+                    <select class="send-to-dropdown-facility"></select>
+                </div>
             </div>
             <div class="power-display">
                 <span>Power: <span class="power-value">0</span> MW</span>
@@ -426,10 +429,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 <div class="material-summary">
                     <div class="summary-header">
-                        <h3>Summary | Send to :</h3>
-                        <div class="send-to-container">
-                            <select class="send-to-dropdown"></select>
-                        </div>
+                        <h3>Summary:</h3>
                     </div>
                     <ul class="leftover-list"></ul>
                 </div>
@@ -473,15 +473,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const toggleAllFacilitiesBtn = factoryLineDiv.querySelector('.toggle-all-facilities-btn');
         const colorPalette = factoryLineDiv.querySelector('.color-palette');
 
-        const sendToDropdown = factoryLineDiv.querySelector('.send-to-dropdown');
-        sendToDropdown.addEventListener('change', (e) => {
-            const senderLineId = factoryLineDiv.dataset.lineId;
-            const recipientLineId = e.target.value;
-            if (recipientLineId) {
-                sendProductToFactoryLine(senderLineId, recipientLineId);
-                e.target.value = ''; // Reset dropdown
-            }
-        });
+        
 
         // Assign random color
         const colorSwatches = colorPalette.querySelectorAll('.color-swatch');
@@ -809,27 +801,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateAllFactoryLines() {
         if (isDraggingFacility) return; // Prevent updates during facility drag
 
-        // Update dropdowns first
         const allFactoryLines = Array.from(document.querySelectorAll('.main-window'));
-        allFactoryLines.forEach(line => {
-            const dropdown = line.querySelector('.send-to-dropdown');
-            const currentLineId = line.dataset.lineId;
-            const selectedValue = dropdown.value;
-
-            dropdown.innerHTML = '<option value="">Select a factory line</option>'; // Clear and add default
-
-            allFactoryLines.forEach(otherLine => {
-                if (otherLine.dataset.lineId !== currentLineId) {
-                    const otherLineName = otherLine.querySelector('.factory-name-input').value;
-                    const otherLineId = otherLine.dataset.lineId;
-                    const option = document.createElement('option');
-                    option.value = otherLineId;
-                    option.textContent = otherLineName;
-                    dropdown.appendChild(option);
-                }
-            });
-            dropdown.value = selectedValue;
-        });
 
         let needsRecalculation = true;
         while (needsRecalculation) {
@@ -842,6 +814,53 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         saveState(); // Save state after every update
         adjustAllColumnContainerHeights();
+    }
+
+    function populateFacilitySendToDropdown(dropdown, facilityDiv) {
+        const currentLineId = facilityDiv.closest('.main-window').dataset.lineId;
+        const allFactoryLines = Array.from(document.querySelectorAll('.main-window'));
+
+        dropdown.innerHTML = '<option value="">Select a factory line</option>'; // Clear and add default
+
+        allFactoryLines.forEach(otherLine => {
+            if (otherLine.dataset.lineId !== currentLineId) {
+                const otherLineName = otherLine.querySelector('.factory-name-input').value;
+                const otherLineId = otherLine.dataset.lineId;
+                const option = document.createElement('option');
+                option.value = otherLineId;
+                option.textContent = otherLineName;
+                dropdown.appendChild(option);
+            }
+        });
+    }
+
+    function sendProductFromFacilityToFactoryLine(senderLineId, recipientLineId, product, amount) {
+        const recipientLine = document.querySelector(`.main-window[data-line-id='${recipientLineId}']`);
+        if (!recipientLine) return;
+
+        const senderLine = document.querySelector(`.main-window[data-line-id='${senderLineId}']`);
+        const senderColor = senderLine.querySelector('.header-container').style.backgroundColor;
+
+        const receivedFacility = createFacilityElement(null, null, 1, true);
+        receivedFacility.dataset.receivedFrom = senderLineId;
+        receivedFacility.dataset.receivedProduct = product;
+        receivedFacility.dataset.receivedAmount = amount;
+        receivedFacility.style.outline = `3px solid ${senderColor}`;
+
+        const facilityNameCollapsed = receivedFacility.querySelector('.facility-name-collapsed');
+        facilityNameCollapsed.textContent = `Received: ${product}`;
+        const balanceCollapsed = receivedFacility.querySelector('.balance-collapsed');
+        balanceCollapsed.textContent = `${amount}/min`;
+        const productImageBox = receivedFacility.querySelector('.product-image-box');
+        productImageBox.style.backgroundImage = `url(${getImagePath(product)})`;
+        const productImageBoxCollapsed = receivedFacility.querySelector('.product-image-box-collapsed');
+        productImageBoxCollapsed.style.backgroundImage = `url(${getImagePath(product)})`;
+
+        const firstColumn = recipientLine.querySelector('.column');
+        if (firstColumn) {
+            firstColumn.querySelector('.facilities-container').appendChild(receivedFacility);
+            updateAllFactoryLines();
+        }
     }
 
     function recalculateFactoryLine(factoryLineDiv) {
@@ -1082,6 +1101,30 @@ document.addEventListener('DOMContentLoaded', () => {
                         const li = document.createElement('li');
                         li.classList.add('output-item');
                         li.innerHTML = `<span class="item-name">${output.item}</span><span class="item-usage">(${output.rate * purityMultiplier}/min) ${totalProduced}/min</span>`;
+
+                        const sendButton = document.createElement('button');
+                        sendButton.textContent = 'Send';
+                        sendButton.classList.add('send-btn');
+                        li.appendChild(sendButton);
+
+                        const sendToContainer = facilityDiv.querySelector('.send-to-container');
+                        const sendToDropdown = sendToContainer.querySelector('.send-to-dropdown-facility');
+
+                        sendButton.addEventListener('click', () => {
+                            sendToContainer.style.display = sendToContainer.style.display === 'none' ? 'block' : 'none';
+                            populateFacilitySendToDropdown(sendToDropdown, facilityDiv);
+                        });
+
+                        sendToDropdown.addEventListener('change', (e) => {
+                            const recipientLineId = e.target.value;
+                            if (recipientLineId) {
+                                const senderLineId = facilityDiv.closest('.main-window').dataset.lineId;
+                                sendProductFromFacilityToFactoryLine(senderLineId, recipientLineId, output.item, totalProduced);
+                                e.target.value = '';
+                                sendToContainer.style.display = 'none';
+                            }
+                        });
+
                         outputList.appendChild(li);
 
                         const consumptionLi = document.createElement('li');
