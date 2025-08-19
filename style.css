@@ -101,7 +101,8 @@ h3 {
 }
 
 .send-to-container {
-    margin-left: 10px;
+    width: 100%;
+    margin-top: 16px;
 }
 
 .send-to-dropdown {
@@ -515,6 +516,10 @@ h3 {
     margin-left: -1px; /* Overlap borders */
 }
 
+ul.input-list, ul.output-list {
+    padding: 0 20px;
+}
+
 ul.input-list li {
     display: flex;
     justify-content: space-between;
@@ -527,6 +532,7 @@ ul.output-list li {
 
 .power-display {
     text-align: center;
+    margin-top: 10px;
 }
 
 .change-color-btn img {
@@ -616,24 +622,32 @@ ul.output-list li {
     background-color: #e0f7fa; /* Light blue background */
 }
 
+.send-control {
+    margin-top: 5px;
+    display: flex;
+    flex-direction: column;
+}
+
 .send-btn {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    padding: 2px 5px;
+    background-color: transparent;
+    border: 2px solid #4CAF50;
+    color: #4CAF50;
+    height: 20px;
+    width: 100%;
+    transition: background-color 0.3s, color 0.3s;
+    padding: 0;
     font-size: 0.8em;
-    margin-left: 10px;
+    cursor: pointer;
+    border-radius: 5px;
 }
 
 .send-btn:hover {
-    background-color: #45a049;
+    background-color: #4CAF50;
+    color: white;
 }
 
 .send-to-dropdown-facility {
     width: 100%;
-    margin-top: 5px;
     height: 30px;
     border-radius: 15px;
     border: 1px solid #ccc;

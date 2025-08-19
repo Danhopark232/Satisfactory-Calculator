@@ -111,9 +111,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 <ul class="input-list"></ul>
                 <h4>Outputs:</h4>
                 <ul class="output-list"></ul>
-                <div class="send-to-container" style="display: none;">
-                    <select class="send-to-dropdown-facility"></select>
-                </div>
             </div>
             <div class="power-display">
                 <span>Power: <span class="power-value">0</span> MW</span>
@@ -1101,14 +1098,34 @@ document.addEventListener('DOMContentLoaded', () => {
                         const li = document.createElement('li');
                         li.classList.add('output-item');
                         li.innerHTML = `<span class="item-name">${output.item}</span><span class="item-usage">(${output.rate * purityMultiplier}/min) ${totalProduced}/min</span>`;
+                        outputList.appendChild(li);
+
+                        const consumptionLi = document.createElement('li');
+                        consumptionLi.classList.add('output-item');
+                        consumptionLi.innerHTML = `<span class="item-name">Consumption</span><span class="item-usage">${outputConsumption}/min</span>`;
+                        outputList.appendChild(consumptionLi);
+
+                        const balanceLi = document.createElement('li');
+                        balanceLi.classList.add('output-item');
+                        balanceLi.innerHTML = `<span class="item-name">Balance</span><span class="item-usage">${syncedBalance}/min</span>`;
+                        outputList.appendChild(balanceLi);
+
+                        const sendLi = document.createElement('li');
+                        sendLi.classList.add('send-control');
 
                         const sendButton = document.createElement('button');
                         sendButton.textContent = 'Send';
                         sendButton.classList.add('send-btn');
-                        li.appendChild(sendButton);
+                        sendLi.appendChild(sendButton);
 
-                        const sendToContainer = facilityDiv.querySelector('.send-to-container');
-                        const sendToDropdown = sendToContainer.querySelector('.send-to-dropdown-facility');
+                        const sendToContainer = document.createElement('div');
+                        sendToContainer.classList.add('send-to-container');
+                        sendToContainer.style.display = 'none';
+                        sendLi.appendChild(sendToContainer);
+
+                        const sendToDropdown = document.createElement('select');
+                        sendToDropdown.classList.add('send-to-dropdown-facility');
+                        sendToContainer.appendChild(sendToDropdown);
 
                         sendButton.addEventListener('click', () => {
                             sendToContainer.style.display = sendToContainer.style.display === 'none' ? 'block' : 'none';
@@ -1124,18 +1141,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 sendToContainer.style.display = 'none';
                             }
                         });
-
-                        outputList.appendChild(li);
-
-                        const consumptionLi = document.createElement('li');
-                        consumptionLi.classList.add('output-item');
-                        consumptionLi.innerHTML = `<span class="item-name">Consumption</span><span class="item-usage">${outputConsumption}/min</span>`;
-                        outputList.appendChild(consumptionLi);
-
-                        const balanceLi = document.createElement('li');
-                        balanceLi.classList.add('output-item');
-                        balanceLi.innerHTML = `<span class="item-name">Balance</span><span class="item-usage">${syncedBalance}/min</span>`;
-                        outputList.appendChild(balanceLi);
+                        outputList.appendChild(sendLi);
 
                         factoryLineLeftovers[output.item] = (factoryLineLeftovers[output.item] || 0) + totalProduced;
                     });
