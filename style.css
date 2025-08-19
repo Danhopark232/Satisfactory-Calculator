@@ -630,7 +630,7 @@ ul.output-list li {
 
 .send-btn {
     background-color: transparent;
-    border: 2px solid #4CAF50;
+    border: 1px solid #4CAF50;
     color: #4CAF50;
     height: 20px;
     width: 100%;
