@@ -871,6 +871,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const totalDemands = {}; // Stores total demand for each material across the entire factory line
         const producedMaterials = new Set(); // Keep track of materials being produced
         const receivedMaterials = {}; // Stores received materials
+        let totalPowerUsage = 0;
 
         // First Pass: Collect all demands and produced materials
         columns.forEach(column => {
@@ -986,6 +987,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 facilityImageBox.style.backgroundImage = `url(${getImagePath(selectedFacilityName)})`;
 
                 if (recipe) {
+                    if (facilityData && facilityData.powerUsage) {
+                        totalPowerUsage += facilityData.powerUsage * quantity;
+                    }
                     populateOutputSelect(facilitySelect, outputSelect);
                     outputSelect.value = selectedOutputName;
 
@@ -1199,6 +1203,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 leftoverList.appendChild(li);
             }
         }
+
+        const summaryHeader = factoryLineDiv.querySelector('.summary-header');
+        let totalPowerSpan = summaryHeader.querySelector('.total-power-display');
+        if (!totalPowerSpan) {
+            totalPowerSpan = document.createElement('span');
+            totalPowerSpan.classList.add('total-power-display');
+            summaryHeader.appendChild(totalPowerSpan);
+        }
+        totalPowerSpan.textContent = `(Total Power: ${totalPowerUsage.toFixed(2)} MW)`;
+
         return false;
     }
 

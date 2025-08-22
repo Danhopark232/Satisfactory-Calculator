@@ -82,6 +82,7 @@ body {
     text-align: left;
     width: 80%;
     outline: none;
+    border-bottom: 2px solid black;
 }
 
 .material-summary {
@@ -653,4 +654,13 @@ ul.output-list li {
     border: 1px solid #ccc;
     padding: 0 10px;
     outline: none;
+}
+
+.summary-header h3 {
+    margin-right: 10px;
+}
+
+.total-power-display {
+    font-size: 1em;
+    font-weight: normal;
 }
