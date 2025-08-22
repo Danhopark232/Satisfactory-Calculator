@@ -370,7 +370,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     if (recipe) {
                         recipe.outputs.forEach(output => {
-                            totalProduction[output.item] = (totalProduction[output.item] || 0) + (output.rate * quantity * purityMultiplier);
+                            totalProduction[output.item] = (totalProduction[output.item] || 0) + (output.rate * quantity * (selectedFacilityName.startsWith('Miner') ? purityMultiplier : 1));
                         });
                     }
                 }
@@ -925,7 +925,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     if (recipe) {
                         recipe.outputs.forEach(output => {
-                            totalProduction[output.item] = (totalProduction[output.item] || 0) + (output.rate * quantity * purityMultiplier);
+                            totalProduction[output.item] = (totalProduction[output.item] || 0) + (output.rate * quantity * (selectedFacilityName.startsWith('Miner') ? purityMultiplier : 1));
                         });
                     }
                 }
@@ -1073,7 +1073,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
 
                     recipe.outputs.forEach(output => {
-                        const totalProduced = output.rate * quantity * purityMultiplier;
+                        const totalProduced = output.rate * quantity * (selectedFacilityName.startsWith('Miner') ? purityMultiplier : 1);
                         globalMaterialSupply[output.item] = (globalMaterialSupply[output.item] || 0) + totalProduced;
 
                         const outputConsumption = totalDemands[output.item] || 0;
@@ -1103,7 +1103,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                         const li = document.createElement('li');
                         li.classList.add('output-item');
-                        li.innerHTML = `<span class="item-name">${output.item}</span><span class="item-usage">(${output.rate * purityMultiplier}/min) ${totalProduced}/min</span>`;
+                        li.innerHTML = `<span class="item-name">${output.item}</span><span class="item-usage">(${output.rate * (selectedFacilityName.startsWith('Miner') ? purityMultiplier : 1)}/min) ${totalProduced}/min</span>`;
                         outputList.appendChild(li);
 
                         const consumptionLi = document.createElement('li');
@@ -1156,6 +1156,13 @@ document.addEventListener('DOMContentLoaded', () => {
                             const recipientLineId = e.target.value;
                             if (recipientLineId) {
                                 sendProductFromFacilityToFactoryLine(facilityDiv.dataset.facilityId, recipientLineId, output.item, totalProduced);
+                                const recipientLine = document.querySelector(`.main-window[data-line-id='${recipientLineId}']`);
+                                if (recipientLine) {
+                                    const recipientLineName = recipientLine.querySelector('.factory-name-input').value;
+                                    sendButton.textContent = `Sending to: ${recipientLineName}`;
+                                }
+                                sendButton.disabled = true;
+                                sendToDropdown.disabled = true;
                             }
                         });
                         outputList.appendChild(sendLi);

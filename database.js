@@ -5,143 +5,8 @@ const purityMultipliers = {
 };
 
 const facilitiesData = {
-    "Miner Mk.1": {
-        "powerUsage": 5, // MW
-        "recipes": {
-            "Iron Ore": {
-                "inputs": [],
-                "outputs": [{ "item": "Iron Ore", "rate": 60 }]
-            },
-            "Copper Ore": {
-                "inputs": [],
-                "outputs": [{ "item": "Copper Ore", "rate": 60 }]
-            },
-            "Caterium Ore": {
-                "inputs": [],
-                "outputs": [{ "item": "Caterium Ore", "rate": 60 }]
-            },
-            "Limestone": {
-                "inputs": [],
-                "outputs": [{ "item": "Limestone", "rate": 60 }]
-            },
-            "Coal": {
-                "inputs": [],
-                "outputs": [{ "item": "Coal", "rate": 60 }]
-            },
-            "Raw Quartz": {
-                "inputs": [],
-                "outputs": [{ "item": "Raw Quartz", "rate": 60 }]
-            },
-            "Sulfur": {
-                "inputs": [],
-                "outputs": [{ "item": "Sulfur", "rate": 60 }]
-            },
-            "Bauxite": {
-                "inputs": [],
-                "outputs": [{ "item": "Bauxite", "rate": 60 }]
-            },
-            "Uranium": {
-                "inputs": [],
-                "outputs": [{ "item": "Uranium", "rate": 60 }]
-            },
-            "SAM Ore": {
-                "inputs": [],
-                "outputs": [{ "item": "SAM Ore", "rate": 60 }]
-            }
-        }
-    },
-    "Miner Mk.2": {
-        "powerUsage": 12, // MW
-        "recipes": {
-            "Iron Ore": {
-                "inputs": [],
-                "outputs": [{ "item": "Iron Ore", "rate": 120 }]
-            },
-            "Copper Ore": {
-                "inputs": [],
-                "outputs": [{ "item": "Copper Ore", "rate": 120 }]
-            },
-            "Caterium Ore": {
-                "inputs": [],
-                "outputs": [{ "item": "Caterium Ore", "rate": 120 }]
-            },
-            "Limestone": {
-                "inputs": [],
-                "outputs": [{ "item": "Limestone", "rate": 120 }]
-            },
-            "Coal": {
-                "inputs": [],
-                "outputs": [{ "item": "Coal", "rate": 120 }]
-            },
-            "Raw Quartz": {
-                "inputs": [],
-                "outputs": [{ "item": "Raw Quartz", "rate": 120 }]
-            },
-            "Sulfur": {
-                "inputs": [],
-                "outputs": [{ "item": "Sulfur", "rate": 120 }]
-            },
-            "Bauxite": {
-                "inputs": [],
-                "outputs": [{ "item": "Bauxite", "rate": 120 }]
-            },
-            "Uranium": {
-                "inputs": [],
-                "outputs": [{ "item": "Uranium", "rate": 120 }]
-            },
-            "SAM Ore": {
-                "inputs": [],
-                "outputs": [{ "item": "SAM Ore", "rate": 120 }]
-            }
-        }
-    },
-    "Miner Mk.3": {
-        "powerUsage": 30, // MW
-        "recipes": {
-            "Iron Ore": {
-                "inputs": [],
-                "outputs": [{ "item": "Iron Ore", "rate": 240 }]
-            },
-            "Copper Ore": {
-                "inputs": [],
-                "outputs": [{ "item": "Copper Ore", "rate": 240 }]
-            },
-            "Caterium Ore": {
-                "inputs": [],
-                "outputs": [{ "item": "Caterium Ore", "rate": 240 }]
-            },
-            "Limestone": {
-                "inputs": [],
-                "outputs": [{ "item": "Limestone", "rate": 240 }]
-            },
-            "Coal": {
-                "inputs": [],
-                "outputs": [{ "item": "Coal", "rate": 240 }]
-            },
-            "Raw Quartz": {
-                "inputs": [],
-                "outputs": [{ "item": "Raw Quartz", "rate": 240 }]
-            },
-            "Sulfur": {
-                "inputs": [],
-                "outputs": [{ "item": "Sulfur", "rate": 240 }]
-            },
-            "Bauxite": {
-                "inputs": [],
-                "outputs": [{ "item": "Bauxite", "rate": 240 }]
-            },
-            "Uranium": {
-                "inputs": [],
-                "outputs": [{ "item": "Uranium", "rate": 240 }]
-            },
-            "SAM Ore": {
-                "inputs": [],
-                "outputs": [{ "item": "SAM Ore", "rate": 240 }]
-            }
-        }
-    },
     "Assembler": {
-        "powerUsage": 0,
+        "powerUsage": 15.0,
         "recipes": {
             "AI Limiter": {
                 "inputs": [
@@ -700,278 +565,99 @@ const facilitiesData = {
                         "rate": 5.0
                     }
                 ]
-            },
-            "Alternate (Alternate)": {
-                "inputs": [
-                    {
-                        "item": "Iron Plate",
-                        "rate": 18.75
-                    },
-                    {
-                        "item": "Wire",
-                        "rate": 37.5
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Reinforced Iron Plate",
-                        "rate": 5.625
-                    }
-                ]
             }
         }
     },
-    "Blender": {
-        "powerUsage": 0,
+    "Foundry": {
+        "powerUsage": 16.0,
         "recipes": {
-            "Battery": {
+            "Aluminum Ingot": {
                 "inputs": [
                     {
-                        "item": "Sulfuric Acid",
-                        "rate": 50.0
-                    },
-                    {
-                        "item": "Alumina Solution",
-                        "rate": 40.0
-                    },
-                    {
-                        "item": "Aluminum Casing",
-                        "rate": 20.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Battery",
-                        "rate": 20.0
-                    },
-                    {
-                        "item": "Water",
-                        "rate": 30.0
-                    }
-                ]
-            },
-            "Biochemical Sculptor": {
-                "inputs": [
-                    {
-                        "item": "Assembly Director System",
-                        "rate": 0.5
-                    },
-                    {
-                        "item": "Ficsite Trigon",
-                        "rate": 40.0
-                    },
-                    {
-                        "item": "Water",
-                        "rate": 10.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Biochemical Sculptor",
-                        "rate": 2.0
-                    }
-                ]
-            },
-            "Cooling System": {
-                "inputs": [
-                    {
-                        "item": "Heat Sink",
-                        "rate": 12.0
-                    },
-                    {
-                        "item": "Rubber",
-                        "rate": 12.0
-                    },
-                    {
-                        "item": "Water",
-                        "rate": 30.0
-                    },
-                    {
-                        "item": "Nitrogen Gas",
-                        "rate": 150.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Cooling System",
-                        "rate": 6.0
-                    }
-                ]
-            },
-            "Encased Uranium Cell": {
-                "inputs": [
-                    {
-                        "item": "Uranium",
-                        "rate": 50.0
-                    },
-                    {
-                        "item": "Concrete",
-                        "rate": 15.0
-                    },
-                    {
-                        "item": "Sulfuric Acid",
-                        "rate": 40.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Encased Uranium Cell",
-                        "rate": 25.0
-                    },
-                    {
-                        "item": "Sulfuric Acid",
-                        "rate": 10.0
-                    }
-                ]
-            },
-            "Fused Modular Frame": {
-                "inputs": [
-                    {
-                        "item": "Heavy Modular Frame",
-                        "rate": 1.5
-                    },
-                    {
-                        "item": "Aluminum Casing",
-                        "rate": 75.0
-                    },
-                    {
-                        "item": "Nitrogen Gas",
-                        "rate": 37.5
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Fused Modular Frame",
-                        "rate": 1.5
-                    }
-                ]
-            },
-            "Nitric Acid": {
-                "inputs": [
-                    {
-                        "item": "Nitrogen Gas",
-                        "rate": 120.0
-                    },
-                    {
-                        "item": "Water",
-                        "rate": 30.0
-                    },
-                    {
-                        "item": "Iron Plate",
-                        "rate": 10.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Nitric Acid",
-                        "rate": 30.0
-                    }
-                ]
-            },
-            "Non-Fissile Uranium": {
-                "inputs": [
-                    {
-                        "item": "Uranium Waste",
-                        "rate": 37.5
+                        "item": "Aluminum Scrap",
+                        "rate": 90.0
                     },
                     {
                         "item": "Silica",
-                        "rate": 25.0
-                    },
-                    {
-                        "item": "Nitric Acid",
-                        "rate": 15.0
-                    },
-                    {
-                        "item": "Sulfuric Acid",
-                        "rate": 15.0
+                        "rate": 75.0
                     }
                 ],
                 "outputs": [
                     {
-                        "item": "Non-Fissile Uranium",
-                        "rate": 50.0
-                    },
-                    {
-                        "item": "Water",
-                        "rate": 15.0
-                    }
-                ]
-            },
-            "Rocket Fuel": {
-                "inputs": [
-                    {
-                        "item": "Turbofuel",
+                        "item": "Aluminum Ingot",
                         "rate": 60.0
-                    },
-                    {
-                        "item": "Nitric Acid",
-                        "rate": 10.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Rocket Fuel",
-                        "rate": 100.0
-                    },
-                    {
-                        "item": "Compacted Coal",
-                        "rate": 10.0
                     }
                 ]
             },
-            "Turbo Rifle Ammo": {
+            "Steel Ingot": {
                 "inputs": [
                     {
-                        "item": "Rifle Ammo",
-                        "rate": 125.0
+                        "item": "Iron Ore",
+                        "rate": 45.0
                     },
                     {
-                        "item": "Aluminum Casing",
-                        "rate": 15.0
-                    },
-                    {
-                        "item": "Turbofuel",
-                        "rate": 15.0
+                        "item": "Coal",
+                        "rate": 45.0
                     }
                 ],
                 "outputs": [
                     {
-                        "item": "Turbo Rifle Ammo",
-                        "rate": 250.0
-                    }
-                ]
-            },
-            "Alternate (Alternate)": {
-                "inputs": [
-                    {
-                        "item": "Fuel",
-                        "rate": 15.0
-                    },
-                    {
-                        "item": "Heavy Oil Residue",
-                        "rate": 30.0
-                    },
-                    {
-                        "item": "Sulfur",
-                        "rate": 22.5
-                    },
-                    {
-                        "item": "Petroleum Coke",
-                        "rate": 22.5
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Turbofuel",
+                        "item": "Steel Ingot",
                         "rate": 45.0
                     }
                 ]
             }
         }
     },
+    "Smelter": {
+        "powerUsage": 4.0,
+        "recipes": {
+            "Caterium Ingot": {
+                "inputs": [
+                    {
+                        "item": "Caterium Ore",
+                        "rate": 45.0
+                    }
+                ],
+                "outputs": [
+                    {
+                        "item": "Caterium Ingot",
+                        "rate": 15.0
+                    }
+                ]
+            },
+            "Copper Ingot": {
+                "inputs": [
+                    {
+                        "item": "Copper Ore",
+                        "rate": 30.0
+                    }
+                ],
+                "outputs": [
+                    {
+                        "item": "Copper Ingot",
+                        "rate": 30.0
+                    }
+                ]
+            },
+            "Iron Ingot": {
+                "inputs": [
+                    {
+                        "item": "Iron Ore",
+                        "rate": 30.0
+                    }
+                ],
+                "outputs": [
+                    {
+                        "item": "Iron Ingot",
+                        "rate": 30.0
+                    }
+                ]
+            }
+        }
+    },
     "Constructor": {
-        "powerUsage": 0,
+        "powerUsage": 4.0,
         "recipes": {
             "Alien DNA Capsule": {
                 "inputs": [
@@ -1420,437 +1106,1058 @@ const facilitiesData = {
                         "rate": 30.0
                     }
                 ]
-            },
-            "Alternate (Alternate)": {
-                "inputs": [
-                    {
-                        "item": "Steel Beam",
-                        "rate": 5.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Screws",
-                        "rate": 260.0
-                    }
-                ]
             }
         }
     },
-    "Converter": {
-        "powerUsage": 0,
+    "Refinery": {
+        "powerUsage": 30.0,
         "recipes": {
-            "Bauxite (Caterium)": {
+            "Alumina Solution": {
                 "inputs": [
-                    {
-                        "item": "Reanimated SAM",
-                        "rate": 10.0
-                    },
-                    {
-                        "item": "Caterium Ore",
-                        "rate": 150.0
-                    }
-                ],
-                "outputs": [
                     {
                         "item": "Bauxite",
                         "rate": 120.0
-                    }
-                ]
-            },
-            "Bauxite (Copper)": {
-                "inputs": [
-                    {
-                        "item": "Reanimated SAM",
-                        "rate": 10.0
                     },
                     {
-                        "item": "Copper Ore",
+                        "item": "Water",
                         "rate": 180.0
                     }
                 ],
                 "outputs": [
                     {
-                        "item": "Bauxite",
+                        "item": "Alumina Solution",
                         "rate": 120.0
-                    }
-                ]
-            },
-            "Caterium Ore (Copper)": {
-                "inputs": [
-                    {
-                        "item": "Reanimated SAM",
-                        "rate": 10.0
                     },
                     {
-                        "item": "Copper Ore",
-                        "rate": 150.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Caterium Ore",
-                        "rate": 120.0
-                    }
-                ]
-            },
-            "Caterium Ore (Quartz)": {
-                "inputs": [
-                    {
-                        "item": "Reanimated SAM",
-                        "rate": 10.0
-                    },
-                    {
-                        "item": "Raw Quartz",
-                        "rate": 120.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Caterium Ore",
-                        "rate": 120.0
-                    }
-                ]
-            },
-            "Coal (Iron)": {
-                "inputs": [
-                    {
-                        "item": "Reanimated SAM",
-                        "rate": 10.0
-                    },
-                    {
-                        "item": "Iron Ore",
-                        "rate": 180.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Coal",
-                        "rate": 120.0
-                    }
-                ]
-            },
-            "Coal (Limestone)": {
-                "inputs": [
-                    {
-                        "item": "Reanimated SAM",
-                        "rate": 10.0
-                    },
-                    {
-                        "item": "Limestone",
-                        "rate": 360.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Coal",
-                        "rate": 120.0
-                    }
-                ]
-            },
-            "Copper Ore (Quartz)": {
-                "inputs": [
-                    {
-                        "item": "Reanimated SAM",
-                        "rate": 10.0
-                    },
-                    {
-                        "item": "Raw Quartz",
-                        "rate": 100.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Copper Ore",
-                        "rate": 120.0
-                    }
-                ]
-            },
-            "Copper Ore (Sulfur)": {
-                "inputs": [
-                    {
-                        "item": "Reanimated SAM",
-                        "rate": 10.0
-                    },
-                    {
-                        "item": "Sulfur",
-                        "rate": 120.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Copper Ore",
-                        "rate": 120.0
-                    }
-                ]
-            },
-            "Dark Matter Residue": {
-                "inputs": [
-                    {
-                        "item": "Reanimated SAM",
+                        "item": "Silica",
                         "rate": 50.0
                     }
-                ],
-                "outputs": [
-                    {
-                        "item": "Dark Matter Residue",
-                        "rate": 100.0
-                    }
                 ]
             },
-            "Ficsite Ingot (Aluminum)": {
+            "Aluminum Scrap": {
                 "inputs": [
                     {
-                        "item": "Reanimated SAM",
-                        "rate": 60.0
+                        "item": "Alumina Solution",
+                        "rate": 240.0
                     },
                     {
-                        "item": "Aluminum Ingot",
+                        "item": "Coal",
                         "rate": 120.0
                     }
                 ],
                 "outputs": [
                     {
-                        "item": "Ficsite Ingot",
+                        "item": "Aluminum Scrap",
+                        "rate": 360.0
+                    },
+                    {
+                        "item": "Water",
+                        "rate": 120.0
+                    }
+                ]
+            },
+            "Fuel": {
+                "inputs": [
+                    {
+                        "item": "Crude Oil",
+                        "rate": 60.0
+                    }
+                ],
+                "outputs": [
+                    {
+                        "item": "Fuel",
+                        "rate": 40.0
+                    },
+                    {
+                        "item": "Polymer Resin",
                         "rate": 30.0
                     }
                 ]
             },
-            "Ficsite Ingot (Caterium)": {
+            "Ionized Fuel": {
                 "inputs": [
                     {
-                        "item": "Reanimated SAM",
-                        "rate": 45.0
+                        "item": "Rocket Fuel",
+                        "rate": 40.0
                     },
                     {
-                        "item": "Caterium Ingot",
+                        "item": "Power Shard",
+                        "rate": 2.5
+                    }
+                ],
+                "outputs": [
+                    {
+                        "item": "Ionized Fuel",
+                        "rate": 40.0
+                    },
+                    {
+                        "item": "Compacted Coal",
+                        "rate": 5.0
+                    }
+                ]
+            },
+            "Liquid Biofuel": {
+                "inputs": [
+                    {
+                        "item": "Solid Biofuel",
+                        "rate": 90.0
+                    },
+                    {
+                        "item": "Water",
+                        "rate": 45.0
+                    }
+                ],
+                "outputs": [
+                    {
+                        "item": "Liquid Biofuel",
+                        "rate": 60.0
+                    }
+                ]
+            },
+            "Petroleum Coke": {
+                "inputs": [
+                    {
+                        "item": "Heavy Oil Residue",
+                        "rate": 40.0
+                    }
+                ],
+                "outputs": [
+                    {
+                        "item": "Petroleum Coke",
+                        "rate": 120.0
+                    }
+                ]
+            },
+            "Plastic": {
+                "inputs": [
+                    {
+                        "item": "Crude Oil",
+                        "rate": 30.0
+                    }
+                ],
+                "outputs": [
+                    {
+                        "item": "Plastic",
+                        "rate": 20.0
+                    },
+                    {
+                        "item": "Heavy Oil Residue",
+                        "rate": 10.0
+                    }
+                ]
+            },
+            "Residual Fuel": {
+                "inputs": [
+                    {
+                        "item": "Heavy Oil Residue",
                         "rate": 60.0
                     }
                 ],
                 "outputs": [
                     {
-                        "item": "Ficsite Ingot",
-                        "rate": 15.0
-                    }
-                ]
-            },
-            "Ficsite Ingot (Iron)": {
-                "inputs": [
-                    {
-                        "item": "Reanimated SAM",
+                        "item": "Fuel",
                         "rate": 40.0
-                    },
-                    {
-                        "item": "Iron Ingot",
-                        "rate": 240.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Ficsite Ingot",
-                        "rate": 10.0
                     }
                 ]
             },
-            "Iron Ore (Limestone)": {
+            "Residual Plastic": {
                 "inputs": [
                     {
-                        "item": "Reanimated SAM",
-                        "rate": 10.0
+                        "item": "Polymer Resin",
+                        "rate": 60.0
                     },
                     {
-                        "item": "Limestone",
-                        "rate": 240.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Iron Ore",
-                        "rate": 120.0
-                    }
-                ]
-            },
-            "Limestone (Sulfur)": {
-                "inputs": [
-                    {
-                        "item": "Reanimated SAM",
-                        "rate": 10.0
-                    },
-                    {
-                        "item": "Sulfur",
+                        "item": "Water",
                         "rate": 20.0
                     }
                 ],
                 "outputs": [
                     {
-                        "item": "Limestone",
-                        "rate": 120.0
+                        "item": "Plastic",
+                        "rate": 20.0
                     }
                 ]
             },
-            "Nitrogen Gas (Bauxite)": {
+            "Residual Rubber": {
                 "inputs": [
                     {
-                        "item": "Reanimated SAM",
-                        "rate": 10.0
+                        "item": "Polymer Resin",
+                        "rate": 40.0
                     },
                     {
-                        "item": "Bauxite",
-                        "rate": 100.0
+                        "item": "Water",
+                        "rate": 40.0
                     }
                 ],
                 "outputs": [
                     {
-                        "item": "Nitrogen Gas",
-                        "rate": 120.0
+                        "item": "Rubber",
+                        "rate": 20.0
                     }
                 ]
             },
-            "Nitrogen Gas (Caterium)": {
+            "Rubber": {
                 "inputs": [
                     {
-                        "item": "Reanimated SAM",
-                        "rate": 10.0
-                    },
-                    {
-                        "item": "Caterium Ore",
-                        "rate": 120.0
+                        "item": "Crude Oil",
+                        "rate": 30.0
                     }
                 ],
                 "outputs": [
                     {
-                        "item": "Nitrogen Gas",
-                        "rate": 120.0
+                        "item": "Rubber",
+                        "rate": 20.0
+                    },
+                    {
+                        "item": "Heavy Oil Residue",
+                        "rate": 20.0
                     }
                 ]
             },
-            "Raw Quartz (Bauxite)": {
+            "Smokeless Powder": {
                 "inputs": [
                     {
-                        "item": "Reanimated SAM",
-                        "rate": 10.0
+                        "item": "Black Powder",
+                        "rate": 20.0
                     },
                     {
-                        "item": "Bauxite",
-                        "rate": 100.0
+                        "item": "Heavy Oil Residue",
+                        "rate": 10.0
                     }
                 ],
                 "outputs": [
                     {
-                        "item": "Raw Quartz",
-                        "rate": 120.0
+                        "item": "Smokeless Powder",
+                        "rate": 20.0
                     }
                 ]
             },
-            "Raw Quartz (Coal)": {
+            "Sulfuric Acid": {
                 "inputs": [
-                    {
-                        "item": "Reanimated SAM",
-                        "rate": 10.0
-                    },
-                    {
-                        "item": "Coal",
-                        "rate": 240.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Raw Quartz",
-                        "rate": 120.0
-                    }
-                ]
-            },
-            "Sulfur (Coal)": {
-                "inputs": [
-                    {
-                        "item": "Reanimated SAM",
-                        "rate": 10.0
-                    },
-                    {
-                        "item": "Coal",
-                        "rate": 200.0
-                    }
-                ],
-                "outputs": [
                     {
                         "item": "Sulfur",
-                        "rate": 120.0
-                    }
-                ]
-            },
-            "Sulfur (Iron)": {
-                "inputs": [
-                    {
-                        "item": "Reanimated SAM",
-                        "rate": 10.0
+                        "rate": 50.0
                     },
                     {
-                        "item": "Iron Ore",
-                        "rate": 300.0
+                        "item": "Water",
+                        "rate": 50.0
                     }
                 ],
                 "outputs": [
                     {
-                        "item": "Sulfur",
-                        "rate": 120.0
-                    }
-                ]
-            },
-            "Time Crystal": {
-                "inputs": [
-                    {
-                        "item": "Diamonds",
-                        "rate": 12.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Time Crystal",
-                        "rate": 6.0
-                    }
-                ]
-            },
-            "Uranium Ore (Bauxite)": {
-                "inputs": [
-                    {
-                        "item": "Reanimated SAM",
-                        "rate": 10.0
-                    },
-                    {
-                        "item": "Bauxite",
-                        "rate": 480.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Uranium",
-                        "rate": 120.0
-                    }
-                ]
-            },
-            "Alternate (Alternate)": {
-                "inputs": [
-                    {
-                        "item": "Coal",
-                        "rate": 120.0
-                    },
-                    {
-                        "item": "Quartz Crystal",
-                        "rate": 45.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Diamonds",
-                        "rate": 15.0
+                        "item": "Sulfuric Acid",
+                        "rate": 50.0
                     }
                 ]
             }
         }
     },
-    
-    "Packager": {
+    "Blender": {
+        "powerUsage": 75.0,
+        "recipes": {
+            "Battery": {
+                "inputs": [
+                    {
+                        "item": "Sulfuric Acid",
+                        "rate": 50.0
+                    },
+                    {
+                        "item": "Alumina Solution",
+                        "rate": 40.0
+                    },
+                    {
+                        "item": "Aluminum Casing",
+                        "rate": 20.0
+                    }
+                ],
+                "outputs": [
+                    {
+                        "item": "Battery",
+                        "rate": 20.0
+                    },
+                    {
+                        "item": "Water",
+                        "rate": 30.0
+                    }
+                ]
+            },
+            "Biochemical Sculptor": {
+                "inputs": [
+                    {
+                        "item": "Assembly Director System",
+                        "rate": 0.5
+                    },
+                    {
+                        "item": "Ficsite Trigon",
+                        "rate": 40.0
+                    },
+                    {
+                        "item": "Water",
+                        "rate": 10.0
+                    }
+                ],
+                "outputs": [
+                    {
+                        "item": "Biochemical Sculptor",
+                        "rate": 2.0
+                    }
+                ]
+            },
+            "Cooling System": {
+                "inputs": [
+                    {
+                        "item": "Heat Sink",
+                        "rate": 12.0
+                    },
+                    {
+                        "item": "Rubber",
+                        "rate": 12.0
+                    },
+                    {
+                        "item": "Water",
+                        "rate": 30.0
+                    },
+                    {
+                        "item": "Nitrogen Gas",
+                        "rate": 150.0
+                    }
+                ],
+                "outputs": [
+                    {
+                        "item": "Cooling System",
+                        "rate": 6.0
+                    }
+                ]
+            },
+            "Encased Uranium Cell": {
+                "inputs": [
+                    {
+                        "item": "Uranium",
+                        "rate": 50.0
+                    },
+                    {
+                        "item": "Concrete",
+                        "rate": 15.0
+                    },
+                    {
+                        "item": "Sulfuric Acid",
+                        "rate": 40.0
+                    }
+                ],
+                "outputs": [
+                    {
+                        "item": "Encased Uranium Cell",
+                        "rate": 25.0
+                    },
+                    {
+                        "item": "Sulfuric Acid",
+                        "rate": 10.0
+                    }
+                ]
+            },
+            "Fused Modular Frame": {
+                "inputs": [
+                    {
+                        "item": "Heavy Modular Frame",
+                        "rate": 1.5
+                    },
+                    {
+                        "item": "Aluminum Casing",
+                        "rate": 75.0
+                    },
+                    {
+                        "item": "Nitrogen Gas",
+                        "rate": 37.5
+                    }
+                ],
+                "outputs": [
+                    {
+                        "item": "Fused Modular Frame",
+                        "rate": 1.5
+                    }
+                ]
+            },
+            "Nitric Acid": {
+                "inputs": [
+                    {
+                        "item": "Nitrogen Gas",
+                        "rate": 120.0
+                    },
+                    {
+                        "item": "Water",
+                        "rate": 30.0
+                    },
+                    {
+                        "item": "Iron Plate",
+                        "rate": 10.0
+                    }
+                ],
+                "outputs": [
+                    {
+                        "item": "Nitric Acid",
+                        "rate": 30.0
+                    }
+                ]
+            },
+            "Non-Fissile Uranium": {
+                "inputs": [
+                    {
+                        "item": "Uranium Waste",
+                        "rate": 37.5
+                    },
+                    {
+                        "item": "Silica",
+                        "rate": 25.0
+                    },
+                    {
+                        "item": "Nitric Acid",
+                        "rate": 15.0
+                    },
+                    {
+                        "item": "Sulfuric Acid",
+                        "rate": 15.0
+                    }
+                ],
+                "outputs": [
+                    {
+                        "item": "Non-Fissile Uranium",
+                        "rate": 50.0
+                    },
+                    {
+                        "item": "Water",
+                        "rate": 15.0
+                    }
+                ]
+            },
+            "Rocket Fuel": {
+                "inputs": [
+                    {
+                        "item": "Turbofuel",
+                        "rate": 60.0
+                    },
+                    {
+                        "item": "Nitric Acid",
+                        "rate": 10.0
+                    }
+                ],
+                "outputs": [
+                    {
+                        "item": "Rocket Fuel",
+                        "rate": 100.0
+                    },
+                    {
+                        "item": "Compacted Coal",
+                        "rate": 10.0
+                    }
+                ]
+            },
+            "Turbo Rifle Ammo": {
+                "inputs": [
+                    {
+                        "item": "Rifle Ammo",
+                        "rate": 125.0
+                    },
+                    {
+                        "item": "Aluminum Casing",
+                        "rate": 15.0
+                    },
+                    {
+                        "item": "Turbofuel",
+                        "rate": 15.0
+                    }
+                ],
+                "outputs": [
+                    {
+                        "item": "Turbo Rifle Ammo",
+                        "rate": 250.0
+                    }
+                ]
+            }
+        }
+    },
+    "Particle Accelerator": {
         "powerUsage": 0,
+        "recipes": {
+            "Dark Matter Crystal": {
+                "inputs": [
+                    {
+                        "item": "Diamonds",
+                        "rate": 30.0
+                    },
+                    {
+                        "item": "Dark Matter Residue",
+                        "rate": 150.0
+                    }
+                ],
+                "outputs": [
+                    {
+                        "item": "Dark Matter Crystal",
+                        "rate": 30.0
+                    }
+                ],
+                "powerUsage": 500.0
+            },
+            "Diamonds": {
+                "inputs": [
+                    {
+                        "item": "Coal",
+                        "rate": 600.0
+                    }
+                ],
+                "outputs": [
+                    {
+                        "item": "Diamonds",
+                        "rate": 30.0
+                    }
+                ],
+                "powerUsage": 500.0
+            },
+            "Ficsonium": {
+                "inputs": [
+                    {
+                        "item": "Plutonium Waste",
+                        "rate": 10.0
+                    },
+                    {
+                        "item": "Singularity Cell",
+                        "rate": 10.0
+                    },
+                    {
+                        "item": "Dark Matter Residue",
+                        "rate": 200.0
+                    }
+                ],
+                "outputs": [
+                    {
+                        "item": "Ficsonium",
+                        "rate": 10.0
+                    }
+                ],
+                "powerUsage": 500.0
+            },
+            "Nuclear Pasta": {
+                "inputs": [
+                    {
+                        "item": "Copper Powder",
+                        "rate": 100.0
+                    },
+                    {
+                        "item": "Pressure Conversion Cube",
+                        "rate": 0.5
+                    }
+                ],
+                "outputs": [
+                    {
+                        "item": "Nuclear Pasta",
+                        "rate": 0.5
+                    }
+                ],
+                "powerUsage": 500.0
+            },
+            "Plutonium Pellet": {
+                "inputs": [
+                    {
+                        "item": "Non-Fissile Uranium",
+                        "rate": 100.0
+                    },
+                    {
+                        "item": "Uranium Waste",
+                        "rate": 25.0
+                    }
+                ],
+                "outputs": [
+                    {
+                        "item": "Plutonium Pellet",
+                        "rate": 30.0
+                    }
+                ],
+                "powerUsage": 500.0
+            }
+        }
+    },
+    "Manufacturer": {
+        "powerUsage": 55.0,
+        "recipes": {
+            "Adaptive Control Unit": {
+                "inputs": [
+                    {
+                        "item": "Automated Wiring",
+                        "rate": 5.0
+                    },
+                    {
+                        "item": "Circuit Board",
+                        "rate": 5.0
+                    },
+                    {
+                        "item": "Heavy Modular Frame",
+                        "rate": 1.0
+                    },
+                    {
+                        "item": "Computer",
+                        "rate": 2.0
+                    }
+                ],
+                "outputs": [
+                    {
+                        "item": "Adaptive Control Unit",
+                        "rate": 1.0
+                    }
+                ]
+            },
+            "Ballistic Warp Drive": {
+                "inputs": [
+                    {
+                        "item": "Thermal Propulsion Rocket",
+                        "rate": 1.0
+                    },
+                    {
+                        "item": "Singularity Cell",
+                        "rate": 5.0
+                    },
+                    {
+                        "item": "Superposition Oscillator",
+                        "rate": 2.0
+                    },
+                    {
+                        "item": "Dark Matter Crystal",
+                        "rate": 40.0
+                    }
+                ],
+                "outputs": [
+                    {
+                        "item": "Ballistic Warp Drive",
+                        "rate": 1.0
+                    }
+                ]
+            },
+            "Computer": {
+                "inputs": [
+                    {
+                        "item": "Circuit Board",
+                        "rate": 10.0
+                    },
+                    {
+                        "item": "Cable",
+                        "rate": 20.0
+                    },
+                    {
+                        "item": "Plastic",
+                        "rate": 40.0
+                    }
+                ],
+                "outputs": [
+                    {
+                        "item": "Computer",
+                        "rate": 2.5
+                    }
+                ]
+            },
+            "Crystal Oscillator": {
+                "inputs": [
+                    {
+                        "item": "Quartz Crystal",
+                        "rate": 18.0
+                    },
+                    {
+                        "item": "Cable",
+                        "rate": 14.0
+                    },
+                    {
+                        "item": "Reinforced Iron Plate",
+                        "rate": 2.5
+                    }
+                ],
+                "outputs": [
+                    {
+                        "item": "Crystal Oscillator",
+                        "rate": 1.0
+                    }
+                ]
+            },
+            "Explosive Rebar": {
+                "inputs": [
+                    {
+                        "item": "Iron Rebar",
+                        "rate": 10.0
+                    },
+                    {
+                        "item": "Smokeless Powder",
+                        "rate": 10.0
+                    },
+                    {
+                        "item": "Steel Pipe",
+                        "rate": 10.0
+                    }
+                ],
+                "outputs": [
+                    {
+                        "item": "Explosive Rebar",
+                        "rate": 5.0
+                    }
+                ]
+            },
+            "Gas Filter": {
+                "inputs": [
+                    {
+                        "item": "Fabric",
+                        "rate": 15.0
+                    },
+                    {
+                        "item": "Coal",
+                        "rate": 30.0
+                    },
+                    {
+                        "item": "Iron Plate",
+                        "rate": 15.0
+                    }
+                ],
+                "outputs": [
+                    {
+                        "item": "Gas Filter",
+                        "rate": 7.5
+                    }
+                ]
+            },
+            "Heavy Modular Frame": {
+                "inputs": [
+                    {
+                        "item": "Modular Frame",
+                        "rate": 10.0
+                    },
+                    {
+                        "item": "Steel Pipe",
+                        "rate": 40.0
+                    },
+                    {
+                        "item": "Encased Industrial Beam",
+                        "rate": 10.0
+                    },
+                    {
+                        "item": "Screws",
+                        "rate": 240.0
+                    }
+                ],
+                "outputs": [
+                    {
+                        "item": "Heavy Modular Frame",
+                        "rate": 2.0
+                    }
+                ]
+            },
+            "High-Speed Connector": {
+                "inputs": [
+                    {
+                        "item": "Quickwire",
+                        "rate": 210.0
+                    },
+                    {
+                        "item": "Cable",
+                        "rate": 37.5
+                    },
+                    {
+                        "item": "Circuit Board",
+                        "rate": 3.75
+                    }
+                ],
+                "outputs": [
+                    {
+                        "item": "High-Speed Connector",
+                        "rate": 3.75
+                    }
+                ]
+            },
+            "Iodine-Infused Filter": {
+                "inputs": [
+                    {
+                        "item": "Gas Filter",
+                        "rate": 3.75
+                    },
+                    {
+                        "item": "Quickwire",
+                        "rate": 30.0
+                    },
+                    {
+                        "item": "Aluminum Casing",
+                        "rate": 3.75
+                    }
+                ],
+                "outputs": [
+                    {
+                        "item": "Iodine-Infused Filter",
+                        "rate": 3.75
+                    }
+                ]
+            },
+            "Modular Engine": {
+                "inputs": [
+                    {
+                        "item": "Motor",
+                        "rate": 2.0
+                    },
+                    {
+                        "item": "Rubber",
+                        "rate": 15.0
+                    },
+                    {
+                        "item": "Smart Plating",
+                        "rate": 2.0
+                    }
+                ],
+                "outputs": [
+                    {
+                        "item": "Modular Engine",
+                        "rate": 1.0
+                    }
+                ]
+            },
+            "Nuke Nobelisk": {
+                "inputs": [
+                    {
+                        "item": "Nobelisk",
+                        "rate": 2.5
+                    },
+                    {
+                        "item": "Encased Uranium Cell",
+                        "rate": 10.0
+                    },
+                    {
+                        "item": "Smokeless Powder",
+                        "rate": 5.0
+                    },
+                    {
+                        "item": "AI Limiter",
+                        "rate": 3.0
+                    }
+                ],
+                "outputs": [
+                    {
+                        "item": "Nuke Nobelisk",
+                        "rate": 0.5
+                    }
+                ]
+            },
+            "Plutonium Fuel Rod": {
+                "inputs": [
+                    {
+                        "item": "Encased Plutonium Cell",
+                        "rate": 7.5
+                    },
+                    {
+                        "item": "Steel Beam",
+                        "rate": 4.5
+                    },
+                    {
+                        "item": "Electromagnetic Control Rod",
+                        "rate": 1.5
+                    },
+                    {
+                        "item": "Heat Sink",
+                        "rate": 2.5
+                    }
+                ],
+                "outputs": [
+                    {
+                        "item": "Plutonium Fuel Rod",
+                        "rate": 0.25
+                    }
+                ]
+            },
+            "Radio Control Unit": {
+                "inputs": [
+                    {
+                        "item": "Aluminum Casing",
+                        "rate": 40.0
+                    },
+                    {
+                        "item": "Crystal Oscillator",
+                        "rate": 1.25
+                    },
+                    {
+                        "item": "Computer",
+                        "rate": 2.5
+                    }
+                ],
+                "outputs": [
+                    {
+                        "item": "Radio Control Unit",
+                        "rate": 2.5
+                    }
+                ]
+            },
+            "SAM Fluctuator": {
+                "inputs": [
+                    {
+                        "item": "Reanimated SAM",
+                        "rate": 60.0
+                    },
+                    {
+                        "item": "Wire",
+                        "rate": 50.0
+                    },
+                    {
+                        "item": "Steel Pipe",
+                        "rate": 30.0
+                    }
+                ],
+                "outputs": [
+                    {
+                        "item": "SAM Fluctuator",
+                        "rate": 10.0
+                    }
+                ]
+            },
+            "Singularity Cell": {
+                "inputs": [
+                    {
+                        "item": "Nuclear Pasta",
+                        "rate": 1.0
+                    },
+                    {
+                        "item": "Dark Matter Crystal",
+                        "rate": 20.0
+                    },
+                    {
+                        "item": "Iron Plate",
+                        "rate": 100.0
+                    },
+                    {
+                        "item": "Concrete",
+                        "rate": 200.0
+                    }
+                ],
+                "outputs": [
+                    {
+                        "item": "Singularity Cell",
+                        "rate": 10.0
+                    }
+                ]
+            },
+            "Supercomputer": {
+                "inputs": [
+                    {
+                        "item": "Computer",
+                        "rate": 7.5
+                    },
+                    {
+                        "item": "AI Limiter",
+                        "rate": 3.75
+                    },
+                    {
+                        "item": "High-Speed Connector",
+                        "rate": 5.625
+                    },
+                    {
+                        "item": "Plastic",
+                        "rate": 52.5
+                    }
+                ],
+                "outputs": [
+                    {
+                        "item": "Supercomputer",
+                        "rate": 1.875
+                    }
+                ]
+            },
+            "Thermal Propulsion Rocket": {
+                "inputs": [
+                    {
+                        "item": "Modular Engine",
+                        "rate": 2.5
+                    },
+                    {
+                        "item": "Turbo Motor",
+                        "rate": 1.0
+                    },
+                    {
+                        "item": "Cooling System",
+                        "rate": 3.0
+                    },
+                    {
+                        "item": "Fused Modular Frame",
+                        "rate": 1.0
+                    }
+                ],
+                "outputs": [
+                    {
+                        "item": "Thermal Propulsion Rocket",
+                        "rate": 1.0
+                    }
+                ]
+            },
+            "Turbo Motor": {
+                "inputs": [
+                    {
+                        "item": "Cooling System",
+                        "rate": 7.5
+                    },
+                    {
+                        "item": "Radio Control Unit",
+                        "rate": 3.75
+                    },
+                    {
+                        "item": "Motor",
+                        "rate": 7.5
+                    },
+                    {
+                        "item": "Rubber",
+                        "rate": 45.0
+                    }
+                ],
+                "outputs": [
+                    {
+                        "item": "Turbo Motor",
+                        "rate": 1.875
+                    }
+                ]
+            },
+            "Turbo Rifle Ammo": {
+                "inputs": [
+                    {
+                        "item": "Rifle Ammo",
+                        "rate": 125.0
+                    },
+                    {
+                        "item": "Aluminum Casing",
+                        "rate": 15.0
+                    },
+                    {
+                        "item": "Packaged Turbofuel",
+                        "rate": 15.0
+                    }
+                ],
+                "outputs": [
+                    {
+                        "item": "Turbo Rifle Ammo",
+                        "rate": 250.0
+                    }
+                ]
+            },
+            "Uranium Fuel Rod": {
+                "inputs": [
+                    {
+                        "item": "Encased Uranium Cell",
+                        "rate": 20.0
+                    },
+                    {
+                        "item": "Encased Industrial Beam",
+                        "rate": 1.2
+                    },
+                    {
+                        "item": "Electromagnetic Control Rod",
+                        "rate": 2.0
+                    }
+                ],
+                "outputs": [
+                    {
+                        "item": "Uranium Fuel Rod",
+                        "rate": 0.4
+                    }
+                ]
+            }
+        }
+    },
+    "Packager": {
+        "powerUsage": 10.0,
         "recipes": {
             "Packaged Alumina Solution": {
                 "inputs": [
@@ -2198,17 +2505,17 @@ const facilitiesData = {
                 "inputs": [
                     {
                         "item": "Packaged Oil",
-                        "rate": 30.0
+                        "rate": 60.0
                     }
                 ],
                 "outputs": [
                     {
                         "item": "Crude Oil",
-                        "rate": 30.0
+                        "rate": 60.0
                     },
                     {
                         "item": "Empty Canister",
-                        "rate": 30.0
+                        "rate": 60.0
                     }
                 ]
             },
@@ -2270,886 +2577,154 @@ const facilitiesData = {
                 "inputs": [
                     {
                         "item": "Packaged Water",
-                        "rate": 60.0
+                        "rate": 120.0
                     }
                 ],
                 "outputs": [
                     {
                         "item": "Water",
-                        "rate": 60.0
+                        "rate": 120.0
                     },
                     {
                         "item": "Empty Canister",
-                        "rate": 60.0
+                        "rate": 120.0
                     }
                 ]
             }
         }
     },
-    "Smelter": {
-        "powerUsage": 0,
+    "Miner Mk.1": {
+        "powerUsage": 5, // MW
         "recipes": {
-            "Caterium Ingot": {
-                "inputs": [
-                    {
-                        "item": "Caterium Ore",
-                        "rate": 45.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Caterium Ingot",
-                        "rate": 15.0
-                    }
-                ]
+            "Iron Ore": {
+                "inputs": [],
+                "outputs": [{ "item": "Iron Ore", "rate": 60 }]
             },
-            "Copper Ingot": {
-                "inputs": [
-                    {
-                        "item": "Copper Ore",
-                        "rate": 30.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Copper Ingot",
-                        "rate": 30.0
-                    }
-                ]
+            "Copper Ore": {
+                "inputs": [],
+                "outputs": [{ "item": "Copper Ore", "rate": 60 }]
             },
-            "Iron Ingot": {
-                "inputs": [
-                    {
-                        "item": "Iron Ore",
-                        "rate": 30.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Iron Ingot",
-                        "rate": 30.0
-                    }
-                ]
+            "Caterium Ore": {
+                "inputs": [],
+                "outputs": [{ "item": "Caterium Ore", "rate": 60 }]
             },
-            "Alternate (Alternate)": {
-                "inputs": [
-                    {
-                        "item": "Aluminum Scrap",
-                        "rate": 60.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Aluminum Ingot",
-                        "rate": 30.0
-                    }
-                ]
+            "Limestone": {
+                "inputs": [],
+                "outputs": [{ "item": "Limestone", "rate": 60 }]
+            },
+            "Coal": {
+                "inputs": [],
+                "outputs": [{ "item": "Coal", "rate": 60 }]
+            },
+            "Raw Quartz": {
+                "inputs": [],
+                "outputs": [{ "item": "Raw Quartz", "rate": 60 }]
+            },
+            "Sulfur": {
+                "inputs": [],
+                "outputs": [{ "item": "Sulfur", "rate": 60 }]
+            },
+            "Bauxite": {
+                "inputs": [],
+                "outputs": [{ "item": "Bauxite", "rate": 60 }]
+            },
+            "Uranium": {
+                "inputs": [],
+                "outputs": [{ "item": "Uranium", "rate": 60 }]
+            },
+            "SAM Ore": {
+                "inputs": [],
+                "outputs": [{ "item": "SAM Ore", "rate": 60 }]
             }
         }
     },
-    "Foundry": {
-        "powerUsage": 0,
+    "Miner Mk.2": {
+        "powerUsage": 12, // MW
         "recipes": {
-            "Aluminum Ingot": {
-                "inputs": [
-                    {
-                        "item": "Aluminum Scrap",
-                        "rate": 90.0
-                    },
-                    {
-                        "item": "Silica",
-                        "rate": 75.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Aluminum Ingot",
-                        "rate": 60.0
-                    }
-                ]
+            "Iron Ore": {
+                "inputs": [],
+                "outputs": [{ "item": "Iron Ore", "rate": 120 }]
             },
-            "Caterium Ingot": {
-                "inputs": [
-                    {
-                        "item": "Caterium Ore",
-                        "rate": 45.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Caterium Ingot",
-                        "rate": 15.0
-                    }
-                ]
+            "Copper Ore": {
+                "inputs": [],
+                "outputs": [{ "item": "Copper Ore", "rate": 120 }]
             },
-            "Copper Ingot": {
-                "inputs": [
-                    {
-                        "item": "Copper Ore",
-                        "rate": 30.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Copper Ingot",
-                        "rate": 30.0
-                    }
-                ]
+            "Caterium Ore": {
+                "inputs": [],
+                "outputs": [{ "item": "Caterium Ore", "rate": 120 }]
             },
-            "Ficsite Ingot": {
-                "inputs": [
-                    {
-                        "item": "Ficsonium",
-                        "rate": 60.0
-                    },
-                    {
-                        "item": "Water",
-                        "rate": 20.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Ficsite Ingot",
-                        "rate": 15.0
-                    }
-                ]
+            "Limestone": {
+                "inputs": [],
+                "outputs": [{ "item": "Limestone", "rate": 120 }]
             },
-            "Iron Ingot": {
-                "inputs": [
-                    {
-                        "item": "Iron Ore",
-                        "rate": 30.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Iron Ingot",
-                        "rate": 30.0
-                    }
-                ]
+            "Coal": {
+                "inputs": [],
+                "outputs": [{ "item": "Coal", "rate": 120 }]
             },
-            "Steel Ingot": {
-                "inputs": [
-                    {
-                        "item": "Iron Ore",
-                        "rate": 45.0
-                    },
-                    {
-                        "item": "Coal",
-                        "rate": 45.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Steel Ingot",
-                        "rate": 45.0
-                    }
-                ]
+            "Raw Quartz": {
+                "inputs": [],
+                "outputs": [{ "item": "Raw Quartz", "rate": 120 }]
             },
-            "Alternate (Alternate)": {
-                "inputs": [
-                    {
-                        "item": "Iron Ore",
-                        "rate": 35.0
-                    },
-                    {
-                        "item": "Water",
-                        "rate": 35.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Copper Ingot",
-                        "rate": 70.0
-                    }
-                ]
+            "Sulfur": {
+                "inputs": [],
+                "outputs": [{ "item": "Sulfur", "rate": 120 }]
+            },
+            "Bauxite": {
+                "inputs": [],
+                "outputs": [{ "item": "Bauxite", "rate": 120 }]
+            },
+            "Uranium": {
+                "inputs": [],
+                "outputs": [{ "item": "Uranium", "rate": 120 }]
+            },
+            "SAM Ore": {
+                "inputs": [],
+                "outputs": [{ "item": "SAM Ore", "rate": 120 }]
             }
         }
     },
-    "Manufacturer": {
-        "powerUsage": 0,
+    "Miner Mk.3": {
+        "powerUsage": 30, // MW
         "recipes": {
-            "Adaptive Control Unit": {
-                "inputs": [
-                    {
-                        "item": "Automated Wiring",
-                        "rate": 7.5
-                    },
-                    {
-                        "item": "Circuit Board",
-                        "rate": 5.0
-                    },
-                    {
-                        "item": "Heavy Modular Frame",
-                        "rate": 1.0
-                    },
-                    {
-                        "item": "Computer",
-                        "rate": 1.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Adaptive Control Unit",
-                        "rate": 1.0
-                    }
-                ]
+            "Iron Ore": {
+                "inputs": [],
+                "outputs": [{ "item": "Iron Ore", "rate": 240 }]
             },
-            "Computer": {
-                "inputs": [
-                    {
-                        "item": "Circuit Board",
-                        "rate": 10.0
-                    },
-                    {
-                        "item": "Cable",
-                        "rate": 20.0
-                    },
-                    {
-                        "item": "Plastic",
-                        "rate": 40.0
-                    },
-                    {
-                        "item": "Screws",
-                        "rate": 100.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Computer",
-                        "rate": 2.5
-                    }
-                ]
+            "Copper Ore": {
+                "inputs": [],
+                "outputs": [{ "item": "Copper Ore", "rate": 240 }]
             },
-            "Crystal Oscillator": {
-                "inputs": [
-                    {
-                        "item": "Quartz Crystal",
-                        "rate": 18.0
-                    },
-                    {
-                        "item": "Cable",
-                        "rate": 14.0
-                    },
-                    {
-                        "item": "Reinforced Iron Plate",
-                        "rate": 2.5
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Crystal Oscillator",
-                        "rate": 1.0
-                    }
-                ]
+            "Caterium Ore": {
+                "inputs": [],
+                "outputs": [{ "item": "Caterium Ore", "rate": 240 }]
             },
-            "Gas Mask": {
-                "inputs": [
-                    {
-                        "item": "Rubber",
-                        "rate": 15.0
-                    },
-                    {
-                        "item": "Plastic",
-                        "rate": 15.0
-                    },
-                    {
-                        "item": "Fabric",
-                        "rate": 15.0
-                    },
-                    {
-                        "item": "Filter",
-                        "rate": 7.5
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Gas Mask",
-                        "rate": 7.5
-                    }
-                ]
+            "Limestone": {
+                "inputs": [],
+                "outputs": [{ "item": "Limestone", "rate": 240 }]
             },
-            "Hazmat Suit": {
-                "inputs": [
-                    {
-                        "item": "Rubber",
-                        "rate": 30.0
-                    },
-                    {
-                        "item": "Plastic",
-                        "rate": 30.0
-                    },
-                    {
-                        "item": "Fabric",
-                        "rate": 30.0
-                    },
-                    {
-                        "item": "Filter",
-                        "rate": 15.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Hazmat Suit",
-                        "rate": 7.5
-                    }
-                ]
+            "Coal": {
+                "inputs": [],
+                "outputs": [{ "item": "Coal", "rate": 240 }]
             },
-            "Heavy Modular Frame": {
-                "inputs": [
-                    {
-                        "item": "Modular Frame",
-                        "rate": 10.0
-                    },
-                    {
-                        "item": "Steel Pipe",
-                        "rate": 30.0
-                    },
-                    {
-                        "item": "Encased Industrial Beam",
-                        "rate": 10.0
-                    },
-                    {
-                        "item": "Screws",
-                        "rate": 20.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Heavy Modular Frame",
-                        "rate": 2.0
-                    }
-                ]
+            "Raw Quartz": {
+                "inputs": [],
+                "outputs": [{ "item": "Raw Quartz", "rate": 240 }]
             },
-            "High-Speed Connector": {
-                "inputs": [
-                    {
-                        "item": "Quickwire",
-                        "rate": 210.0
-                    },
-                    {
-                        "item": "Cable",
-                        "rate": 37.5
-                    },
-                    {
-                        "item": "Plastic",
-                        "rate": 30.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "High-Speed Connector",
-                        "rate": 3.75
-                    }
-                ]
+            "Sulfur": {
+                "inputs": [],
+                "outputs": [{ "item": "Sulfur", "rate": 240 }]
             },
-            "Modular Engine": {
-                "inputs": [
-                    {
-                        "item": "Motor",
-                        "rate": 10.0
-                    },
-                    {
-                        "item": "Rubber",
-                        "rate": 30.0
-                    },
-                    {
-                        "item": "Smart Plating",
-                        "rate": 10.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Modular Engine",
-                        "rate": 2.0
-                    }
-                ]
+            "Bauxite": {
+                "inputs": [],
+                "outputs": [{ "item": "Bauxite", "rate": 240 }]
             },
-            "Nobelisk Detonator": {
-                "inputs": [
-                    {
-                        "item": "Object Scanner",
-                        "rate": 1.0
-                    },
-                    {
-                        "item": "Cable",
-                        "rate": 10.0
-                    },
-                    {
-                        "item": "Gunpowder",
-                        "rate": 10.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Nobelisk Detonator",
-                        "rate": 1.0
-                    }
-                ]
+            "Uranium": {
+                "inputs": [],
+                "outputs": [{ "item": "Uranium", "rate": 240 }]
             },
-            "Radio Control Unit": {
-                "inputs": [
-                    {
-                        "item": "Aluminum Casing",
-                        "rate": 40.0
-                    },
-                    {
-                        "item": "Crystal Oscillator",
-                        "rate": 1.25
-                    },
-                    {
-                        "item": "Computer",
-                        "rate": 1.25
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Radio Control Unit",
-                        "rate": 2.5
-                    }
-                ]
-            },
-            "Rifle": {
-                "inputs": [
-                    {
-                        "item": "Rotor",
-                        "rate": 10.0
-                    },
-                    {
-                        "item": "Stator",
-                        "rate": 10.0
-                    },
-                    {
-                        "item": "Copper Sheet",
-                        "rate": 40.0
-                    },
-                    {
-                        "item": "Plastic",
-                        "rate": 20.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Rifle",
-                        "rate": 5.0
-                    }
-                ]
-            },
-            "Supercomputer": {
-                "inputs": [
-                    {
-                        "item": "Computer",
-                        "rate": 7.5
-                    },
-                    {
-                        "item": "AI Limiter",
-                        "rate": 7.5
-                    },
-                    {
-                        "item": "High-Speed Connector",
-                        "rate": 11.25
-                    },
-                    {
-                        "item": "Plastic",
-                        "rate": 105.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Supercomputer",
-                        "rate": 1.875
-                    }
-                ]
-            },
-            "Thermal Propulsion Rocket": {
-                "inputs": [
-                    {
-                        "item": "Modular Engine",
-                        "rate": 2.5
-                    },
-                    {
-                        "item": "Turbo Motor",
-                        "rate": 1.0
-                    },
-                    {
-                        "item": "Cooling System",
-                        "rate": 12.0
-                    },
-                    {
-                        "item": "Fused Modular Frame",
-                        "rate": 2.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Thermal Propulsion Rocket",
-                        "rate": 1.0
-                    }
-                ]
-            },
-            "Turbo Motor": {
-                "inputs": [
-                    {
-                        "item": "Cooling System",
-                        "rate": 7.5
-                    },
-                    {
-                        "item": "Radio Control Unit",
-                        "rate": 3.75
-                    },
-                    {
-                        "item": "Motor",
-                        "rate": 7.5
-                    },
-                    {
-                        "item": "Rubber",
-                        "rate": 90.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Turbo Motor",
-                        "rate": 1.875
-                    }
-                ]
-            },
-            "Uranium Fuel Rod": {
-                "inputs": [
-                    {
-                        "item": "Encased Uranium Cell",
-                        "rate": 20.0
-                    },
-                    {
-                        "item": "Encased Industrial Beam",
-                        "rate": 3.0
-                    },
-                    {
-                        "item": "Electromagnetic Control Rod",
-                        "rate": 10.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Uranium Fuel Rod",
-                        "rate": 4.0
-                    }
-                ]
-            },
-            "Alternate (Alternate)": {
-                "inputs": [
-                    {
-                        "item": "Computer",
-                        "rate": 3.75
-                    },
-                    {
-                        "item": "High-Speed Connector",
-                        "rate": 7.5
-                    },
-                    {
-                        "item": "Plastic",
-                        "rate": 52.5
-                    },
-                    {
-                        "item": "Quickwire",
-                        "rate": 112.5
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Supercomputer",
-                        "rate": 2.8125
-                    }
-                ]
+            "SAM Ore": {
+                "inputs": [],
+                "outputs": [{ "item": "SAM Ore", "rate": 240 }]
             }
-        }
-    },
-    "Particle Accelerator": {
-        "powerUsage": 0,
-        "recipes": {
-            "Alien Power Matrix": {
-                "inputs": [
-                    {
-                        "item": "Time Crystal",
-                        "rate": 1.0
-                    },
-                    {
-                        "item": "Alien Protein",
-                        "rate": 20.0
-                    },
-                    {
-                        "item": "Alien DNA Capsule",
-                        "rate": 10.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Alien Power Matrix",
-                        "rate": 1.0
-                    }
-                ]
-            },
-            "Ballistic Warp Drive": {
-                "inputs": [
-                    {
-                        "item": "SAM Fluctuator",
-                        "rate": 10.0
-                    },
-                    {
-                        "item": "Supercomputer",
-                        "rate": 2.0
-                    },
-                    {
-                        "item": "AI Limiter",
-                        "rate": 40.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Ballistic Warp Drive",
-                        "rate": 2.0
-                    }
-                ]
-            },
-            "Dark Matter Crystal": {
-                "inputs": [
-                    {
-                        "item": "Dark Matter Residue",
-                        "rate": 100.0
-                    },
-                    {
-                        "item": "Ficsonium",
-                        "rate": 20.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Dark Matter Crystal",
-                        "rate": 20.0
-                    }
-                ]
-            },
-            "Ficsonium Fuel Rod": {
-                "inputs": [
-                    {
-                        "item": "Ficsonium",
-                        "rate": 100.0
-                    },
-                    {
-                        "item": "Uranium",
-                        "rate": 20.0
-                    },
-                    {
-                        "item": "Encased Industrial Beam",
-                        "rate": 6.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Ficsonium Fuel Rod",
-                        "rate": 2.0
-                    }
-                ]
-            },
-            "Ionized Fuel": {
-                "inputs": [
-                    {
-                        "item": "Ficsonium Fuel Rod",
-                        "rate": 1.0
-                    },
-                    {
-                        "item": "Nitrogen Gas",
-                        "rate": 100.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Ionized Fuel",
-                        "rate": 100.0
-                    },
-                    {
-                        "item": "Uranium Waste",
-                        "rate": 10.0
-                    }
-                ]
-            },
-            "Neural-Quantum Processor": {
-                "inputs": [
-                    {
-                        "item": "Quantum Encoder",
-                        "rate": 1.0
-                    },
-                    {
-                        "item": "Alien Power Matrix",
-                        "rate": 2.0
-                    },
-                    {
-                        "item": "Biochemical Sculptor",
-                        "rate": 4.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Neural-Quantum Processor",
-                        "rate": 1.0
-                    }
-                ]
-            },
-            "Nuclear Pasta": {
-                "inputs": [
-                    {
-                        "item": "Copper Powder",
-                        "rate": 200.0
-                    },
-                    {
-                        "item": "Pressure Conversion Cube",
-                        "rate": 1.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Nuclear Pasta",
-                        "rate": 1.0
-                    }
-                ]
-            },
-            "Plutonium Fuel Rod": {
-                "inputs": [
-                    {
-                        "item": "Encased Plutonium Cell",
-                        "rate": 30.0
-                    },
-                    {
-                        "item": "Steel Beam",
-                        "rate": 18.0
-                    },
-                    {
-                        "item": "Electromagnetic Control Rod",
-                        "rate": 6.0
-                    },
-                    {
-                        "item": "Heat Sink",
-                        "rate": 6.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Plutonium Fuel Rod",
-                        "rate": 1.0
-                    }
-                ]
-            },
-            "Plutonium Pellet": {
-                "inputs": [
-                    {
-                        "item": "Non-Fissile Uranium",
-                        "rate": 100.0
-                    },
-                    {
-                        "item": "Plutonium Waste",
-                        "rate": 25.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Plutonium Pellet",
-                        "rate": 30.0
-                    }
-                ]
-            },
-            "Quantum Encoder": {
-                "inputs": [
-                    {
-                        "item": "Superposition Oscillator",
-                        "rate": 2.0
-                    },
-                    {
-                        "item": "Assembly Director System",
-                        "rate": 1.0
-                    },
-                    {
-                        "item": "AI Limiter",
-                        "rate": 20.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Quantum Encoder",
-                        "rate": 1.0
-                    }
-                ]
-            },
-            "Singularity Cell": {
-                "inputs": [
-                    {
-                        "item": "Dark Matter Crystal",
-                        "rate": 20.0
-                    },
-                    {
-                        "item": "Nuclear Pasta",
-                        "rate": 10.0
-                    },
-                    {
-                        "item": "Ballistic Warp Drive",
-                        "rate": 2.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Singularity Cell",
-                        "rate": 1.0
-                    }
-                ]
-            },
-            "Superposition Oscillator": {
-                "inputs": [
-                    {
-                        "item": "AI Expansion Server",
-                        "rate": 1.0
-                    },
-                    {
-                        "item": "High-Speed Connector",
-                        "rate": 20.0
-                    },
-                    {
-                        "item": "Electromagnetic Control Rod",
-                        "rate": 12.0
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Superposition Oscillator",
-                        "rate": 2.0
-                    }
-                ]
-            },
-            "Alternate (Alternate)": {
-                "inputs": [
-                    {
-                        "item": "Plutonium Pellet",
-                        "rate": 25.0
-                    },
-                    {
-                        "item": "Crystal Oscillator",
-                        "rate": 1.5
-                    }
-                ],
-                "outputs": [
-                    {
-                        "item": "Plutonium Fuel Rod",
-                        "rate": 1.0
-                    }
-                ]
-            }
-        }
-    }
-}
-
-function getFacilityForRecipe(recipeName) {
-    for (const facilityName in facilitiesData) {
-        const facility = facilitiesData[facilityName];
-        if (facility.recipes[recipeName]) {
-            return facilityName;
-        }
-    }
-    return null; // 레시피를 찾지 못한 경우
-}
+        }    }
+};
