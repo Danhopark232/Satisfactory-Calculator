@@ -725,7 +725,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function loadStateFromData(factoryLinesData) {
-        factoryLinesContainer.innerHTML = '';
+        // factoryLinesContainer.innerHTML = ''; // Do not clear the container to merge instead of overwrite
         factoryLinesData.forEach(factoryLineData => {
             const factoryLineDiv = createFactoryLine();
             factoryLineDiv.querySelector('.factory-name-input').value = factoryLineData.name;
@@ -1235,7 +1235,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const saveBtn = document.querySelector('.save-btn');
     saveBtn.addEventListener('click', () => {
-        const fileName = prompt("Enter a name for your save file:", "satisfactory_layout");
+        const currentFileName = document.getElementById('save-file-display-bar').textContent;
+        const defaultName = currentFileName.endsWith('.json') ? currentFileName.slice(0, -5) : currentFileName;
+        const fileName = prompt("Enter a name for your save file:", defaultName);
         if (fileName) {
             const factoryLines = [];
             document.querySelectorAll('.main-window').forEach(factoryLineDiv => {
@@ -1273,6 +1275,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.appendChild(downloadAnchorNode); // required for firefox
             downloadAnchorNode.click();
             downloadAnchorNode.remove();
+            document.getElementById('save-file-display-bar').textContent = fileName + ".json";
         }
     });
 
