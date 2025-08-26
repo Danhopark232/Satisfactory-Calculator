@@ -724,63 +724,67 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('satisfactoryCalculatorState', JSON.stringify(factoryLines));
     }
 
+    function loadStateFromData(factoryLinesData) {
+        factoryLinesContainer.innerHTML = '';
+        factoryLinesData.forEach(factoryLineData => {
+            const factoryLineDiv = createFactoryLine();
+            factoryLineDiv.querySelector('.factory-name-input').value = factoryLineData.name;
+            factoryLineDiv.querySelector('.header-container').style.backgroundColor = factoryLineData.color;
+            const columnsContainer = factoryLineDiv.querySelector('.columns-container');
+            
+            // Remove existing columns, but keep the button
+            columnsContainer.querySelectorAll('.column').forEach(column => column.remove());
+
+            factoryLineData.columns.forEach(columnData => {
+                const newColumn = document.createElement('div');
+                newColumn.classList.add('column');
+                newColumn.dataset.columnId = columnsContainer.querySelectorAll('.column').length + 1;
+                newColumn.innerHTML = '<div class="column-handle"></div><button class="add-facility-btn">+</button><div class="facilities-container"></div><button class="remove-column-btn">- column</button>';
+                attachColumnEventListeners(newColumn);
+                columnsContainer.insertBefore(newColumn, columnsContainer.querySelector('.add-column-btn'));
+                makeColumnDraggable(newColumn);
+                makeFacilitiesContainerDroppable(newColumn.querySelector('.facilities-container'));
+                columnData.facilities.forEach(facilityData => {
+                    if (facilityData.isReceived) {
+                        const receivedFacility = createFacilityElement(null, null, 1, true);
+                        receivedFacility.dataset.receivedFrom = facilityData.receivedFrom;
+                        receivedFacility.dataset.receivedProduct = facilityData.receivedProduct;
+                        receivedFacility.dataset.receivedAmount = facilityData.receivedAmount;
+                        const senderLine = document.querySelector(`.main-window[data-line-id='${facilityData.receivedFrom}']`);
+                        if(senderLine){
+                            const senderColor = senderLine.querySelector('.header-container').style.backgroundColor;
+                            receivedFacility.style.outline = `3px solid ${senderColor}`;
+                        }
+
+                        const facilityNameCollapsed = receivedFacility.querySelector('.facility-name-collapsed');
+                        facilityNameCollapsed.textContent = `Received: ${facilityData.receivedProduct}`;
+                        const balanceCollapsed = receivedFacility.querySelector('.balance-collapsed');
+                        balanceCollapsed.textContent = `${facilityData.receivedAmount}/min`;
+                        const productImageBox = receivedFacility.querySelector('.product-image-box');
+                        productImageBox.style.backgroundImage = `url(${getImagePath(facilityData.receivedProduct)})`;
+                        const productImageBoxCollapsed = receivedFacility.querySelector('.product-image-box-collapsed');
+                        productImageBoxCollapsed.style.backgroundImage = `url(${getImagePath(facilityData.receivedProduct)})`;
+                        newColumn.querySelector('.facilities-container').appendChild(receivedFacility);
+                    } else {
+                        addFacilityToColumn(newColumn, facilityData.name, facilityData.recipe, facilityData.quantity);
+                        const newFacility = newColumn.querySelector('.facility:last-child');
+                        if (newFacility) {
+                            newFacility.querySelector('.purity-select').value = facilityData.purity;
+                            if (facilityData.sentTo) {
+                                newFacility.dataset.sentTo = facilityData.sentTo;
+                            }
+                        }
+                    }
+                });
+            });
+        });
+    }
+
     function loadState() {
         const savedState = localStorage.getItem('satisfactoryCalculatorState');
         if (savedState) {
             const factoryLinesData = JSON.parse(savedState);
-            factoryLinesContainer.innerHTML = '';
-            factoryLinesData.forEach(factoryLineData => {
-                const factoryLineDiv = createFactoryLine();
-                factoryLineDiv.querySelector('.factory-name-input').value = factoryLineData.name;
-                factoryLineDiv.querySelector('.header-container').style.backgroundColor = factoryLineData.color;
-                const columnsContainer = factoryLineDiv.querySelector('.columns-container');
-                
-                // Remove existing columns, but keep the button
-                columnsContainer.querySelectorAll('.column').forEach(column => column.remove());
-
-                factoryLineData.columns.forEach(columnData => {
-                    const newColumn = document.createElement('div');
-                    newColumn.classList.add('column');
-                    newColumn.dataset.columnId = columnsContainer.querySelectorAll('.column').length + 1;
-                    newColumn.innerHTML = '<div class="column-handle"></div><button class="add-facility-btn">+</button><div class="facilities-container"></div><button class="remove-column-btn">- column</button>';
-                    attachColumnEventListeners(newColumn);
-                    columnsContainer.insertBefore(newColumn, columnsContainer.querySelector('.add-column-btn'));
-                    makeColumnDraggable(newColumn);
-                    makeFacilitiesContainerDroppable(newColumn.querySelector('.facilities-container'));
-                    columnData.facilities.forEach(facilityData => {
-                        if (facilityData.isReceived) {
-                            const receivedFacility = createFacilityElement(null, null, 1, true);
-                            receivedFacility.dataset.receivedFrom = facilityData.receivedFrom;
-                            receivedFacility.dataset.receivedProduct = facilityData.receivedProduct;
-                            receivedFacility.dataset.receivedAmount = facilityData.receivedAmount;
-                            const senderLine = document.querySelector(`.main-window[data-line-id='${facilityData.receivedFrom}']`);
-                            if(senderLine){
-                                const senderColor = senderLine.querySelector('.header-container').style.backgroundColor;
-                                receivedFacility.style.outline = `3px solid ${senderColor}`;
-                            }
-
-                            const facilityNameCollapsed = receivedFacility.querySelector('.facility-name-collapsed');
-                            facilityNameCollapsed.textContent = `Received: ${facilityData.receivedProduct}`;
-                            const balanceCollapsed = receivedFacility.querySelector('.balance-collapsed');
-                            balanceCollapsed.textContent = `${facilityData.receivedAmount}/min`;
-                            const productImageBox = receivedFacility.querySelector('.product-image-box');
-                            productImageBox.style.backgroundImage = `url(${getImagePath(facilityData.receivedProduct)})`;
-                            const productImageBoxCollapsed = receivedFacility.querySelector('.product-image-box-collapsed');
-                            productImageBoxCollapsed.style.backgroundImage = `url(${getImagePath(facilityData.receivedProduct)})`;
-                            newColumn.querySelector('.facilities-container').appendChild(receivedFacility);
-                        } else {
-                            addFacilityToColumn(newColumn, facilityData.name, facilityData.recipe, facilityData.quantity);
-                            const newFacility = newColumn.querySelector('.facility:last-child');
-                            if (newFacility) {
-                                newFacility.querySelector('.purity-select').value = facilityData.purity;
-                                if (facilityData.sentTo) {
-                                    newFacility.dataset.sentTo = facilityData.sentTo;
-                                }
-                            }
-                        }
-                    });
-                });
-            });
+            loadStateFromData(factoryLinesData);
         }
     }
 
@@ -1228,4 +1232,82 @@ document.addEventListener('DOMContentLoaded', () => {
         createFactoryLine();
     }
     updateAllFactoryLines();
+
+    const saveBtn = document.querySelector('.save-btn');
+    saveBtn.addEventListener('click', () => {
+        const fileName = prompt("Enter a name for your save file:", "satisfactory_layout");
+        if (fileName) {
+            const factoryLines = [];
+            document.querySelectorAll('.main-window').forEach(factoryLineDiv => {
+                const factoryLine = {
+                    name: factoryLineDiv.querySelector('.factory-name-input').value,
+                    color: factoryLineDiv.querySelector('.header-container').style.backgroundColor,
+                    columns: []
+                };
+                factoryLineDiv.querySelectorAll('.column').forEach(columnDiv => {
+                    const column = {
+                        facilities: []
+                    };
+                    columnDiv.querySelectorAll('.facility').forEach(facilityDiv => {
+                        const facility = {
+                            name: facilityDiv.querySelector('.facility-select').value,
+                            recipe: facilityDiv.querySelector('.output-select').value,
+                            quantity: facilityDiv.querySelector('.quantity-control .quantity-input').value,
+                            purity: facilityDiv.querySelector('.purity-select').value,
+                            isReceived: facilityDiv.dataset.received === 'true',
+                            receivedFrom: facilityDiv.dataset.receivedFrom,
+                            receivedProduct: facilityDiv.dataset.receivedProduct,
+                            receivedAmount: facilityDiv.dataset.receivedAmount,
+                            sentTo: facilityDiv.dataset.sentTo
+                        };
+                        column.facilities.push(facility);
+                    });
+                    factoryLine.columns.push(column);
+                });
+                factoryLines.push(factoryLine);
+            });
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(factoryLines, null, 2));
+            const downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href",     dataStr);
+            downloadAnchorNode.setAttribute("download", fileName + ".json");
+            document.body.appendChild(downloadAnchorNode); // required for firefox
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+        }
+    });
+
+    const loadBtn = document.querySelector('.load-btn');
+    const loadFileInput = document.getElementById('load-file-input');
+
+    loadBtn.addEventListener('click', () => {
+        loadFileInput.click();
+    });
+
+    loadFileInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const fileContent = e.target.result;
+                try {
+                    const data = JSON.parse(fileContent);
+                    loadStateFromData(data);
+                    updateAllFactoryLines();
+                } catch (error) {
+                    console.error("Error parsing JSON file:", error);
+                    alert("Invalid file format.");
+                }
+            };
+            reader.readAsText(file);
+        }
+    });
+
+    const resetBtn = document.querySelector('.reset-btn');
+    resetBtn.addEventListener('click', () => {
+        if (confirm('Are you sure you want to reset everything? This will clear all factory lines.')) {
+            factoryLinesContainer.innerHTML = '';
+            createFactoryLine();
+            updateAllFactoryLines();
+        }
+    });
 });
