@@ -1293,6 +1293,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const data = JSON.parse(fileContent);
                     loadStateFromData(data);
                     updateAllFactoryLines();
+                    document.getElementById('save-file-display-bar').textContent = file.name;
                 } catch (error) {
                     console.error("Error parsing JSON file:", error);
                     alert("Invalid file format.");
@@ -1308,6 +1309,7 @@ document.addEventListener('DOMContentLoaded', () => {
             factoryLinesContainer.innerHTML = '';
             createFactoryLine();
             updateAllFactoryLines();
+            document.getElementById('save-file-display-bar').textContent = 'Factory version 1';
         }
     });
 });
