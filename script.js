@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
             facilityDiv.classList.remove('dragging');
             draggedFacility = null;
             isDraggingFacility = false; // Reset flag
-            updateAllFactoryLines(); // Trigger update after drag ends
+            updateAllFactoryLines(false); // Trigger update after drag ends
         });
 
         // Populate facility dropdown
@@ -230,51 +230,51 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 purityControl.style.display = 'none';
             }
-            updateAllFactoryLines();
+            updateAllFactoryLines(true);
         });
-        outputSelect.addEventListener('change', updateAllFactoryLines);
+        outputSelect.addEventListener('change', () => updateAllFactoryLines(true));
 
         // Main quantity control event listeners
         quantityInput.addEventListener('change', () => {
             collapsedQuantityInput.value = quantityInput.value; // Sync collapsed input
-            updateAllFactoryLines();
+            updateAllFactoryLines(true);
         });
         minusBtn.addEventListener('click', () => {
             if (parseInt(quantityInput.value) > 1) {
                 quantityInput.value = parseInt(quantityInput.value) - 1;
                 collapsedQuantityInput.value = quantityInput.value; // Sync collapsed input
-                updateAllFactoryLines();
+                updateAllFactoryLines(true);
             }
         });
         plusBtn.addEventListener('click', () => {
             quantityInput.value = parseInt(quantityInput.value) + 1;
             collapsedQuantityInput.value = quantityInput.value; // Sync collapsed input
-            updateAllFactoryLines();
+            updateAllFactoryLines(true);
         });
 
         // Collapsed quantity control event listeners
         collapsedQuantityInput.addEventListener('change', () => {
             quantityInput.value = collapsedQuantityInput.value; // Sync main input
-            updateAllFactoryLines();
+            updateAllFactoryLines(true);
         });
         collapsedMinusBtn.addEventListener('click', () => {
             if (parseInt(collapsedQuantityInput.value) > 1) {
                 collapsedQuantityInput.value = parseInt(collapsedQuantityInput.value) - 1;
                 quantityInput.value = collapsedQuantityInput.value; // Sync main input
-                updateAllFactoryLines();
+                updateAllFactoryLines(true);
             }
         });
         collapsedPlusBtn.addEventListener('click', () => {
             collapsedQuantityInput.value = parseInt(collapsedQuantityInput.value) + 1;
             quantityInput.value = collapsedQuantityInput.value; // Sync main input
-            updateAllFactoryLines();
+            updateAllFactoryLines(true);
         });
 
-        puritySelect.addEventListener('change', updateAllFactoryLines); // New event listener for purity
+        puritySelect.addEventListener('change', () => updateAllFactoryLines(true)); // New event listener for purity
 
         removeBtn.addEventListener('click', () => {
             facilityDiv.remove();
-            updateAllFactoryLines();
+            updateAllFactoryLines(false);
         });
 
         return facilityDiv;
@@ -312,7 +312,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const firstColumn = recipientLine.querySelector('.column');
         if (firstColumn) {
             firstColumn.querySelector('.facilities-container').appendChild(receivedFacility);
-            updateAllFactoryLines();
+            updateAllFactoryLines(false);
         }
     }
 
@@ -387,7 +387,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function addFacilityToColumn(columnElement, initialFacility = null, initialRecipe = null, requiredQuantity = 1) {
         const facilityElement = createFacilityElement(initialFacility, initialRecipe, requiredQuantity);
         columnElement.querySelector('.facilities-container').appendChild(facilityElement);
-        updateAllFactoryLines(); // Trigger update after adding a new facility - will be called by auto-fill
+        updateAllFactoryLines(true); // Trigger update after adding a new facility - will be called by auto-fill
     }
 
     // Function to attach event listeners to column buttons
@@ -402,11 +402,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (facilitiesContainer.children.length > 0) {
                 if (confirm('Are you sure you want to remove this column?')) {
                     column.remove();
-                    updateAllFactoryLines();
+                    updateAllFactoryLines(false);
                 }
             } else {
                 column.remove();
-                updateAllFactoryLines();
+                updateAllFactoryLines(false);
             }
         });
     }
@@ -570,7 +570,7 @@ document.addEventListener('DOMContentLoaded', () => {
             columnsContainer.insertBefore(newColumn, addColumnBtn); // Insert before the addColumnBtn
             makeColumnDraggable(newColumn); // Make new columns draggable
             makeFacilitiesContainerDroppable(newColumn.querySelector('.facilities-container')); // Make new facilities container droppable
-            updateAllFactoryLines();
+            updateAllFactoryLines(false);
         });
 
         return factoryLineDiv;
@@ -644,7 +644,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     columnsContainer.insertBefore(draggedColumn, afterElement);
                 }
-                updateAllFactoryLines(); // Re-calculate after reordering
+                updateAllFactoryLines(false); // Re-calculate after reordering
             }
         });
     }
@@ -672,7 +672,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     container.insertBefore(draggedFacility, afterElement);
                 }
-                updateAllFactoryLines(); // Re-calculate after reordering
+                updateAllFactoryLines(false); // Re-calculate after reordering
             }
         });
     }
@@ -803,7 +803,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Main update function for all factory lines
-    function updateAllFactoryLines() {
+    function updateAllFactoryLines(shouldAutoFill = false) {
         if (isDraggingFacility) return; // Prevent updates during facility drag
 
         const allFactoryLines = Array.from(document.querySelectorAll('.main-window'));
@@ -812,7 +812,7 @@ document.addEventListener('DOMContentLoaded', () => {
         while (needsRecalculation) {
             needsRecalculation = false;
             document.querySelectorAll('.main-window').forEach(factoryLineDiv => {
-                if (recalculateFactoryLine(factoryLineDiv)) {
+                if (recalculateFactoryLine(factoryLineDiv, shouldAutoFill)) {
                     needsRecalculation = true;
                 }
             });
@@ -866,11 +866,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const firstColumn = recipientLine.querySelector('.column');
         if (firstColumn) {
             firstColumn.querySelector('.facilities-container').appendChild(receivedFacility);
-            updateAllFactoryLines();
+            updateAllFactoryLines(false);
         }
     }
 
-    function recalculateFactoryLine(factoryLineDiv) {
+    function recalculateFactoryLine(factoryLineDiv, shouldAutoFill) {
         const columns = factoryLineDiv.querySelectorAll('.column');
         const totalDemands = {}; // Stores total demand for each material across the entire factory line
         const producedMaterials = new Set(); // Keep track of materials being produced
@@ -1016,7 +1016,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         li.innerHTML = `<span class="item-name">${input.item}</span><span class="item-usage">(${input.rate}/min) ${totalNeeded}/min</span>`;
                         inputList.appendChild(li);
 
-                        if (balance < 0 && !producedMaterials.has(input.item)) {
+                        if (shouldAutoFill && balance < 0 && !producedMaterials.has(input.item)) {
                             const producer = findProducerRecipe(input.item);
                             if (producer) {
                                 let producerExists = false;
@@ -1223,7 +1223,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add event listener for adding new factory lines
     addFactoryLineBtn.addEventListener('click', () => {
         createFactoryLine();
-        updateAllFactoryLines();
+        updateAllFactoryLines(false);
     });
 
     // Initial factory line creation
@@ -1231,7 +1231,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (factoryLinesContainer.children.length === 0) {
         createFactoryLine();
     }
-    updateAllFactoryLines();
+    updateAllFactoryLines(false);
 
     const saveBtn = document.querySelector('.save-btn');
     saveBtn.addEventListener('click', () => {
@@ -1295,7 +1295,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 try {
                     const data = JSON.parse(fileContent);
                     loadStateFromData(data);
-                    updateAllFactoryLines();
+                    updateAllFactoryLines(false);
                     document.getElementById('save-file-display-bar').textContent = file.name;
                 } catch (error) {
                     console.error("Error parsing JSON file:", error);
@@ -1311,7 +1311,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (confirm('Are you sure you want to reset everything? This will clear all factory lines.')) {
             factoryLinesContainer.innerHTML = '';
             createFactoryLine();
-            updateAllFactoryLines();
+            updateAllFactoryLines(false);
             document.getElementById('save-file-display-bar').textContent = 'Factory version 1';
         }
     });
