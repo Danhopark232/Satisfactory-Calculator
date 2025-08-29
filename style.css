@@ -158,7 +158,7 @@ h3 {
 
 .column {
     flex-shrink: 0; /* Prevent columns from shrinking */
-    width: 350px;
+    width: 315px;
     margin-right: 10px;
     background-color: #f9f9f9;
     border: 1px solid #eee;
@@ -188,7 +188,7 @@ h3 {
 }
 
 .collapse-btn {
-    width: 227px;
+    width: 204px;
     height: 22px;
     background-color: #ccc;
     cursor: pointer;
@@ -337,7 +337,7 @@ h3 {
     text-align: center;
     border: 1px solid #ccc;
     border-radius: 0;
-    padding: 0 5px; /* Reduced padding */
+    padding: 0; /* Remove padding for exact centering */
     outline: none;
     height: 24px; /* Reduced height */
     box-sizing: border-box;
@@ -426,7 +426,7 @@ h3 {
     padding: 0;
     position: absolute;
     top: 0;
-    left: calc(50% + 113.5px + 18px); /* 50% + half of collapse-btn + 18px */
+    left: calc(50% + 102px + 15px); /* 50% + half of collapse-btn + 18px - 3px */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -457,7 +457,7 @@ h3 {
 
 .add-column-btn {
     flex-shrink: 0; /* Prevent from shrinking */
-    width: 350px; /* Match column width */
+    width: 315px; /* Match column width */
     height: 50px; /* Adjust as needed */
     margin-right: 10px; /* Space from columns */
     background-color: transparent;
@@ -488,7 +488,7 @@ h3 {
     text-align: center;
     border: 1px solid #ccc;
     border-radius: 0; /* Remove rounding */
-    padding: 0 10px; /* Add some padding */
+    padding: 0; /* Remove padding for exact centering */
     outline: none;
     height: 36px; /* Match dropdown height */
     box-sizing: border-box; /* Include padding and border in the element's total width and height */
@@ -701,4 +701,20 @@ ul.output-list li {
     border-radius: 5px;
     margin-top: 10px;
     font-size: 14px;
+}
+
+/* Hide spinners from number inputs */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.item-usage {
+  flex-grow: 1;
+  text-align: right;
 }
