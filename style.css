@@ -718,3 +718,53 @@ input[type=number] {
   flex-grow: 1;
   text-align: right;
 }
+
+.global-summary-container {
+    width: calc(100% - 40px);
+    max-width: 1200px;
+    background-color: #2d2d2d;
+    color: white;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+.global-summary-container h2 {
+    margin-top: 0;
+    text-align: center;
+}
+
+.global-summary-content {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+}
+
+.global-leftovers {
+    flex-basis: 70%;
+}
+
+.global-power {
+    flex-basis: 30%;
+    text-align: center;
+}
+
+.global-leftover-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.global-leftover-list li {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.global-leftover-list img {
+    width: 25px;
+    height: 25px;
+}

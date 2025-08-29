@@ -802,6 +802,50 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    function updateGlobalSummary() {
+        const globalLeftovers = {};
+        let totalPower = 0;
+
+        document.querySelectorAll('.main-window').forEach(factoryLineDiv => {
+            // Get leftovers
+            const factoryLineLeftovers = getLeftovers(factoryLineDiv);
+            for (const item in factoryLineLeftovers) {
+                if (factoryLineLeftovers[item] > 0) {
+                    globalLeftovers[item] = (globalLeftovers[item] || 0) + factoryLineLeftovers[item];
+                }
+            }
+
+            // Get power
+            const powerSpan = factoryLineDiv.querySelector('.total-power-display');
+            if (powerSpan) {
+                const powerText = powerSpan.textContent; // e.g., "(Total Power: 123.45 MW)"
+                const powerMatch = powerText.match(/(\d+\.?\d*)\s*MW/);
+                if (powerMatch && powerMatch[1]) {
+                    totalPower += parseFloat(powerMatch[1]);
+                }
+            }
+        });
+
+        // Update the DOM
+        const globalLeftoverList = document.querySelector('.global-leftover-list');
+        globalLeftoverList.innerHTML = '';
+        for (const item in globalLeftovers) {
+            if (globalLeftovers[item] > 0) {
+                const li = document.createElement('li');
+                const img = document.createElement('img');
+                img.src = getImagePath(item);
+                const balanceSpan = document.createElement('span');
+                balanceSpan.textContent = String(parseFloat(globalLeftovers[item].toFixed(2)));
+                li.appendChild(img);
+                li.appendChild(balanceSpan);
+                globalLeftoverList.appendChild(li);
+            }
+        }
+
+        const globalPowerValue = document.querySelector('.global-power-value');
+        globalPowerValue.textContent = `${totalPower.toFixed(2)} MW`;
+    }
+
     // Main update function for all factory lines
     function updateAllFactoryLines(shouldAutoFill = false) {
         if (isDraggingFacility) return; // Prevent updates during facility drag
@@ -819,6 +863,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         saveState(); // Save state after every update
         adjustAllColumnContainerHeights();
+        updateGlobalSummary();
     }
 
     function populateFacilitySendToDropdown(dropdown, facilityDiv) {
