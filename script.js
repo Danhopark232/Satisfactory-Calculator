@@ -45,16 +45,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Helper function to find a recipe that produces a given item
     function findProducerRecipe(item) {
+        let bestProducer = null;
         for (const facilityName in facilitiesData) {
             const facility = facilitiesData[facilityName];
             for (const recipeName in facility.recipes) {
                 const recipe = facility.recipes[recipeName];
                 if (recipe.outputs.some(output => output.item === item)) {
-                    return { facilityName, recipeName };
+                    // If we find a recipe with no inputs, it's a resource extractor, so we prefer it.
+                    if (!recipe.inputs || recipe.inputs.length === 0) {
+                        return { facilityName, recipeName };
+                    }
+                    // Otherwise, keep the first one we find as a fallback.
+                    if (!bestProducer) {
+                        bestProducer = { facilityName, recipeName };
+                    }
                 }
             }
         }
-        return null;
+        return bestProducer;
     }
 
     // Function to create a new facility element
@@ -804,7 +812,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateGlobalSummary() {
         const globalLeftovers = {};
-        let totalPower = 0;
+        let totalUsage = 0;
+        let totalProduction = 0;
 
         document.querySelectorAll('.main-window').forEach(factoryLineDiv => {
             // Get leftovers
@@ -818,10 +827,14 @@ document.addEventListener('DOMContentLoaded', () => {
             // Get power
             const powerSpan = factoryLineDiv.querySelector('.total-power-display');
             if (powerSpan) {
-                const powerText = powerSpan.textContent; // e.g., "(Total Power: 123.45 MW)"
-                const powerMatch = powerText.match(/(\d+\.?\d*)\s*MW/);
-                if (powerMatch && powerMatch[1]) {
-                    totalPower += parseFloat(powerMatch[1]);
+                const powerText = powerSpan.textContent;
+                const usageMatch = powerText.match(/Usage: (\d+\.?\d*)/);
+                const prodMatch = powerText.match(/Prod: (\d+\.?\d*)/);
+                if (usageMatch && usageMatch[1]) {
+                    totalUsage += parseFloat(usageMatch[1]);
+                }
+                if (prodMatch && prodMatch[1]) {
+                    totalProduction += parseFloat(prodMatch[1]);
                 }
             }
         });
@@ -842,8 +855,14 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        const globalPowerValue = document.querySelector('.global-power-value');
-        globalPowerValue.textContent = `${totalPower.toFixed(2)} MW`;
+        const globalPowerUsage = document.querySelector('.global-power-usage');
+        const globalPowerProduction = document.querySelector('.global-power-production');
+        const globalPowerNet = document.querySelector('.global-power-net');
+        const globalNetPower = totalProduction - totalUsage;
+
+        globalPowerUsage.textContent = `Usage: ${totalUsage.toFixed(2)} MW`;
+        globalPowerProduction.textContent = `Production: ${totalProduction.toFixed(2)} MW`;
+        globalPowerNet.textContent = `Net: ${globalNetPower.toFixed(2)} MW`;
     }
 
     // Main update function for all factory lines
@@ -921,6 +940,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const producedMaterials = new Set(); // Keep track of materials being produced
         const receivedMaterials = {}; // Stores received materials
         let totalPowerUsage = 0;
+        let totalPowerProduction = 0;
 
         // First Pass: Collect all demands and produced materials
         columns.forEach(column => {
@@ -1038,6 +1058,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (recipe) {
                     if (facilityData && facilityData.powerUsage) {
                         totalPowerUsage += facilityData.powerUsage * quantity;
+                    }
+                    if (facilityData && facilityData.powerProduction) {
+                        totalPowerProduction += facilityData.powerProduction * quantity;
                     }
                     populateOutputSelect(facilitySelect, outputSelect);
                     outputSelect.value = selectedOutputName;
@@ -1223,6 +1246,13 @@ document.addEventListener('DOMContentLoaded', () => {
                         factoryLineLeftovers[output.item] = (factoryLineLeftovers[output.item] || 0) + totalProduced;
                     });
 
+                    if (facilityData && facilityData.powerProduction > 0) {
+                        const powerOutputLi = document.createElement('li');
+                        powerOutputLi.classList.add('output-item');
+                        powerOutputLi.innerHTML = `<span class="item-name">Power</span><span class="item-usage">${facilityData.powerProduction * quantity} MW</span>`;
+                        outputList.appendChild(powerOutputLi);
+                    }
+
                     powerValueSpan.textContent = `${facilityData.powerUsage} MW / ${facilityData.powerUsage * quantity} MW`;
                 }
             }
@@ -1260,7 +1290,30 @@ document.addEventListener('DOMContentLoaded', () => {
             totalPowerSpan.classList.add('total-power-display');
             summaryHeader.appendChild(totalPowerSpan);
         }
-        totalPowerSpan.textContent = `(Total Power: ${totalPowerUsage.toFixed(2)} MW)`;
+        const netPower = totalPowerProduction - totalPowerUsage;
+        totalPowerSpan.textContent = `(Usage: ${totalPowerUsage.toFixed(2)} MW, Prod: ${totalPowerProduction.toFixed(2)} MW, Net: ${netPower.toFixed(2)} MW)`;
+
+        const isPowerShortage = netPower < 0;
+        columns.forEach(column => {
+            const facilities = column.querySelectorAll('.facility');
+            facilities.forEach(facilityDiv => {
+                const facilitySelect = facilityDiv.querySelector('.facility-select');
+                const selectedFacilityName = facilitySelect.value;
+                const facilityData = facilitiesData[selectedFacilityName];
+
+                if (facilityData && facilityData.powerProduction > 0) {
+                    const facilityImageBox = facilityDiv.querySelector('.facility-image-box');
+                    const facilityImageBoxCollapsed = facilityDiv.querySelector('.facility-image-box-collapsed');
+                    if (isPowerShortage) {
+                        facilityImageBox.style.backgroundColor = '#F43535';
+                        facilityImageBoxCollapsed.style.backgroundColor = '#F43535';
+                    } else {
+                        facilityImageBox.style.backgroundColor = '#eee';
+                        facilityImageBoxCollapsed.style.backgroundColor = '#eee';
+                    }
+                }
+            });
+        });
 
         return false;
     }

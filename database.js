@@ -1352,6 +1352,31 @@ const facilitiesData = {
             }
         }
     },
+    "Coal Generator": {
+        "recipes": {
+            "Generate Power": {
+                "inputs": [
+                    { "item": "Coal", "rate": 15 },
+                    { "item": "Water", "rate": 45 }
+                ],
+                "outputs": []
+            }
+        },
+        "powerUsage": 0,
+        "powerProduction": 75
+    },
+    "Water Extractor": {
+        "recipes": {
+            "Extract Water": {
+                "inputs": [],
+                "outputs": [
+                    { "item": "Water", "rate": 120 }
+                ]
+            }
+        },
+        "powerUsage": 20,
+        "powerProduction": 0
+    },
     "Blender": {
         "powerUsage": 75.0,
         "recipes": {
