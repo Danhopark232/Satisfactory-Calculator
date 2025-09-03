@@ -1453,12 +1453,26 @@ document.addEventListener('DOMContentLoaded', () => {
                         const collapseImg = collapseBtn.querySelector('img');
                         collapseImg.src = 'icons/collapsearrowdown.svg';
                     }
+                    const purityControl = facility.querySelector('.purity-control');
+                    if (purityControl) {
+                        purityControl.style.display = 'none';
+                    }
                 } else {
                     facility.classList.remove('collapsed');
                     const collapseBtn = facility.querySelector('.collapse-btn');
                     if (collapseBtn) {
                         const collapseImg = collapseBtn.querySelector('img');
                         collapseImg.src = 'icons/collapsearrowup.svg';
+                    }
+                    const facilitySelect = facility.querySelector('.facility-select');
+                    const isMiner = facilitySelect.value.startsWith('Miner');
+                    const purityControl = facility.querySelector('.purity-control');
+                    if (purityControl) {
+                        if (isMiner) {
+                            purityControl.style.display = 'block';
+                        } else {
+                            purityControl.style.display = 'none';
+                        }
                     }
                 }
             });
