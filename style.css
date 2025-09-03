@@ -569,7 +569,7 @@ ul.output-list li {
     border: 1px solid black;
     border-radius: 4px;
     cursor: pointer;
-    width: 21px;
+    width: 80px;
     height: 21px;
     padding: 0;
     position: absolute;
@@ -722,6 +722,7 @@ input[type=number] {
 }
 
 .global-summary-container {
+    position: relative; /* Needed for absolute positioning of the button */
     width: calc(100% - 40px);
     max-width: 1200px;
     background-color: #2d2d2d;
@@ -730,6 +731,26 @@ input[type=number] {
     margin-bottom: 20px;
     border-radius: 10px;
     box-sizing: border-box;
+}
+
+.global-toggle-all-btn {
+    background-color: transparent;
+    border: 1px solid white;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 80px;
+    height: 21px;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px auto 0;
+}
+
+.global-toggle-all-btn img {
+    width: 12px;
+    height: 12px;
+    filter: invert(1);
 }
 
 .global-summary-container h2 {

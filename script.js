@@ -1065,10 +1065,32 @@ document.addEventListener('DOMContentLoaded', () => {
                     populateOutputSelect(facilitySelect, outputSelect);
                     outputSelect.value = selectedOutputName;
 
-                    if (recipe.outputs.length > 0) {
+                    facilityNameCollapsed.textContent = selectedFacilityName;
+                    facilityImageBoxCollapsed.style.backgroundImage = `url(${getImagePath(selectedFacilityName)})`;
+
+                    if (facilityData && facilityData.powerProduction > 0) {
+                        balanceCollapsed.textContent = `${facilityData.powerProduction * quantity} MW`;
+                        if (selectedFacilityName === 'Coal Generator') {
+                            productImageBox.style.backgroundImage = 'url(icons/electric.svg)';
+                            productImageBox.style.backgroundSize = '51%';
+                            productImageBoxCollapsed.style.backgroundImage = 'url(icons/electric.svg)';
+                            productImageBoxCollapsed.style.backgroundSize = '51%';
+                        } else {
+                            productImageBox.style.backgroundImage = 'none';
+                            productImageBox.style.backgroundSize = 'contain';
+                            productImageBoxCollapsed.style.backgroundImage = 'none';
+                            productImageBoxCollapsed.style.backgroundSize = 'contain';
+                        }
+                    } else if (recipe.outputs.length > 0) {
                         productImageBox.style.backgroundImage = `url(${getImagePath(recipe.outputs[0].item)})`;
+                        productImageBox.style.backgroundSize = 'contain';
+                        productImageBoxCollapsed.style.backgroundImage = `url(${getImagePath(recipe.outputs[0].item)})`;
+                        productImageBoxCollapsed.style.backgroundSize = 'contain';
                     } else {
                         productImageBox.style.backgroundImage = 'none';
+                        productImageBox.style.backgroundSize = 'contain';
+                        productImageBoxCollapsed.style.backgroundImage = 'none';
+                        productImageBoxCollapsed.style.backgroundSize = 'contain';
                     }
 
                     for (const input of recipe.inputs) {
@@ -1168,13 +1190,8 @@ document.addEventListener('DOMContentLoaded', () => {
                             productImageBoxCollapsed.style.backgroundColor = '#eee';
                         }
 
-                        facilityNameCollapsed.textContent = selectedFacilityName;
-                        balanceCollapsed.textContent = `${syncedBalance}/min`;
-                        facilityImageBoxCollapsed.style.backgroundImage = `url(${getImagePath(selectedFacilityName)})`;
-                        if (recipe.outputs.length > 0) {
-                            productImageBoxCollapsed.style.backgroundImage = `url(${getImagePath(recipe.outputs[0].item)})`;
-                        } else {
-                            productImageBoxCollapsed.style.backgroundImage = 'none';
+                        if (!facilityData.powerProduction || facilityData.powerProduction === 0) {
+                            balanceCollapsed.textContent = `${syncedBalance}/min`;
                         }
 
                         const li = document.createElement('li');
@@ -1412,5 +1429,59 @@ document.addEventListener('DOMContentLoaded', () => {
             updateAllFactoryLines(false);
             document.getElementById('save-file-display-bar').textContent = 'Factory version 1';
         }
+    });
+
+    const globalToggleBtn = document.querySelector('.global-toggle-all-btn');
+    globalToggleBtn.addEventListener('click', () => {
+        const allFacilities = document.querySelectorAll('.facility');
+        let allCurrentlyCollapsed = true;
+        allFacilities.forEach(f => {
+            if (!f.classList.contains('collapsed')) {
+                allCurrentlyCollapsed = false;
+            }
+        });
+
+        const shouldCollapse = !allCurrentlyCollapsed;
+
+        document.querySelectorAll('.main-window').forEach(factoryLineDiv => {
+            const facilities = factoryLineDiv.querySelectorAll('.facility');
+            facilities.forEach(facility => {
+                if (shouldCollapse) {
+                    facility.classList.add('collapsed');
+                    const collapseBtn = facility.querySelector('.collapse-btn');
+                    if (collapseBtn) {
+                        const collapseImg = collapseBtn.querySelector('img');
+                        collapseImg.src = 'icons/collapsearrowdown.svg';
+                    }
+                } else {
+                    facility.classList.remove('collapsed');
+                    const collapseBtn = facility.querySelector('.collapse-btn');
+                    if (collapseBtn) {
+                        const collapseImg = collapseBtn.querySelector('img');
+                        collapseImg.src = 'icons/collapsearrowup.svg';
+                    }
+                }
+            });
+            const toggleBtn = factoryLineDiv.querySelector('.toggle-all-facilities-btn');
+            if (toggleBtn) {
+                const toggleImg = toggleBtn.querySelector('img');
+                if (shouldCollapse) {
+                    toggleImg.src = 'icons/collapsearrowdown.svg';
+                } else {
+                    toggleImg.src = 'icons/collapsearrowup.svg';
+                }
+            }
+        });
+
+        const globalToggleImg = globalToggleBtn.querySelector('img');
+        if (shouldCollapse) {
+            globalToggleImg.src = 'icons/collapsearrowdown.svg';
+        } else {
+            globalToggleImg.src = 'icons/collapsearrowup.svg';
+        }
+
+        setTimeout(() => {
+            adjustAllColumnContainerHeights();
+        }, 200);
     });
 });
