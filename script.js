@@ -76,8 +76,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         facilityDiv.innerHTML = `
             <div class="facility-top-bar">
-                <div class="collapse-btn"><img src="icons/collapsearrowup.png" alt="Collapse"></div>
-                <button class="remove-facility-btn"><img src="icons/x.png" alt="Remove"></button>
+                <div class="collapse-btn"><img src="icons/collapsearrowup.svg" alt="Collapse"></div>
+                <button class="remove-facility-btn" alt="Remove"></button>
             </div>
             <div class="collapsed-info">
                 <div class="info-text">
@@ -220,10 +220,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const isMiner = facilitySelect.value.startsWith('Miner');
 
             if (facilityDiv.classList.contains('collapsed')) {
-                collapseImg.src = 'icons/collapsearrowdown.png';
+                collapseImg.src = 'icons/collapsearrowdown.svg';
                 purityControl.style.display = 'none';
             } else {
-                collapseImg.src = 'icons/collapsearrowup.png';
+                collapseImg.src = 'icons/collapsearrowup.svg';
                 if (isMiner) {
                     purityControl.style.display = 'block';
                 } else {
@@ -427,9 +427,9 @@ document.addEventListener('DOMContentLoaded', () => {
         factoryLineDiv.dataset.lineId = factoryLineCounter;
         factoryLineDiv.innerHTML = `
             <div class="header-container">
-                <button class="remove-factory-line-btn"><img src="icons/x.png" alt="Remove Factory Line"></button>
+                <button class="remove-factory-line-btn" alt="Remove Factory Line"></button>
                 <div class="header">
-                    <img src="icons/edit_black.png" alt="Edit" class="edit-icon">
+                    <img src="icons/edit_black.svg" alt="Edit" class="edit-icon">
                     <input type="text" class="factory-name-input" value="Factory Line ${factoryLineCounter}">
                 </div>
                 <div class="material-summary">
@@ -438,8 +438,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                     <ul class="leftover-list"></ul>
                 </div>
-                <button class="toggle-all-facilities-btn"><img src="icons/collapsearrowup.png" alt="Toggle All"></button>
-                <button class="change-color-btn"><img src="icons/change_color_black.png" alt="Change Color"></button>
+                <button class="toggle-all-facilities-btn"><img src="icons/collapsearrowup.svg" alt="Toggle All"></button>
+                <button class="change-color-btn"><img src="icons/change_color_black.svg" alt="Change Color"></button>
                 <div class="color-palette">
                     <div class="color-swatch" data-color="#F43535"></div>
                     <div class="color-swatch" data-color="#4CAF50"></div>
@@ -533,14 +533,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (allCollapsed) {
                     // Expand all
                     facility.classList.remove('collapsed');
-                    collapseImg.src = 'icons/collapsearrowup.png';
+                    collapseImg.src = 'icons/collapsearrowup.svg';
                     if (isMiner) {
                         purityControl.style.display = 'block';
                     }
                 } else {
                     // Collapse all
                     facility.classList.add('collapsed');
-                    collapseImg.src = 'icons/collapsearrowdown.png';
+                    collapseImg.src = 'icons/collapsearrowdown.svg';
                     purityControl.style.display = 'none';
                 }
             });
@@ -548,9 +548,9 @@ document.addEventListener('DOMContentLoaded', () => {
             // Update the toggle button icon
             const toggleImg = toggleAllFacilitiesBtn.querySelector('img');
             if (allCollapsed) {
-                toggleImg.src = 'icons/collapsearrowup.png'; // All expanded, show up arrow
+                toggleImg.src = 'icons/collapsearrowup.svg'; // All expanded, show up arrow
             } else {
-                toggleImg.src = 'icons/collapsearrowdown.png'; // All collapsed, show down arrow
+                toggleImg.src = 'icons/collapsearrowdown.svg'; // All collapsed, show down arrow
             }
 
             // Adjust main window height
@@ -860,9 +860,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const globalPowerNet = document.querySelector('.global-power-net');
         const globalNetPower = totalProduction - totalUsage;
 
-        globalPowerUsage.textContent = `Usage: ${totalUsage.toFixed(2)} MW`;
-        globalPowerProduction.textContent = `Production: ${totalProduction.toFixed(2)} MW`;
-        globalPowerNet.textContent = `Net: ${globalNetPower.toFixed(2)} MW`;
+        globalPowerUsage.textContent = `${totalUsage.toFixed(2)} MW`;
+        globalPowerProduction.textContent = `${totalProduction.toFixed(2)} MW`;
+        globalPowerNet.textContent = `${globalNetPower.toFixed(2)} MW`;
     }
 
     // Main update function for all factory lines
@@ -1291,7 +1291,7 @@ document.addEventListener('DOMContentLoaded', () => {
             summaryHeader.appendChild(totalPowerSpan);
         }
         const netPower = totalPowerProduction - totalPowerUsage;
-        totalPowerSpan.textContent = `(Usage: ${totalPowerUsage.toFixed(2)} MW, Prod: ${totalPowerProduction.toFixed(2)} MW, Net: ${netPower.toFixed(2)} MW)`;
+        totalPowerSpan.textContent = `(Usage: ${totalPowerUsage.toFixed(2)} MW, Prod: ${totalPowerProduction.toFixed(2)} MW)`;
 
         const isPowerShortage = netPower < 0;
         columns.forEach(column => {
